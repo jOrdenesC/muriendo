@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 348.72 372.24"
+   version="1.1"
+   id="svg16"
+   sodipodi:docname="macro.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata22">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs20" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview18"
+     showgrid="false"
+     inkscape:zoom="2.2834731"
+     inkscape:cx="174.36"
+     inkscape:cy="154.81955"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg16" />
+  <path
+     d="M 316.8,9.999999 H 28 a 17.82,17.82 0 0 0 -17.81,17.83 V 299.83 A 17.82,17.82 0 0 0 28,317.64 h 103.84 l 40.57,40.57 40.59,-40.57 h 103.8 a 17.82,17.82 0 0 0 17.82,-17.82 V 27.819999 a 17.82,17.82 0 0 0 -17.82,-17.82 z"
+     fill="#00ad77"
+     id="path4" />
+  <g
+     fill="none"
+     stroke="#fccd16"
+     stroke-linejoin="round"
+     stroke-width="12"
+     id="g14">
+    <path
+       d="m128.84 317.64h3l2.13 2.12"
+       id="path6" />
+    <path
+       d="m138 323.8 30.27 30.27"
+       stroke-dasharray="5.71 5.71"
+       id="path8" />
+    <path
+       d="m170.29 356.08 2.12 2.12 2.12-2.12"
+       id="path10" />
+    <path
+       d="m178.76 351.85 34.24-34.21h103.8a17.82 17.82 0 0 0 17.82-17.82v-272a17.82 17.82 0 0 0 -17.82-17.82h-288.8a17.82 17.82 0 0 0 -17.81 17.83v272a17.82 17.82 0 0 0 17.81 17.81h97.84"
+       stroke-dasharray="5.99 5.99"
+       id="path12" />
+  </g>
+</svg>

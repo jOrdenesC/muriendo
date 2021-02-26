@@ -1,0 +1,146 @@
+name: movitronia
+description: A new Flutter project.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+3
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  #Packages movitronia project
+
+  #For animations in widgets
+  animate_do: ^1.7.2
+  #For circular countdown
+  circular_countdown_timer: ^0.0.7
+  #Clippy for designs shapes
+  clippy_flutter: ^1.1.1
+  #GetX for manage states in app
+  get: ^3.13.1 
+  #GetX Storage for save data
+  get_storage: ^1.3.1
+  #Gif Images
+  flutter_gifimage: ^1.0.0
+  #Widget for take screen size and type of device
+  sizer: ^1.1.8
+  #SVG
+  flutter_svg: ^0.19.1
+  #Confetti
+  confetti: ^0.5.4+1
+  #SpinKit
+  flutter_spinkit: ^4.1.2+1
+  #Database
+  sembast: ^2.4.8
+  #Path Provider
+  path_provider: ^1.6.11
+  #Package for create numbers pickers or date pickers
+  flutter_material_pickers: ^1.8.1
+  #Package for manage orientation in specific screens with routes
+  orientation_helper: ^1.1.0
+  #Widget for show porcentage in circular indicator
+  percent_indicator: ^2.1.8
+  #Get it Database
+  get_it: ^4.0.2
+  #Rut Validator
+  dart_rut_validator: ^1.1.0
+  #MultiUtil library
+  quiver: ^2.1.5
+  #Library for compress videos to 2mb aprox
+  video_compress: ^2.1.1
+  #Library for take photo or record video
+  image_picker: ^0.6.7+14
+  #Library for show toast easy
+  toast: ^0.1.5
+  #Library for show dots in lists 
+  dots_indicator: ^1.2.0
+  #Library for show badges when add exccercise or user in CreateClass
+  badges: ^1.1.6
+  chart_components: ^0.1.6
+  audioplayers: 0.17.0
+   #Tessting Video Player Webm
+  chewie: ^0.12.1+1
+  video_player: ^1.0.0
+  #Manejo de fechas
+  intl: ^0.16.1
+  #HTTP CLIENT
+  dio: ^3.0.10
+  #Package for create a unique id for device
+  device_info: ^1.0.0
+  shared_preferences: ^0.5.12+4
+  jaguar_jwt: ^2.1.6
+  basic_utils: ^1.2.0
+  uuid: ^2.2.2
+  video_thumbnail: ^0.2.5+1
+  flushbar: ^1.10.4
+  flutter_vlc_player: ^5.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+      - Assets/images/
+      - Assets/figures/
+      - Assets/audio/
+      - Assets/videos/
+      - Assets/
+      - Assets/images/buttons/
+
+  # An image asset can refer to one or more resolutioºn-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Gotham
+      fonts:
+        - asset: Assets/fonts/gothamrounded-bold.otf
+        - asset: Assets/fonts/gothamroundedbold_21016.ttf
+        - asset: Assets/fonts/gothamrounded-book.otf
+        - asset: Assets/fonts/gothamroundedbook_21018.ttf
+
+    - family: Nunito
+      fonts:
+        # - asset: Assets/fonts/Nunito-ExtraBold.ttf
+        # - asset: Assets/fonts/Nunito-Regular.ttf
+        # - asset: Assets/fonts/Nunito-Bold.ttf
+        # - asset: Assets/fonts/Nunito-SemiBold.ttf
+        - asset: Assets/fonts/Nunito-Black.ttf
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
