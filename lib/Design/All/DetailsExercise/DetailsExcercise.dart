@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class DetailsExcercise extends StatefulWidget {
@@ -11,6 +12,20 @@ class DetailsExcercise extends StatefulWidget {
 
 class _DetailsExcerciseState extends State<DetailsExcercise> {
   @override
+  void initState() {
+    super.initState();
+    getWeight();
+  }
+
+  var weight;
+  getWeight() async {
+    var prefs = await SharedPreferences.getInstance();
+    var res = prefs.getString("weight");
+    setState(() {
+      weight = res;
+    });
+  }
+
   Widget build(BuildContext context) {
     final dynamic args =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
@@ -34,19 +49,17 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 12.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text('${args["name"]}'.toUpperCase())),
+              height: 2.0.h,
+            ),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text('${args["name"]}'.toUpperCase())),
           ],
         ),
       ),
@@ -61,9 +74,13 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(Icons.local_fire_department, color: cyan, size: 7.0.w,),
+                Icon(
+                  Icons.local_fire_department,
+                  color: cyan,
+                  size: 7.0.w,
+                ),
                 Text(
-                  " ${args["kcal"]} Kcal",
+                  " ${int.parse(args["kcal"]) * 0.0175 * int.parse(weight)} Kcal/min",
                   style: TextStyle(color: cyan, fontSize: 6.0.w),
                 ),
                 SizedBox(
@@ -80,7 +97,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
                 Image(
                   width: 100.0.w,
                   fit: BoxFit.fill,
-                  image: AssetImage('${args["asset"]}'),
+                  image: AssetImage('Assets/thumbnails/${args["name"]}.png'),
                 ),
               ],
             ),
@@ -93,11 +110,11 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
                 SizedBox(
                   width: MediaQuery.of(context).size.height * 0.03,
                 ),
-                Text(
-                  "${args["duration"]} Seg ",
-                  style: TextStyle(color: cyan, fontSize: 6.0.w),
-                ),
-                Icon(Icons.alarm, color: cyan, size: 7.0.w,)
+                // Text(
+                //   "${args["duration"]} Seg ",
+                //   style: TextStyle(color: cyan, fontSize: 6.0.w),
+                // ),
+                // Icon(Icons.alarm, color: cyan, size: 7.0.w,)
               ],
             ),
             SizedBox(

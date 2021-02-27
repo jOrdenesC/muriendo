@@ -11,12 +11,18 @@ import '../../../Database/Models/QuestionaryData.dart';
 import '../../../Database/Repository/QuestionaryRepository.dart';
 import '../../../Database/Repository/TipsDataRepository/TipsDataRepository.dart';
 import 'package:uuid/uuid.dart';
+import 'package:get/get.dart';
 import '../../../Routes/RoutePageControl.dart';
+import '../SessionPage/VideosToRecord.dart';
 
 class Questionary extends StatefulWidget {
   final int number;
   final String classId;
-  Questionary(this.number, this.classId);
+  final double kCal;
+  final List exercises;
+
+
+  Questionary({this.number, this.classId, this.exercises, this.kCal});
   @override
   _QuestionaryState createState() => _QuestionaryState();
 }
@@ -108,11 +114,13 @@ class _QuestionaryState extends State<Questionary> {
     if (notResponsed == 0) {
       var uuid = Uuid().v4();
       await save(uuid);
-      goToVideosToRecord(
-          uuidQuestionary: uuid,
-          mets: [10, 20, 30, 40],
+      Get.to(VideosToRecord(
+        uuidQuestionary: uuid,
+          kCal: widget.kCal,
+          exercises: widget.exercises,
           number: widget.number,
-          idClass: widget.classId);
+          idClass: widget.classId
+      ));
       // Get.back(result: uuid.toString());
     } else {
       toast(context, "Te falta responder $notResponsed preguntas.", red);
@@ -321,7 +329,7 @@ class _QuestionaryState extends State<Questionary> {
                             height: 3.0.h,
                           ),
                           Text(
-                            "$number.- $question",
+                            "$number.- $question".toUpperCase(),
                             style: TextStyle(color: blue, fontSize: 6.0.w),
                             textAlign: TextAlign.center,
                           ),
@@ -481,7 +489,7 @@ class _QuestionaryState extends State<Questionary> {
                             height: 3.0.h,
                           ),
                           Text(
-                            "$number.- $question",
+                            "$number.- $question".toUpperCase(),
                             style: TextStyle(color: blue, fontSize: 6.0.w),
                             textAlign: TextAlign.center,
                           ),

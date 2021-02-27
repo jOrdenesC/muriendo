@@ -111,8 +111,8 @@ flutter:
   assets:
       - Assets/images/
       - Assets/figures/
-      - Assets/audio/
       - Assets/videos/
+      - Assets/thumbnails/
       - Assets/
       - Assets/images/buttons/
 

@@ -6,7 +6,6 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
 import 'package:orientation_helper/orientation_helper.dart';
-
 import 'Questionary.dart';
 
 class EvidencesSession extends StatefulWidget {
@@ -17,6 +16,7 @@ class EvidencesSession extends StatefulWidget {
 class _EvidencesSessionState extends State<EvidencesSession> {
   bool questionary = false;
   bool video = false;
+
   @override
   Widget build(BuildContext context) {
     final dynamic args =
@@ -201,8 +201,13 @@ class _EvidencesSessionState extends State<EvidencesSession> {
   }
 
   void navigate(var args) {
-    print("AAAAAAAAAAAAAA "+args.toString());
-    Get.to(Questionary(args["number"], args["idClass"]));
+    print("AAAAAAAAAAAAAA " + args.toString());
+    Get.to(Questionary(
+      number: args["number"],
+      classId: args["idClass"],
+      exercises: args["exercises"],
+      kCal: args["kCal"],
+    ));
   }
 
   void navigateVideo(var args) {

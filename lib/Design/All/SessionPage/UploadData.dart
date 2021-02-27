@@ -104,23 +104,9 @@ class _UploadDataState extends State<UploadData> {
   }
 
   uploadQuestionary(args, videoData) async {
-    List kiloCaloriesPerSecond = [];
     var prefs = await SharedPreferences.getInstance();
-    String weight = prefs.getString("weight");
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     QuestionaryRepository offlineRepository = GetIt.I.get();
-    print(args);
-    // for (var i = 0; i < args["mets"].length; i++) {
-    //   double kCal = args["mets"][i] * 0.0175 * double.parse(weight);
-    //   kiloCaloriesPerSecond.add(kCal / 60);
-    // }
-    // print(kiloCaloriesPerSecond);
-    // double total = 0;
-    // for (var i = 0; i < kiloCaloriesPerSecond.length; i++) {
-    //   total = total + kiloCaloriesPerSecond[i];
-    // }
-    // print(kiloCaloriesPerSecond);
-    // print(total);
     var res = await offlineRepository.getForId(args["uuid"]);
     String token = prefs.getString("token");
     var phase = prefs.get("phase");
@@ -132,7 +118,7 @@ class _UploadDataState extends State<UploadData> {
           "uuid": Uuid().v4().toString(),
           "phase": phase.toString(),
           "class": args["idClass"].toString(),
-          "totalKilocalories": 1000,
+          "totalKilocalories": args["mets"],
           "questionnaire": res[0].questionary,
           "videoData": videoData
         };

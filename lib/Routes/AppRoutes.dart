@@ -134,7 +134,7 @@ class AppRoutes {
 
   static var questionary = RouteDetails(
     name: '/questionary',
-    page: Questionary(1, "123"),
+    page: Questionary(),
     orientation: ScreenOrientation.portraitOnly,
   );
 

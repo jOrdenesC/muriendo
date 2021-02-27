@@ -5,7 +5,7 @@ import 'dart:io';
 //import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-
+import 'package:get/get.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:get/state_manager.dart';
 import 'package:get_it/get_it.dart';
@@ -17,6 +17,7 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quiver/async.dart';
 import 'package:video_player/video_player.dart';
+import '../../Design/All/SessionPage/ShowCalories.dart';
 
 class Mp4Controller extends GetxController {
   //Video Controllers
@@ -236,19 +237,18 @@ class Mp4Controller extends GetxController {
     initializePlayer();
   }
 
-  gettingdatabase(String idClass) async {
+  gettingdatabase(String id) async {
     //Obtain ID from external page when selecting class
     excerciseCalentamientoList.clear();
     excerciseFlexibilidadList.clear();
     excerciseDesarrolloList.clear();
     excerciseVcalmaList.clear();
-
+    var obj = {};
     final responseclass =
-        await _classRepository.getClassID(idClass); //Get Class Index
+        await _classRepository.getClassID(id); //Get Class Index
     print(responseclass);
     pauses = responseclass[0].pauses;
     times = responseclass[0].macropause;
-
     excerciseCalentamientoList = responseclass[0].excerciseCalentamiento;
     for (int i = 0; i < responseclass[0].excerciseCalentamiento.length; i++) {
       //Loop through class excercises by category
@@ -260,10 +260,13 @@ class Mp4Controller extends GetxController {
       print("Getting Audio Name: ${responseDB[0].nameExcercise}");
       print("Getting Audio List: ${excerciseCalentamientoList}");
       exercisesAudio.add(value);
-      metsList.add(responseDB[0].mets);
+      obj = {
+        "time": responseclass[0].timeCalentamiento,
+        "mets": responseDB[0].mets
+      };
+      metsList.add(obj);
       excerciseNames
           .add(responseDB[0].nameExcercise); //Creating list of categories name
-
     }
     excerciseFlexibilidadList = responseclass[0].excerciseFlexibilidad;
     for (int i = 0; i < responseclass[0].excerciseFlexibilidad.length; i++) {
@@ -273,12 +276,17 @@ class Mp4Controller extends GetxController {
       //print("Excercise ID $i :  ${responseDB[0].nameExcercise}");
       String value = responseDB[0].excerciseNameAudioId;
       exercisesAudio.add(value); //Creating list of categories name
-      metsList.add(responseDB[0].mets);
+      obj = {
+        "time": responseclass[0].timeFlexibilidad,
+        "mets": responseDB[0].mets
+      };
+      metsList.add(obj);
       excerciseNames.add(responseDB[0].nameExcercise);
     }
     excerciseDesarrolloList = responseclass[0].excerciseDesarrollo;
     recordingList.add(excerciseDesarrolloList[0]);
-    recordingList.add(excerciseDesarrolloList[excerciseDesarrolloList.length]);
+    recordingList
+        .add(excerciseDesarrolloList[excerciseDesarrolloList.length - 1]);
     for (int i = 0; i < responseclass[0].excerciseDesarrollo.length; i++) {
       //Loop through class excercises by category
       final responseDB = await _excerciseRepository
@@ -286,7 +294,11 @@ class Mp4Controller extends GetxController {
       // print("Excercise ID $i :  ${responseDB[0].nameExcercise}");
       String value = responseDB[0].excerciseNameAudioId;
       exercisesAudio.add(value); //Creating list of categories name
-      metsList.add(responseDB[0].mets);
+      obj = {
+        "time": responseclass[0].timeDesarrollo,
+        "mets": responseDB[0].mets
+      };
+      metsList.add(obj);
       excerciseNames.add(responseDB[0].nameExcercise);
     }
     excerciseVcalmaList = responseclass[0].excerciseVueltaCalma;
@@ -297,10 +309,10 @@ class Mp4Controller extends GetxController {
       //print("Excercise ID $i :  ${responseDB[0].nameExcercise}");
       String value = responseDB[0].excerciseNameAudioId;
       exercisesAudio.add(value); //Creating list of categories name
-      metsList.add(responseDB[0].mets);
+      obj = {"time": responseclass[0].timeVcalma, "mets": responseDB[0].mets};
+      metsList.add(obj);
       excerciseNames.add(responseDB[0].nameExcercise);
     }
-
     List<dynamic> gettimes = [];
     for (int i = 0; i <= 3; i++) {
       if (i == 0) {
@@ -316,10 +328,9 @@ class Mp4Controller extends GetxController {
       print(gettimes);
       times = gettimes;
     }
-
     List<String> tipsList = [];
     List<String> tipsID = [];
-    List<dynamic> empty = ["Prepárate para el siguiente ejercicio"];
+    List<dynamic> empty = ["   Prepárate para el \nsiguiente ejercicio"];
     int indexaudio = 0;
     /**Values for each macro index */
     int macro1 = excerciseCalentamientoList.length - 1;
@@ -331,10 +342,9 @@ class Mp4Controller extends GetxController {
         excerciseDesarrolloList.length -
         1;
     print("Amount objects tips ${responseclass[0].tips.length}");
-
     for (int i = 0; i < responseclass[0].tips.length; i++) {
       if (responseclass[0].tips[i].toString() == "[]") {
-        tipsList.add("Prepárate para el \nsiguiente ejercicio");
+        tipsList.add("    Prepárate para el \nsiguiente ejercicio");
         tipsID.add("[]");
         if (i == macro1 || i == macro2 || i == macro3) {
           macroList.add(empty);
@@ -343,7 +353,7 @@ class Mp4Controller extends GetxController {
         if (i == macro1 || i == macro2 || i == macro3) {
           print("TIP Into Macro");
           //TODO do some shit
-          tipsList.add("Prepárate para el \nsiguiente ejercicio");
+          tipsList.add("   Prepárate para el \nsiguiente ejercicio");
           //TODO add to a list
           macroList.add(responseclass[0].tips[i]);
           for (int i = 0; i < responseclass[0].tips[i].length; i++) {
@@ -368,7 +378,6 @@ class Mp4Controller extends GetxController {
     print("TIP macroList: ${macroList} ");
 /** */
     documentIds = responseclass[0].tips;
-
     //Making MicroTimes
     macroTime.add(pauses[excerciseCalentamientoList.length - 1]);
     macroTime.add(pauses[excerciseFlexibilidadList.length +
@@ -399,11 +408,10 @@ class Mp4Controller extends GetxController {
     tipIDs = tipsID; //Document ID to general TipID
     videoName.value = excerciseCalentamientoList[0];
     print(videoName);
-
     //TODO
   }
 
-  controllTimer(String idClass) {
+  controllTimer(String idClass, List questionnaire, int number) {
     if (step <= 3) {
       if (microPause.value != true) {
         microPause.value = true;
@@ -489,9 +497,12 @@ class Mp4Controller extends GetxController {
             print("On Step Inside IF ${excerciseVcalmaList[index.value]}");
           } else {
             print("On Step macropause");
-            goToShowCalories(
-                mets: metsList, exercises: recordingList, idClass: idClass);
-
+            Get.to(ShowCalories(
+                mets: metsList,
+                exercises: recordingList,
+                idClass: idClass,
+                questionnaire: questionnaire,
+                number: number));
             index.value = 0;
           }
           print("On Step Updating Controller");

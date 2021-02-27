@@ -104,9 +104,9 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           circularActivity("title", 0,
-                              "Assets/images/docImage.png", "2", true),
+                              "Assets/images/docImage.png", "2", false),
                           circularActivity("title", 0,
-                              "Assets/images/docImage.png", "3", true),
+                              "Assets/images/docImage.png", "3", false),
                         ],
                       ),
                     ),
@@ -114,7 +114,7 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         circularActivity("title", 0,
-                            "Assets/images/docImage.png", "4", true),
+                            "Assets/images/docImage.png", "4", false),
                       ],
                     ),
                     divider(green, "FASE 2"),

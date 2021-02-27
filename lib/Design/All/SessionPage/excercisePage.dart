@@ -11,7 +11,6 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Functions/Controllers/mp4Controller.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 
@@ -19,7 +18,9 @@ import 'package:video_player/video_player.dart';
 
 class ExcerciseVideo extends StatefulWidget {
   final String id;
-  ExcerciseVideo(this.id);
+  final List questionnaire;
+  final int number;
+  ExcerciseVideo(this.id, this.questionnaire, this.number);
   @override
   _ExcerciseVideoState createState() => _ExcerciseVideoState();
 }
@@ -29,6 +30,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   Orientation orientation;
   //bool isPause = false;
   Mp4Controller mp4Controller = Mp4Controller();
+  final key1 = GlobalKey();
+  final key2 = GlobalKey();
 
   @override
   void initState() {
@@ -359,6 +362,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                         fit: BoxFit.fitWidth,
                         child: Text(
                           "${_.excerciseNames[_.globalindex.value]}",
+                          maxLines: 2,
                           style:
                               TextStyle(color: Colors.white, fontSize: 5.0.w),
                         ),
@@ -714,6 +718,9 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 ),
               ],
             ),
+            Expanded(
+              child: circTimer(_),
+            )
           ],
         ),
       ],
@@ -773,14 +780,22 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 SizedBox(width: 4.0.w),
-                                Text(
-                                  """Los huesos están
-formados por calcio
-y fósforo """,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 7.0.w),
-                                  textAlign: TextAlign.center,
-                                ),
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 0.0.w),
+                                      Obx(() => Text(
+                                            "${mp4Controller.macroTip}",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 7.0.w),
+                                            textAlign: TextAlign.center,
+                                          ))
+                                    ],
+                                  ),
+                                )
                               ],
                             )
                           ],
@@ -1074,7 +1089,7 @@ y fósforo """,
         _.controllerCountDown.resume();
       },
       child: CircularCountDownTimer(
-        key: ValueKey(2),
+        key: key1,
         controller: _.controllerCountDown,
         duration: _.returnTimer(),
         //Change time if micropause is selected
@@ -1091,7 +1106,7 @@ y fósforo """,
         height: MediaQuery.of(context).size.height / 2.5,
         width: MediaQuery.of(context).size.width / 2.5,
         onComplete: () {
-          _.controllTimer(widget.id);
+          _.controllTimer(widget.id, widget.questionnaire, widget.number);
         },
       ),
     );
@@ -1103,7 +1118,7 @@ y fósforo """,
         _.controllerDemostration.pause();
       },
       child: CircularCountDownTimer(
-        key: UniqueKey(),
+        key: key2,
         controller: _.controllerCountDown,
 
         duration: 15,

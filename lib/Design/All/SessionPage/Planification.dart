@@ -30,9 +30,12 @@ class _PlanificationState extends State<Planification> {
           children: [
             buttonRounded(context, func: () async {
               // final dir = await getApplicationDocumentsDirectory();
-              dev.log(args['data'].toMap()["classID"].toString());
+              // dev.log(args['data'].excerciseCalentamiento.toString());
               // goToSessionPage(args);
-              Get.to(ExcerciseVideo(args['data'].toMap()["classID"].toString()));
+              Get.to(
+                ExcerciseVideo(args['data'].toMap()["classID"].toString(),
+                    args["data"].questionnaire, args["number"]),
+              );
               // dev.log(args["data"].questionnaire.toString());
               // dev.log(args["data"].classID.toString());
               // goToShowCalories(
@@ -110,7 +113,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("calentamiento");
+                          goToExcercisesPage("calentamiento",
+                              args['data'].excerciseCalentamiento);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -162,7 +166,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("calentamiento");
+                          goToExcercisesPage("calentamiento",
+                              args['data'].excerciseCalentamiento);
                         },
                         child: Row(
                           children: [
@@ -185,7 +190,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("desarrollo");
+                          goToExcercisesPage(
+                              "desarrollo", args['data'].excerciseDesarrollo);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -237,7 +243,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("desarrollo");
+                          goToExcercisesPage(
+                              "desarrollo", args['data'].excerciseDesarrollo);
                         },
                         child: Row(
                           children: [
@@ -260,7 +267,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("vuelta a la calma");
+                          goToExcercisesPage("vuelta a la calma",
+                              args['data'].excerciseVueltaCalm);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -312,7 +320,8 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("vuelta a la calma");
+                          goToExcercisesPage("vuelta a la calma",
+                              args['data'].excerciseVueltaCalma);
                         },
                         child: Row(
                           children: [

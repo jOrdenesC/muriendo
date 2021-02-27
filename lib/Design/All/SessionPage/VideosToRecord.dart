@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gifimage/flutter_gifimage.dart';
@@ -10,27 +11,50 @@ import 'package:movitronia/Functions/Controllers/videoRecorderController.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
-import 'package:orientation_helper/orientation_helper.dart';
+import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 class VideosToRecord extends StatefulWidget {
+  final List exercises;
+  final double kCal;
+  final String uuidQuestionary;
+  final int number;
+  final String idClass;
+  VideosToRecord(
+      {this.exercises,
+      this.kCal,
+      this.idClass,
+      this.number,
+      this.uuidQuestionary});
   @override
   _VideosToRecordState createState() => _VideosToRecordState();
 }
 
 class _VideosToRecordState extends State<VideosToRecord>
     with TickerProviderStateMixin {
-  GifController controller3;
-  GifController controllerActividad1;
-  GifController controllerActividad2;
+  VideoPlayerController videoPlayerController1;
+  VideoPlayerController videoPlayerController2;
+  var dir;
   VideoController videoController = Get.put(VideoController());
   String gifName = "Assets/images/C1.gif";
   String gifName2 = "Assets/images/C2.gif";
   @override
   void initState() {
-    controller3 = GifController(vsync: this);
-    controllerActividad1 = GifController(vsync: this);
-    controllerActividad2 = GifController(vsync: this);
     super.initState();
+  }
+
+  initdir() async {
+    print(widget.exercises[0]);
+    print(widget.exercises[1]);
+    var dir = await getApplicationDocumentsDirectory();
+    videoPlayerController1 = VideoPlayerController.file(
+        File('${dir.path}/videos/${widget.exercises[0]}.webm'),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+
+    videoPlayerController2 = VideoPlayerController.file(
+        File('${dir.path}/videos/${widget.exercises[1]}.webm'),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    setState(() {});
   }
 
   @override
@@ -43,23 +67,6 @@ class _VideosToRecordState extends State<VideosToRecord>
     return GetX<VideoController>(
       init: VideoController(),
       builder: (_) {
-        controllerActividad1.repeat(
-            min: 0,
-            max: _.gifframes[1],
-            period: _.gifduration[1],
-            reverse: false);
-        controllerActividad2.repeat(
-            min: 0,
-            max: _.gifframes[2],
-            period: _.gifduration[2],
-            reverse: false);
-        controller3.repeat(
-            min: 0,
-            max: _.gifframes[_.index.toInt()],
-            period: _.gifduration[_.index.toInt()],
-            reverse: false);
-        final dynamic args =
-            (ModalRoute.of(context).settings.arguments as RouteArguments).args;
         return WillPopScope(
           onWillPop: pop,
           child: Scaffold(
@@ -68,10 +75,7 @@ class _VideosToRecordState extends State<VideosToRecord>
               centerTitle: true,
               backgroundColor: cyan,
               elevation: 0,
-              // leading: IconButton(
-              //   icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
-              //   onPressed: () => Navigator.pop(context),
-              // ),
+              leading: SizedBox.shrink(),
               title: Column(
                 children: [
                   SizedBox(
@@ -91,7 +95,8 @@ class _VideosToRecordState extends State<VideosToRecord>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buttonRounded(context, func: () {
-                    videoController.recordMovie(args);
+                    videoController.recordMovie(widget.uuidQuestionary,
+                        widget.idClass, widget.kCal, widget.number);
                   },
                       text: "   GRABAR",
                       icon: Icon(
@@ -160,21 +165,14 @@ class _VideosToRecordState extends State<VideosToRecord>
                             height: 15.0.h,
                           ),
                           InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "skipping",
-                                  gifName,
-                                  "10",
-                                  "10",
-                                  "Mantén la zona abdominal contraída. Mueve los brazos al ritmo de las piernas. Mantén la espalda erguida");
-                            },
+                            onTap: () async {},
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Column(
                                   children: [
                                     Container(
-                                      width: 70.0.w,
+                                      width: 80.0.w,
                                       height: 7.0.h,
                                       decoration: BoxDecoration(
                                           color: red,
@@ -184,10 +182,10 @@ class _VideosToRecordState extends State<VideosToRecord>
                                                   Radius.circular(50))),
                                       child: Center(
                                         child: Text(
-                                          "Skipping",
+                                          "${widget.exercises[0]}",
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 8.0.w),
+                                              fontSize: 6.0.w),
                                         ),
                                       ),
                                     ),
@@ -195,17 +193,18 @@ class _VideosToRecordState extends State<VideosToRecord>
                                       height: 1.0.h,
                                     ),
                                     Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: red, width: 1.0.w)),
-                                      child: Image.asset(
-                                        gifName,
-                                        width: 100.0.w,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      width: 50.0.w,
-                                      height: 15.0.h,
-                                    )
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: red, width: 2)),
+                                        width: 50.0.w,
+                                        height: 15.0.h,
+                                        child: Image.asset(
+                                          "Assets/thumbnails/${widget.exercises[0]}.png",
+                                          fit: BoxFit.fitWidth,
+                                        )
+                                        // VideoPlayer(videoPlayerController1)
+
+                                        )
                                   ],
                                 ),
                               ],
@@ -215,14 +214,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                             height: 2.0.h,
                           ),
                           InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "jumping jacks",
-                                  gifName2,
-                                  "12",
-                                  "10",
-                                  "Contrae el abdomen. No encojas los hombros. Amortigua los pies con suavidad al momento de la caída..");
-                            },
+                            onTap: () {},
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -238,7 +230,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                               bottomLeft: Radius.circular(50))),
                                       child: Center(
                                         child: Text(
-                                          "Jumping jacks",
+                                          "${widget.exercises[1]}",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 8.0.w),
@@ -249,17 +241,15 @@ class _VideosToRecordState extends State<VideosToRecord>
                                       height: 1.0.h,
                                     ),
                                     Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: red, width: 1.0.w)),
-                                      child: Image.asset(
-                                        gifName2,
-                                        width: 100.0.w,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      width: 50.0.w,
-                                      height: 15.0.h,
-                                    )
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: red, width: 3)),
+                                        width: 50.0.w,
+                                        height: 15.0.h,
+                                        child: Image.asset(
+                                          "Assets/thumbnails/${widget.exercises[1]}.png",
+                                          fit: BoxFit.fitWidth,
+                                        ))
                                   ],
                                 ),
                               ],
@@ -310,9 +300,8 @@ class _VideosToRecordState extends State<VideosToRecord>
 
   @override
   void dispose() {
-    controllerActividad1.dispose();
-    controllerActividad2.dispose();
-    controller3.dispose();
+    videoPlayerController1.dispose();
+    videoPlayerController2.dispose();
     super.dispose();
   }
 }

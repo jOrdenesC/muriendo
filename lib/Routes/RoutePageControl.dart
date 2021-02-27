@@ -36,34 +36,43 @@ goToPlanification(ClassLevel data, int number) {
       arguments: {"data": data, "number": number});
 }
 
-goToExcercisesPage(String name) {
-  Get.toNamed(AppRoutes.excercisesPage.name, arguments: name);
+goToExcercisesPage(String name, List data) {
+  Get.toNamed(AppRoutes.excercisesPage.name,
+      arguments: {"data": data, "name": name});
 }
 
 // goToSessionPage(String id) {
 //   Get.toNamed(AppRoutes.sessionPage.name, arguments: id);
 // }
 
-goToShowCalories({String idClass, List mets, List exercises}) {
+goToShowCalories(
+    {String idClass,
+    List mets,
+    List exercises,
+    List questionnaire,
+    int number}) {
   Get.offAllNamed(AppRoutes.showCalories.name, arguments: {
     "idClass": idClass,
     "mets": mets,
-    'exercises': exercises
+    'exercises': exercises,
+    'questionnaire': questionnaire,
+    'number': number
   });
 }
 
 goToEvidencesSession(
-    {List questionnaire, String idClass, List mets, int number}) {
+    {List questionnaire, String idClass, double kCal, int number, List exercises}) {
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
-    "mets": mets,
-    "number": number
+    "kCal": kCal,
+    "number": number,
+    "exercises": exercises
   });
 }
 
 goToUploadData(
-    {String uuidQuestionary, String idClass, List mets, int number}) {
+    {String uuidQuestionary, String idClass, double mets, int number}) {
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
@@ -73,12 +82,13 @@ goToUploadData(
 }
 
 goToVideosToRecord(
-    {String uuidQuestionary, String idClass, List mets, int number}) {
+    {String uuidQuestionary, String idClass, double kCal, int number, List exercises}) {
   Get.toNamed(AppRoutes.videosToRecord.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
-    "mets": mets,
-    "number": number
+    "kCal": kCal,
+    "number": number,
+    "exercises": exercises
   });
 }
 
@@ -184,13 +194,12 @@ closeSession() async {
 }
 
 goToDetailsExcercises(
-    String name, String asset, String kcal, String duration, String desc) {
+    String name, String asset, String kcal, String desc) {
   Get.toNamed(AppRoutes.detailsExcercises.name, arguments: {
     "name": name,
     "desc": desc,
     "kcal": kcal,
     "asset": asset,
-    "duration": duration
   });
 }
 

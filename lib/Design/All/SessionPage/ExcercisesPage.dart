@@ -3,12 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
-
-import 'package:video_thumbnail/video_thumbnail.dart';
+import '../../../Database/Models/ExcerciseData.dart';
+import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 class ExcercisesPage extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class ExcercisesPage extends StatefulWidget {
 class _ExcercisesPageState extends State<ExcercisesPage>
     with TickerProviderStateMixin {
   GifController controller1;
+
+  ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
 
   @override
   void initState() {
@@ -51,7 +54,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
               height: 2.0.h,
             ),
             FittedBox(
-                fit: BoxFit.fitWidth, child: Text("${name.toUpperCase()}")),
+                fit: BoxFit.fitWidth,
+                child: Text("${name["name"].toUpperCase()}")),
           ],
         ),
         centerTitle: true,
@@ -99,320 +103,194 @@ class _ExcercisesPageState extends State<ExcercisesPage>
             ],
           ),
           name == "calentamiento"
-              ? SingleChildScrollView(
-                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Text(""),
-                      Text(""),
-                      InkWell(
-                        onTap: () {
-                          goToDetailsExcercises(
-                              "FILA DE AIRE",
-                              "Assets/videos/C12",
-                              "13",
-                              "10",
-                              "Mantén la espalda erguida. Contrae el abdomen y los glúteos. No encojas los hombros. Junta las escapulas.");
-                        },
-                        child: Container(
-                          color: Colors.white,
-                          width: w,
-                          child:
-                              Image.asset("Assets/images/thumbnails/C12T.jpg"),
+              ?
+              // ? SingleChildScrollView(
+              //     physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+              //     scrollDirection: Axis.vertical,
+              //     child: Column(
+              //       children: [
+              //         Text(""),
+              //         Text(""),
+              //         InkWell(
+              //           onTap: () {
+              //             goToDetailsExcercises(
+              //                 "FILA DE AIRE",
+              //                 "Assets/videos/C12",
+              //                 "13",
+              //                 "10",
+              //                 "Mantén la espalda erguida. Contrae el abdomen y los glúteos. No encojas los hombros. Junta las escapulas.");
+              //           },
+              //           child: Container(
+              //             color: Colors.white,
+              //             width: w,
+              //             child:
+              //                 Image.asset("Assets/images/thumbnails/C12T.jpg"),
+              //           ),
+              //         ),
+              //         Text(""),
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Text(
+              //               "FILA DE AIRE",
+              //               style: TextStyle(
+              //                   fontSize: w * 0.06, color: Colors.white),
+              //             )
+              //           ],
+              //         ),
+              //         Text(""),
+              //         InkWell(
+              //           onTap: () {
+              //             goToDetailsExcercises(
+              //                 "LOW RUNNER",
+              //                 "Assets/videos/C7",
+              //                 "12",
+              //                 "10",
+              //                 "Mantén la espalda erguida. Flecta un poco las rodillas. No te inclines hacia adelante. Contrae el abdomen.");
+              //           },
+              //           child: Container(
+              //             color: Colors.white,
+              //             width: w,
+              //             child:
+              //                 Image.asset("Assets/images/thumbnails/C7T.jpg"),
+              //           ),
+              //         ),
+              //         Text(""),
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Text(
+              //               "LOW RUNNER",
+              //               style: TextStyle(
+              //                   fontSize: w * 0.06, color: Colors.white),
+              //             )
+              //           ],
+              //         ),
+              //         Text(""),
+              //       ],
+              //     ),
+              //   )
+
+              ListView.builder(
+                  itemCount: name["data"].length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            var res = await excerciseDataRepository
+                                .getExcerciseName(name["data"][index]);
+                            goToDetailsExcercises(
+                                "${name["data"][index]}",
+                                "Assets/videos/C12",
+                                "${res[0].mets}",
+                                "${res[0].recommendation}");
+                          },
+                          child: Container(
+                            color: Colors.white,
+                            width: w,
+                            child: Image.asset(
+                                "Assets/thumbnails/${name["data"][index]}.png"),
+                          ),
                         ),
-                      ),
-                      Text(""),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "FILA DE AIRE",
-                            style: TextStyle(
-                                fontSize: w * 0.06, color: Colors.white),
-                          )
-                        ],
-                      ),
-                      Text(""),
-                      InkWell(
-                        onTap: () {
-                          goToDetailsExcercises(
-                              "LOW RUNNER",
-                              "Assets/videos/C7",
-                              "12",
-                              "10",
-                              "Mantén la espalda erguida. Flecta un poco las rodillas. No te inclines hacia adelante. Contrae el abdomen.");
-                        },
-                        child: Container(
-                          color: Colors.white,
-                          width: w,
-                          child:
-                              Image.asset("Assets/images/thumbnails/C7T.jpg"),
+                        Text(""),
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${name["data"][index]}",
+                                style: TextStyle(
+                                    fontSize: w * 0.06, color: Colors.white),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(""),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "LOW RUNNER",
-                            style: TextStyle(
-                                fontSize: w * 0.06, color: Colors.white),
-                          )
-                        ],
-                      ),
-                      Text(""),
-                    ],
-                  ),
-                )
+                      ],
+                    );
+                  })
               : name == "desarrollo"
-                  ? SingleChildScrollView(
-                      physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          Text(""),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "SKIPPING",
-                                  "Assets/images/C9.gif",
-                                  "12",
-                                  "10",
-                                  "Mantén la zona abdominal contraída. Mueve los brazos al ritmo de las piernas. Mantén la espalda erguida.");
-                            },
-                            child: Container(
-                              color: Colors.white,
-                              width: w,
-                              child: GifImage(
-                                // // fit: BoxFit.fill,
-                                // width: MediaQuery.of(context).size.width,
-                                // height: MediaQuery.of(context).size.height,
-                                controller: controller1,
-                                image: AssetImage("Assets/images/C9.gif"),
+                  ? ListView.builder(
+                      itemCount: name["data"].length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                var res = await excerciseDataRepository
+                                    .getExcerciseName(name["data"][index]);
+                                goToDetailsExcercises(
+                                    "${name["data"][index]}",
+                                    "Assets/videos/C12",
+                                    "${res[0].mets}",
+                                    "${res[0].recommendation}");
+                              },
+                              child: Container(
+                                color: Colors.white,
+                                width: w,
+                                child: Image.asset(
+                                    "Assets/thumbnails/${name["data"][index]}.png"),
                               ),
                             ),
-                          ),
-                          // InkWell(
-                          //   onTap: () {
-                          //     viewInfo(
-                          //         "Assets/images/C9.gif",
-                          //         10,
-                          //         "Mantén la zona abdominal contraída. Mueve los brazos al ritmo de las piernas. Mantén la espalda erguida.",
-                          //         "SKIPPING",
-                          //         12);
-                          //   },
-                          //   child: Container(
-                          //     color: Colors.white,
-                          //     width: w,
-                          //     child: Image.asset("Assets/images/C9.gif"),
-                          //   ),
-                          // ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "SKIPPING",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "JUMPING JACKS",
-                                  "Assets/images/C6.gif",
-                                  "13",
-                                  "10",
-                                  "Contrae el abdomen. No encojas los hombros. Amortigua los pies con suavidad al momento de la caída.");
-                            },
-                            child: Container(
-                              color: Colors.white,
-                              width: w,
-                              child: Image.asset("Assets/images/C6.gif"),
+                            Text(""),
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${name["data"][index]}",
+                                    style: TextStyle(
+                                        fontSize: w * 0.06,
+                                        color: Colors.white),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "JUMPING JACKS",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "SENTADILLAS",
-                                  "Assets/images/C8.gif",
-                                  "16",
-                                  "10",
-                                  "Mantén la espalda erguida. No te inclines hacia adelante. Contrae los glúteos cuando te levantes. Mantén tres puntos de apoyo del pie: el dedo gordo, el dedo pequeño y el talón. Evita llevar las rodillas hacia adentro. Mantén la zona abdominal apretada.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C8.gif"),
+                          ],
+                        );
+                      })
+                  : ListView.builder(
+                      itemCount: name["data"].length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                var res = await excerciseDataRepository
+                                    .getExcerciseName(name["data"][index]);
+                                goToDetailsExcercises(
+                                    "${name["data"][index]}",
+                                    "Assets/videos/C12",
+                                    "${res[0].mets}",
+                                    "${res[0].recommendation}");
+                              },
+                              child: Container(
                                 color: Colors.white,
-                                width: w),
-                          ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "SENTADILLAS",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "ATRAPA MOSCAS",
-                                  "Assets/images/C5.gif",
-                                  "17",
-                                  "10",
-                                  "Levanta tu rodilla sobre la cintura y haz un aplauso por debajo de esta. Mantén la parte inferior de la espalda recta. Lleva el ritmo.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C5.gif"),
-                                color: Colors.white,
-                                width: w),
-                          ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "ATRAPA MOSCAS",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "ESCALADOR",
-                                  "Assets/images/C4.gif",
-                                  "12",
-                                  "10",
-                                  "Aprieta los abdominales. Mantén la espalda plana. No gires la pelvis. Alinea los hombros encima de las muñecas. Mantén cabeza y pelvis alineados con la columna.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C4.gif"),
-                                color: Colors.white,
-                                width: w),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "ESCALADOR",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "GUERRERO 3",
-                                  "Assets/images/C4.gif",
-                                  "14",
-                                  "10",
-                                  "Mantén la columna recta y estirada. No gires la pelvis. Aprieta los glúteos.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C10.gif"),
-                                color: Colors.white,
-                                width: w),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "GUERRERO 3",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          Text(""),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "PINZA DE PIE 1",
-                                  "Assets/images/C13.gif",
-                                  "15",
-                                  "6",
-                                  "Coloca los pies en paralelo. Inclínate hacia adelante formando un ángulo recto a la altura de la cadera. Levanta el coxis. Debes notar el estiramiento de los músculos isquiotibiales. Intenta relajar los músculos del cuello.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C13.gif"),
-                                color: Colors.white,
-                                width: w),
-                          ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "PINZA DE PIE 1",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Text(""),
-                          InkWell(
-                            onTap: () {
-                              goToDetailsExcercises(
-                                  "ESTIRAMIENTO MARIPOSA",
-                                  "Assets/images/C11.gif",
-                                  "15",
-                                  "8",
-                                  "Inclínate hacia adelante formando un ángulo recto a la altura de la cadera. Mantén la espalda erguida. Junta los pies. Debes notar el estiramiento del muslo interno.");
-                            },
-                            child: Container(
-                                child: Image.asset("Assets/images/C11.gif"),
-                                color: Colors.white,
-                                width: w),
-                          ),
-                          Text(""),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "ESTIRAMIENTO MARIPOSA",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
+                                width: w,
+                                child: Image.asset(
+                                    "Assets/thumbnails/${name["data"][index]}.png"),
+                              ),
+                            ),
+                            Text(""),
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${name["data"][index]}",
+                                    style: TextStyle(
+                                        fontSize: w * 0.06,
+                                        color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      })
         ],
       ),
     );
