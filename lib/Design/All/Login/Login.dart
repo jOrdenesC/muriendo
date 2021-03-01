@@ -185,7 +185,7 @@ class _LoginState extends State<Login> {
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: blue,
-                                                      fontSize: 20),
+                                                      fontSize: w * 0.07),
                                                   decoration: InputDecoration(
                                                     prefixIcon: Padding(
                                                       padding:
@@ -203,7 +203,7 @@ class _LoginState extends State<Login> {
                                                           }
                                                         },
                                                         child: CircleAvatar(
-                                                          radius: 7.0.w,
+                                                          radius: 6.0.w,
                                                           backgroundColor: blue,
                                                           child: Center(
                                                             child: Icon(
@@ -222,6 +222,7 @@ class _LoginState extends State<Login> {
                                                           const EdgeInsets.only(
                                                               right: 8.0),
                                                       child: IconButton(
+                                                          iconSize: w * 0.07,
                                                           icon: Icon(
                                                             Icons
                                                                 .remove_red_eye,
@@ -260,7 +261,7 @@ class _LoginState extends State<Login> {
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         color: blue,
-                                                        fontSize: 20),
+                                                        fontSize: w * 0.07),
                                                     keyboardType:
                                                         TextInputType.text,
                                                     decoration: InputDecoration(
@@ -281,7 +282,7 @@ class _LoginState extends State<Login> {
                                                             }
                                                           },
                                                           child: CircleAvatar(
-                                                            radius: 7.0.w,
+                                                            radius: 6.0.w,
                                                             backgroundColor:
                                                                 blue,
                                                             child: Center(
@@ -299,7 +300,8 @@ class _LoginState extends State<Login> {
                                                       border: InputBorder.none,
                                                       counterText: "",
                                                       labelStyle: TextStyle(
-                                                          color: blue),
+                                                          color: blue,
+                                                          fontSize: w * 0.07),
                                                       hintText: "RUT O EMAIL",
                                                       hintStyle: TextStyle(
                                                           color: blue,
@@ -358,6 +360,7 @@ class _LoginState extends State<Login> {
           title: Text(
             "Cargando...",
             textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 6.0.w),
           ));
       var prefs = await SharedPreferences.getInstance();
       try {
@@ -384,8 +387,12 @@ class _LoginState extends State<Login> {
           prefs.setString("name", encode["name"].toString());
           prefs.setString("scope", encode["scope"].toString());
           prefs.setString("charge", encode["charge"].toString());
+          prefs.setBool("dev", encode["dev"]);
           prefs.setBool("termsAccepted", encode["termsAccepted"]);
           toastBottom(context, "Ingresando...", green);
+
+          print(prefs.getBool("dev").toString());
+          print(encode.toString());
 
           bool termsAccepted = prefs.getBool("termsAccepted") ?? false;
           String role = prefs.getString("scope");

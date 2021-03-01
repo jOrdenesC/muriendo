@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
     }
     orientationHelper = OrientationHelper(
       routes: AppRoutes.routes,
-      defaultOrientation: ScreenOrientation.portraitOnly,
+      defaultOrientation: ScreenOrientation.rotating,
     );
     super.initState();
   }

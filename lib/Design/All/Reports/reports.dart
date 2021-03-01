@@ -21,7 +21,7 @@ class _ReportsState extends State<Reports> {
           ? AppBar(
               backgroundColor: cyan,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+                icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
               ),
               title: Column(
@@ -63,9 +63,9 @@ class _ReportsState extends State<Reports> {
                   )
                 ],
               ),
-              SizedBox(height: 20.0.h
-                  // widget.drawerMenu ? 20.0.h : 0,
-                  ),
+              // SizedBox(height: 10.0.h
+              //     // widget.drawerMenu ? 20.0.h : 0,
+              //     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -114,11 +114,11 @@ class _ReportsState extends State<Reports> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 6.5.w,
+                            radius: 5.5.w,
                             child: Image.asset(
                               "Assets/images/reportIcon.png",
                               color: blue,
-                              width: 8.0.w,
+                              width: 6.0.w,
                             ),
                           ),
                           SizedBox(
@@ -159,11 +159,11 @@ class _ReportsState extends State<Reports> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 6.5.w,
+                            radius: 5.5.w,
                             child: Image.asset(
                               "Assets/images/reportIcon.png",
                               color: blue,
-                              width: 8.0.w,
+                              width: 6.0.w,
                             ),
                           ),
                           SizedBox(

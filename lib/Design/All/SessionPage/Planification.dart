@@ -29,30 +29,10 @@ class _PlanificationState extends State<Planification> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () async {
-              // final dir = await getApplicationDocumentsDirectory();
-              // dev.log(args['data'].excerciseCalentamiento.toString());
-              // goToSessionPage(args);
               Get.to(
                 ExcerciseVideo(args['data'].toMap()["classID"].toString(),
                     args["data"].questionnaire, args["number"]),
               );
-              // dev.log(args["data"].questionnaire.toString());
-              // dev.log(args["data"].classID.toString());
-              // goToShowCalories(
-              //     questionnaire: args["data"].questionnaire,
-              //     idClass: args["data"].classID,
-              //     number: args["number"],
-              //     mets: [10, 20, 30, 10, 10, 10]);
-
-              // dev.log(args["data"].toMap().toString());
-              // File file = File('${dir.path}/videos/${videoList[i]}');
-              // final uint8list = await VideoThumbnail.thumbnailData(
-              //   video: file.path,
-              //   imageFormat: ImageFormat.JPEG,
-              //   maxWidth:
-              //       128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-              //   quality: 25,
-              // );
             }, text: "   COMENZAR")
           ],
         ),
@@ -60,7 +40,7 @@ class _PlanificationState extends State<Planification> {
       backgroundColor: blue,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: cyan,
@@ -113,8 +93,14 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("calentamiento",
-                              args['data'].excerciseCalentamiento);
+                          List calentamiento = [];
+                          setState(() {
+                            calentamiento
+                                .add(args['data'].excerciseCalentamiento);
+                            calentamiento
+                                .add(args['data'].exerciseFlexibilidad);
+                          });
+                          goToExcercisesPage("calentamiento", calentamiento);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -166,8 +152,14 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("calentamiento",
-                              args['data'].excerciseCalentamiento);
+                          List calentamiento = [];
+                          setState(() {
+                            calentamiento
+                                .addAll(args['data'].excerciseCalentamiento);
+                            calentamiento
+                                .addAll(args['data'].excerciseFlexibilidad);
+                          });
+                          goToExcercisesPage("calentamiento", calentamiento);
                         },
                         child: Row(
                           children: [

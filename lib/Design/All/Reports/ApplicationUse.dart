@@ -40,7 +40,7 @@ class _ApplicationUseState extends State<ApplicationUse> {
       appBar: AppBar(
         backgroundColor: cyan,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(

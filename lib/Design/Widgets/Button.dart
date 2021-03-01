@@ -16,7 +16,7 @@ Widget buttonRounded(BuildContext context,
     onTap: func,
     child: Container(
       width: width ?? 60.0.w,
-      height: height ?? 6.0.h,
+      height: height ?? 6.5.h,
       decoration: BoxDecoration(
           color: backgroudColor ?? blue,
           borderRadius: BorderRadius.all(Radius.circular(40))),
@@ -33,7 +33,7 @@ Widget buttonRounded(BuildContext context,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         CircleAvatar(
-                          radius: circleRadius ?? 5.0.w,
+                          radius: circleRadius ?? 4.5.w,
                           backgroundColor: circleColor ?? Colors.white,
                           child: Center(
                               child: icon ??

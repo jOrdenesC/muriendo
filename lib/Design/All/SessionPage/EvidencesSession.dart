@@ -43,7 +43,7 @@ class _EvidencesSessionState extends State<EvidencesSession> {
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(

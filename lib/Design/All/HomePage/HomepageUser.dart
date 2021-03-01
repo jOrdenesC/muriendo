@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Design/All/Reports/reports.dart';
 import 'package:movitronia/Design/All/Sessions/Sessions.dart';
 import 'package:movitronia/Design/All/Settings/ProfilePage.dart';
@@ -11,6 +12,7 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
@@ -27,17 +29,24 @@ class _HomePageUserState extends State<HomePageUser> {
   List<Widget> _screens = [];
   int count = 0;
 
+  List dataClasses = [];
+
   @override
   void initState() {
     super.initState();
-    getData();
     _screens.add(Sessions());
     _screens.add(Reports(drawerMenu: false));
     _screens.add(ProfilePage(isMenu: true));
   }
 
-  getData() async {
-    await DownloadData().getUserData(context);
+  getClasses() async {
+    ClassDataRepository classDataRepository = GetIt.I.get();
+    var res = await classDataRepository.getAllClassLevel();
+    if (res.isNotEmpty) {
+      for (var i = 0; i < res.length; i++) {
+        dataClasses.add(res[i]);
+      }
+    }
   }
 
   @override
@@ -53,7 +62,7 @@ class _HomePageUserState extends State<HomePageUser> {
           leading: IconButton(
             icon: Icon(
               Icons.menu,
-              size: 12.0.w,
+              size: 9.0.w,
             ),
             onPressed: () => _scaffoldKey.currentState.openDrawer(),
           ),
@@ -142,7 +151,7 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonSessions.png",
-                  width: 17.0.w,
+                  width: 14.0.w,
                 ),
                 Text("SESIONES", style: TextStyle(color: blue, fontSize: 4.0.w))
               ],
@@ -159,7 +168,7 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonReports.png",
-                  width: 17.0.w,
+                  width: 14.0.w,
                 ),
                 Text("REPORTES", style: TextStyle(color: blue, fontSize: 4.0.w))
               ],
@@ -176,7 +185,7 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonProfile.png",
-                  width: 17.0.w,
+                  width: 14.0.w,
                 ),
                 Text("PERFIL", style: TextStyle(color: blue, fontSize: 4.0.w))
               ],
@@ -213,7 +222,7 @@ class _HomePageUserState extends State<HomePageUser> {
           ),
           buttonRounded(context,
               icon: Image.asset("Assets/images/sessionIcon.png", width: 8.0.w),
-              circleRadius: 6.5.w, func: () {
+              circleRadius: 6.0.w, func: () {
             Navigator.pop(context);
             setState(() {
               _currentIndex = 0;
@@ -229,8 +238,8 @@ class _HomePageUserState extends State<HomePageUser> {
             height: 2.0.h,
           ),
           buttonRounded(context,
-              icon: Image.asset("Assets/images/reportIcon.png", width: 7.5.w),
-              circleRadius: 6.5.w, func: () {
+              icon: Image.asset("Assets/images/reportIcon.png", width: 7.0.w),
+              circleRadius: 6.0.w, func: () {
             Get.to(Reports(
               drawerMenu: true,
             ));
@@ -244,33 +253,36 @@ class _HomePageUserState extends State<HomePageUser> {
           SizedBox(
             height: 2.0.h,
           ),
-          buttonRounded(context,
-              icon: Image.asset("Assets/images/reportIcon.png", width: 7.5.w),
-              circleRadius: 6.5.w, func: () async {
-            String level;
-            CourseDataRepository courseDataRepository = GetIt.I.get();
-            var course = await courseDataRepository.getAllCourse();
-            if (course.isNotEmpty) {
-              setState(() {
-                level = course[0].number;
-              });
-            }
-            await DownloadData().downloadAll(context, level);
-            setState(() {});
-          },
-              height: 8.0.h,
-              width: 80.0.w,
-              textStyle: TextStyle(color: blue, fontSize: 6.0.w),
-              text: "      DESCARGAR DATOS",
-              circleColor: blue,
-              backgroudColor: Colors.white),
-          SizedBox(
-            height: 2.0.h,
-          ),
+          // buttonRounded(context,
+          //     icon: Image.asset("Assets/images/reportIcon.png", width: 7.5.w),
+          //     circleRadius: 6.0.w, func: () async {
+          //   String level;
+          //   CourseDataRepository courseDataRepository = GetIt.I.get();
+          //   var course = await courseDataRepository.getAllCourse();
+          //   if (course.isNotEmpty) {
+          //     setState(() {
+          //       level = course[0].number;
+          //     });
+          //   }
+          //   await DownloadData().downloadAll(context, level);
+          //   // await DownloadData().getHttp(context, level);
+          //   setState(() {
+          //     _currentIndex = 0;
+          //   });
+          // },
+          //     height: 8.0.h,
+          //     width: 80.0.w,
+          //     textStyle: TextStyle(color: blue, fontSize: 6.0.w),
+          //     text: "      DESCARGAR DATOS",
+          //     circleColor: blue,
+          //     backgroudColor: Colors.white),
+          // SizedBox(
+          //   height: 2.0.h,
+          // ),
           buttonRounded(context,
               icon:
                   Image.asset("Assets/images/evidenciaIcon.png", width: 8.0.w),
-              circleRadius: 6.5.w, func: () {
+              circleRadius: 6.0.w, func: () {
             goToAllEvidences();
           },
               height: 8.0.h,

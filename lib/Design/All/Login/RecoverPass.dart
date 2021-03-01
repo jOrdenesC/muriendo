@@ -43,7 +43,7 @@ class _RecoverPassState extends State<RecoverPass> {
               child: TextFormField(
                 controller: mail,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: blue, fontSize: 20),
+                style: TextStyle(color: blue, fontSize: 6.0.w),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   prefixIcon: Padding(
@@ -53,7 +53,7 @@ class _RecoverPassState extends State<RecoverPass> {
                         sendMailRecuperation();
                       },
                       child: CircleAvatar(
-                        radius: 7.0.w,
+                        radius: 6.0.w,
                         backgroundColor: blue,
                         child: Center(
                           child: Icon(
@@ -122,6 +122,9 @@ class _RecoverPassState extends State<RecoverPass> {
           title: Text(
             "Cargando...",
             textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 6.0.w
+            ),
           ));
       try {
         var dio = Dio();

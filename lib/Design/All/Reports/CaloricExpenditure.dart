@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import '../../../Utils/UrlServer.dart';
 import 'dart:developer';
+import '../../../Database/Models/evidencesSend.dart';
 
 class CaloricExpenditure extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
       appBar: AppBar(
         backgroundColor: cyan,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
@@ -122,14 +123,14 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Total Fase".toUpperCase(),
+                                  "Total".toUpperCase(),
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 6.0.w),
                                 ),
                                 Container(
                                   child: Center(
                                     child: Text(
-                                      "$totalKcal KCal",
+                                      "${totalKcal.roundToDouble().toString().length > 6 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
                                       style: TextStyle(
                                           fontSize: 5.0.w, color: blue),
                                     ),
@@ -175,28 +176,28 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
       setState(() {
         noData = true;
       });
-      // toast(context, "Cargando datos locales...", green);
-      // var res = await evidencesRepository.getAllEvidences();
-      // log(res.toList()[1].toMap().toString());
-      // if (res.isEmpty) {
-      //   setState(() {
-      //     noData = true;
-      //   });
-      // } else {
-      //   for (var i = 0; i < res.length; i++) {
-      //     namesClass.add("Sesión ${res[i].number}".toString());
-      //     kCal.add(double.parse(res[i].kilocalories.toString()));
-      //   }
-      //   setState(() {
-      //     if (!loaded) {
-      //       DataRepository.data = kCal;
-      //       DataRepository.labels = namesClass;
-      //       data = DataRepository.getData();
-      //       loaded = true;
-      //     }
-      //     labels = DataRepository.getLabels();
-      //   });
-      // }
+      toast(context, "Cargando datos locales...", green);
+      var res = await evidencesRepository.getAllEvidences();
+      log(res.toList()[1].toMap().toString());
+      if (res.isEmpty) {
+        setState(() {
+          noData = true;
+        });
+      } else {
+        for (var i = 0; i < res.length; i++) {
+          namesClass.add("Sesión ${res[i].number}".toString());
+          kCal.add(double.parse(res[i].kilocalories.toString()));
+        }
+        setState(() {
+          if (!loaded) {
+            DataRepository.data = kCal;
+            DataRepository.labels = namesClass;
+            data = DataRepository.getData();
+            loaded = true;
+          }
+          labels = DataRepository.getLabels();
+        });
+      }
     } else {
       var dio = Dio();
       var prefs = await SharedPreferences.getInstance();
@@ -210,6 +211,14 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
             namesClass
                 .add("Sesión ${res.data[i]["class"]["number"]}".toString());
             kCal.add(double.parse(res.data[i]["totalKilocalories"].toString()));
+            EvidencesSend evidencesSend = EvidencesSend(
+                number: res.data[i]["class"]["number"],
+                idEvidence: res.data[i]["class"]["_id"],
+                phase: res.data[i]["phase"],
+                classObject: res.data[i]["class"],
+                finished: true,
+                kilocalories: res.data[i]["totalKilocalories"].toString());
+            evidencesRepository.updateEvidence(evidencesSend);
           }
           for (var i = 0; i < kCal.length; i++) {
             totalKcal = totalKcal + kCal[i];

@@ -82,7 +82,6 @@ class Mp4Controller extends GetxController {
   List<String> tipsData = [];
   List<String> tipIDs = [];
 
-  String webpName = "Assets/images/C12.gif";
   var isPause = false.obs;
   var location = false;
   var startgif = false;

@@ -17,20 +17,16 @@ class _AllEvidencesState extends State<AllEvidences> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 12.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         backgroundColor: cyan,
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text("EVIDENCIAS")),
+              height: 2.0.h,
+            ),
+            FittedBox(fit: BoxFit.fitWidth, child: Text("EVIDENCIAS")),
           ],
         ),
         centerTitle: true,
@@ -101,11 +97,11 @@ class _AllEvidencesState extends State<AllEvidences> {
                           ),
                           CircleAvatar(
                               backgroundColor: Colors.white,
-                              radius: 7.0.w,
+                              radius: 5.0.w,
                               child: Icon(
                                 Icons.camera_alt,
                                 color: blue,
-                                size: 12.0.w,
+                                size: 9.0.w,
                               )
                               // Image.asset(
                               //   "Assets/images/docImage.png",
@@ -151,11 +147,11 @@ class _AllEvidencesState extends State<AllEvidences> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 7.0.w,
+                            radius: 5.0.w,
                             child: Image.asset(
                               "Assets/images/docImage.png",
                               color: blue,
-                              width: 8.0.w,
+                              width: 5.0.w,
                             ),
                           ),
                           SizedBox(

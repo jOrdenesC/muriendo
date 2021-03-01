@@ -40,7 +40,7 @@ class _AddExcercisesState extends State<AddExcercises> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            size: 12.0.w,
+            size: 9.0.w,
           ),
           onPressed: () => Navigator.pop(context),
         ),

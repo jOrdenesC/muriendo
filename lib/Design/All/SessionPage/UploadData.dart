@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:get_it/get_it.dart';
 import '../../../Database/Repository/QuestionaryRepository.dart';
+import '../../../Functions/downloadData.dart';
 
 class UploadData extends StatefulWidget {
   @override
@@ -83,7 +84,7 @@ class _UploadDataState extends State<UploadData> {
                   height: 30.0.h,
                 ),
                 Text(
-                  "Terminaste con éxito la sesión 1...\n...Sube tu sesión!",
+                  "Terminaste con éxito la sesión ${args["number"]}...\n...Sube tu sesión!",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 8.0.w,
@@ -150,6 +151,7 @@ class _UploadDataState extends State<UploadData> {
         // goToFinalPage();
         if (response.statusCode == 201) {
           toast(context, "Los datos se han subido correctamente.", green);
+          await DownloadData().downloadEvidencesData(context);
           GET.Get.offAll(HomePageUser());
         }
       } catch (e) {

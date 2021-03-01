@@ -10,4 +10,6 @@ abstract class EvidencesRepository {
   Future<List<EvidencesSend>> getAllEvidences();
 
   Future<List<EvidencesSend>> getEvidenceID(String id);
+
+  Future<List<EvidencesSend>> getEvidenceNumber(int id);
 }

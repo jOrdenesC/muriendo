@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Database/Repository/QuestionDataRepository/QuestionDataRepository.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../Widgets/Toast.dart';
 import 'package:get_it/get_it.dart';
@@ -21,16 +26,16 @@ class Questionary extends StatefulWidget {
   final double kCal;
   final List exercises;
 
-
   Questionary({this.number, this.classId, this.exercises, this.kCal});
   @override
   _QuestionaryState createState() => _QuestionaryState();
 }
 
 class _QuestionaryState extends State<Questionary> {
-
   List tips = [];
   List questionary = [];
+  List audioNames = [];
+  List type = [];
   double countDots = 0.0;
   List responses = [];
   Color color;
@@ -43,6 +48,9 @@ class _QuestionaryState extends State<Questionary> {
   bool noData = false;
   List idTips = [];
   List questions = [];
+  var dir;
+  AudioCache audioCache = AudioCache();
+  AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController = PageController(
     initialPage: 0,
   );
@@ -51,14 +59,26 @@ class _QuestionaryState extends State<Questionary> {
   void initState() {
     super.initState();
     eo();
-    
   }
 
   eo() async {
+    dir = await getApplicationDocumentsDirectory();
     questions = await getData();
     for (var i = 0; i < tips.length; i++) {
       responses.add({"number": i, "response": null});
     }
+  }
+
+  playAudio(String audioName) async {
+    print("Play Audio");
+    if (Platform.isIOS) {
+      if (audioCache.fixedPlayer != null) {
+        audioCache.fixedPlayer.startHeadlessService();
+      }
+    }
+    //Testing Out a List with audio Names
+    //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
+    await audioPlayer.play("${dir.path}/audios/${audioName}.mp3");
   }
 
   Future getData() async {
@@ -69,9 +89,19 @@ class _QuestionaryState extends State<Questionary> {
       }
       for (var i = 0; i < questionary.length; i++) {
         idTips.add(questionary[i]["id"]);
+        type.add(questionary[i]["type"]);
       }
       for (var i = 0; i < idTips.length; i++) {
         var res = await tipsDataRepository.getTips(idTips[i]);
+        print("Type of Question ${type[i]}");
+        if (type[i].contains("VF")) {
+          print("Type Inside VF");
+          audioNames.add(res[0].audioVF);
+        } else {
+          print("Type Inside AL");
+          audioNames.add(res[0].audioQuestion);
+        }
+
         var res2 = await questionDataRepository.getQuestion(idTips[i]);
         if (res.isNotEmpty) {
           tips.add(res[0].toMap());
@@ -80,6 +110,8 @@ class _QuestionaryState extends State<Questionary> {
           questions.add(res2[0].toMap());
         }
       }
+      print("AUDIO NAMES ${audioNames.toString()}");
+      playAudio(audioNames[0]);
       setState(() {
         loaded = true;
       });
@@ -115,12 +147,11 @@ class _QuestionaryState extends State<Questionary> {
       var uuid = Uuid().v4();
       await save(uuid);
       Get.to(VideosToRecord(
-        uuidQuestionary: uuid,
+          uuidQuestionary: uuid,
           kCal: widget.kCal,
           exercises: widget.exercises,
           number: widget.number,
-          idClass: widget.classId
-      ));
+          idClass: widget.classId));
       // Get.back(result: uuid.toString());
     } else {
       toast(context, "Te falta responder $notResponsed preguntas.", red);
@@ -142,9 +173,8 @@ class _QuestionaryState extends State<Questionary> {
             questionary[i]["type"] == "VF"
                 ? questions[i]["correctVf"].toString()
                 : questions[i]["correctAl"].toString(),
-        "alternatives": questionary[i]["type"] == "VF"
-            ? {}
-            : questions[i]["alternatives"],
+        "alternatives":
+            questionary[i]["type"] == "VF" ? {} : questions[i]["alternatives"],
         questionary[i]["type"] == "VF"
                 ? 'studentResponseVf'
                 : "studentResponseAl":
@@ -222,6 +252,7 @@ class _QuestionaryState extends State<Questionary> {
                           child: PageView.builder(
                             onPageChanged: (val) {
                               setState(() {
+                                playAudio(audioNames[val]);
                                 countDots = val.toDouble();
                               });
                             },
@@ -499,9 +530,7 @@ class _QuestionaryState extends State<Questionary> {
                           Container(
                             height: 60.0.h,
                             child: ListView.builder(
-                                itemCount: questions[0]
-                                        ["alternatives"]
-                                    .length,
+                                itemCount: questions[0]["alternatives"].length,
                                 itemBuilder: (context, index) {
                                   return Column(
                                     crossAxisAlignment:
@@ -530,7 +559,8 @@ class _QuestionaryState extends State<Questionary> {
                                                           responses[i] = {
                                                             "number":
                                                                 "${number - 1}",
-                                                            "response": questions[0][
+                                                            "response": questions[
+                                                                        0][
                                                                     "alternatives"]
                                                                 .keys
                                                                 .toList()[index]
@@ -542,13 +572,16 @@ class _QuestionaryState extends State<Questionary> {
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
-                                                        color: questions[0][
-                                                                        "alternatives"]
+                                                        color: questions[0]["alternatives"]
                                                                     .keys
                                                                     .toList()[
                                                                         index]
                                                                     .toString() ==
-                                                                responses.where((element) => element["number"].toString() == "${number - 1}").toList()[0]
+                                                                responses
+                                                                        .where((element) =>
+                                                                            element["number"].toString() ==
+                                                                            "${number - 1}")
+                                                                        .toList()[0]
                                                                     ["response"]
                                                             ? green
                                                             : red,
@@ -557,8 +590,7 @@ class _QuestionaryState extends State<Questionary> {
                                                                 Radius.circular(
                                                                     90),
                                                             bottomRight:
-                                                                Radius.circular(
-                                                                    90))),
+                                                                Radius.circular(90))),
                                                     width: 25.0.w,
                                                     height: 10.0.h,
                                                     child: Center(
@@ -582,7 +614,7 @@ class _QuestionaryState extends State<Questionary> {
                                               width: 1.0.w,
                                             ),
                                             Text(
-                                                questions[number -1]
+                                                questions[number - 1]
                                                         ["alternatives"]
                                                     .values
                                                     .toList()[index]

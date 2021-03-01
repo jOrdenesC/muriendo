@@ -1,34 +1,100 @@
+import 'dart:io';
+
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_player/video_player.dart';
 
 class DetailsExcercise extends StatefulWidget {
+  final String name;
+  final String kcal;
+  final String desc;
+  DetailsExcercise(this.name, this.kcal, this.desc);
   @override
   _DetailsExcerciseState createState() => _DetailsExcerciseState();
 }
 
 class _DetailsExcerciseState extends State<DetailsExcercise> {
+  VideoPlayerController videoPlayerController1;
+  AudioCache audioCache = AudioCache();
+  AudioPlayer audioPlayer = AudioPlayer();
+  ExcerciseDataRepository _excerciseRepository = GetIt.I.get();
+  var dir;
+  var audioRecommendation;
   @override
   void initState() {
     super.initState();
     getWeight();
   }
 
+  @override
+  void dispose() {
+    //webmController.controller.dispose();
+    audioPlayer.dispose();
+    videoPlayerController1.dispose();
+    imageCache.clear();
+    super.dispose();
+  }
+
   var weight;
   getWeight() async {
+    dir = await getApplicationDocumentsDirectory();
     var prefs = await SharedPreferences.getInstance();
     var res = prefs.getString("weight");
     setState(() {
       weight = res;
     });
+
+    final result = await _excerciseRepository //TODO Search for
+        .getExcerciseName(widget.name);
+    print(result[0].recomendationAudioId);
+    await init(widget.name, result[0].recomendationAudioId);
+  }
+
+  init(String name, String audioName) async {
+    var format;
+    if (Platform.isAndroid) {
+      format = ".webm";
+    } else if (Platform.isIOS) {
+      format = ".mp4";
+    }
+    videoPlayerController1 = VideoPlayerController.file(
+        File('${dir.path}/videos/${widget.name}$format'));
+
+    await videoPlayerController1
+      ..initialize().then((value) => null)
+      ..setLooping(true)
+      ..play();
+    Future.delayed(const Duration(milliseconds: 500), () async {
+// Here you can write your code
+      await playAudio(audioName);
+      setState(() {
+        // Here you can write your code for open new view
+      });
+    });
+  }
+
+  playAudio(String audioName) async {
+    print("Play Audio");
+    if (Platform.isIOS) {
+      if (audioCache.fixedPlayer != null) {
+        audioCache.fixedPlayer.startHeadlessService();
+      }
+    }
+    //Testing Out a List with audio Names
+    //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
+    await audioPlayer.play("${dir.path}/audios/${audioName}.mp3");
   }
 
   Widget build(BuildContext context) {
-    final dynamic args =
-        (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
       bottomNavigationBar: Container(
         width: 100.0.w,
@@ -49,7 +115,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
@@ -59,7 +125,10 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
             ),
             FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text('${args["name"]}'.toUpperCase())),
+                child: Text(
+                  '${widget.name}'.toUpperCase(),
+                  style: TextStyle(fontSize: 7.0.w),
+                )),
           ],
         ),
       ),
@@ -80,7 +149,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
                   size: 7.0.w,
                 ),
                 Text(
-                  " ${int.parse(args["kcal"]) * 0.0175 * int.parse(weight)} Kcal/min",
+                  " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 5 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 5) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
                   style: TextStyle(color: cyan, fontSize: 6.0.w),
                 ),
                 SizedBox(
@@ -94,11 +163,16 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image(
+                Container(
+                  height: 43.0.h,
+                  width: 100.0.w,
+                  child: VideoPlayer(videoPlayerController1),
+                )
+                /*Image(
                   width: 100.0.w,
                   fit: BoxFit.fill,
                   image: AssetImage('Assets/thumbnails/${args["name"]}.png'),
-                ),
+                ),*/
               ],
             ),
             SizedBox(
@@ -149,7 +223,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20),
               child: Text(
-                args["desc"],
+                widget.desc,
                 style: TextStyle(color: Colors.white, fontSize: 6.0.w),
                 textAlign: TextAlign.center,
               ),

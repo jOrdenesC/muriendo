@@ -13,6 +13,7 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //import '../../../Functions/Controllers/VideoController.dart';
 
@@ -30,11 +31,11 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   Orientation orientation;
   //bool isPause = false;
   Mp4Controller mp4Controller = Mp4Controller();
-  final key1 = GlobalKey();
-  final key2 = GlobalKey();
+  bool dev = false;
 
   @override
   void initState() {
+    getRole();
     //
 
     //----------------- -----------------------------------//
@@ -61,6 +62,14 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     super.dispose();
   }
 
+  getRole() async {
+    var prefs = await SharedPreferences.getInstance();
+    var dev1 = prefs.getBool("dev");
+    setState(() {
+      dev = dev1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     PaintingBinding.instance.imageCache.clear();
@@ -83,6 +92,16 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
           }
 
           return Scaffold(
+            floatingActionButton: dev
+                ? FloatingActionButton(
+                    child: Icon(Icons.skip_next),
+                    backgroundColor: green,
+                    onPressed: () {
+                      _.controllTimer(
+                          widget.id, widget.questionnaire, widget.number);
+                    },
+                  )
+                : SizedBox.shrink(),
             bottomNavigationBar: orientation == Orientation.landscape
                 ? SizedBox.shrink()
                 :
@@ -139,7 +158,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                     elevation: 0,
                     leading: IconButton(
                       icon: Icon(Icons.arrow_back,
-                          size: 12.0.w, color: Colors.white),
+                          size: 9.0.w, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                     title: Column(
@@ -148,7 +167,11 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                           height: 2.0.h,
                         ),
                         FittedBox(
-                            fit: BoxFit.fitWidth, child: Text("SESIÓN 1")),
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              "SESIÓN ${widget.number}",
+                              style: TextStyle(fontSize: 5.0.w),
+                            )),
                       ],
                     ),
                     centerTitle: true,
@@ -237,7 +260,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                     SvgPicture.asset("Assets/figures/micro.svg"),
                     Row(
                       children: [
-                        SizedBox(width: 6.5.h),
+                        SizedBox(width: 2.5.h),
                         Container(
                           margin: EdgeInsets.only(top: 50),
                           // color: red,
@@ -251,7 +274,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      _.tips[_.globalindex.value].toUpperCase(),
+                                      _.tipsData[_.globalindex.value - 1]
+                                          .toUpperCase(),
                                       style: TextStyle(
                                         fontSize: 5.9.w,
                                         color: blue,
@@ -260,11 +284,6 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                                   ],
                                 ),
                               ),
-                              Text(""),
-                              Text(
-                                _.tipsData[_.globalindex.value].toUpperCase(),
-                                style: TextStyle(fontSize: 2.9.h, color: blue),
-                              )
                             ],
                           ),
                         ),
@@ -360,13 +379,16 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       ),
                       FittedBox(
                         fit: BoxFit.fitWidth,
-                        child: Text(
-                          "${_.excerciseNames[_.globalindex.value]}",
-                          maxLines: 2,
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 5.0.w),
+                        child: Container(
+                          width: 70.0.w,
+                          child: Text(
+                            " " + _.excerciseNames[_.globalindex.value] + " ",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(fontSize: 4.0.w, color: Colors.white),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   )
                 ],
@@ -487,10 +509,17 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 width: 10.0.h,
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.volume_up_rounded,
-                      color: Colors.white,
-                      size: w * 0.08,
+                    InkWell(
+                      onTap: () {
+                        print("Button pressed");
+                        _.controllTimer(
+                            widget.id, widget.questionnaire, widget.number);
+                      },
+                      child: Icon(
+                        Icons.volume_up_rounded,
+                        color: Colors.white,
+                        size: w * 0.08,
+                      ),
                     ),
                     SizedBox(
                       width: w * 0.015,
@@ -579,6 +608,23 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         ),
         //GIF HERE ⬇⬇⬇⬇
         Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue.shade600, width: 2),
+              color: green,
+              borderRadius: BorderRadius.all(Radius.circular(50))),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              " " + _.excerciseNames[_.globalindex.value] + " ",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 5.0.w, color: Colors.white),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 2.0.h,
+        ),
+        Container(
             width: w,
             height: 40.0.h,
             color: Colors.white,
@@ -586,6 +632,11 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         SizedBox(
           height: 2.0.h,
         ),
+
+        SizedBox(
+          height: 2.0.h,
+        ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -595,7 +646,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 child: circTimer(_),
               ),
               width: 40.0.w,
-              height: 18.0.h,
+              height: 16.0.h,
             )
           ],
         ),
@@ -606,7 +657,6 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   Widget macroPausePortrait(Mp4Controller _) {
     return Stack(
       children: [
-        circTimer(_),
         Container(
           height: 100.0.h,
           width: 100.0.w,
@@ -635,42 +685,52 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Image.asset("Assets/images/LogoCompleto.png", width: 20.0.w),
+                Image.asset("Assets/images/LogoCompleto.png", width: 10.0.w),
                 SizedBox(width: 10.0.w)
               ],
             ),
             SizedBox(
-              height: 5.0.h,
+              height: 2.0.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Stack(
                   children: [
-                    SvgPicture.asset(
-                      "Assets/figures/macro.svg",
+                    Container(
                       width: 90.0.w,
+                      height: 60.0.h,
+                      child: SvgPicture.asset(
+                        "Assets/figures/macro.svg",
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    Column(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 13.0.h,
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 13.0.h,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 21.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Container(
+                                    width: 80.0.w,
+                                    child: Obx(() => Text(
+                                          "${mp4Controller.macroTip}"
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 5.0.w),
+                                          textAlign: TextAlign.center,
+                                        ))),
+                              ),
+                            ),
+                          ],
                         ),
-                        FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: 7.0.w),
-                              Obx(() => Text(
-                                    "${mp4Controller.macroTip}",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 7.0.w),
-                                    textAlign: TextAlign.center,
-                                  ))
-                            ],
-                          ),
-                        )
                       ],
                     )
                   ],
@@ -689,7 +749,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                           blurRadius: 0.5,
                           color: cyan,
                         )
-                      ], color: yellow, fontSize: 7.5.w)),
+                      ], color: yellow, fontSize: 5.5.w)),
                 ),
               ],
             ),
@@ -701,14 +761,14 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(80),
                           bottomRight: Radius.circular(80))),
-                  width: 25.0.w,
-                  height: 10.0.h,
+                  width: 15.0.w,
+                  height: 6.0.h,
                   child: Row(
                     children: [
                       Icon(
                         Icons.volume_up_rounded,
                         color: Colors.white,
-                        size: 20.0.w,
+                        size: 10.0.w,
                       ),
                       SizedBox(
                         width: 0.15.w,
@@ -776,28 +836,22 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                             SizedBox(
                               height: 13.0.h,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(width: 4.0.w),
-                                FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(width: 0.0.w),
-                                      Obx(() => Text(
-                                            "${mp4Controller.macroTip}",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 7.0.w),
-                                            textAlign: TextAlign.center,
-                                          ))
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
+                            Padding(
+                              padding: const EdgeInsets.only(left: 21.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Container(
+                                    width: 80.0.w,
+                                    child: Obx(() => Text(
+                                          "${mp4Controller.macroTip}"
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 5.0.w),
+                                          textAlign: TextAlign.center,
+                                        ))),
+                              ),
+                            ),
                           ],
                         )
                       ],
@@ -1089,7 +1143,6 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         _.controllerCountDown.resume();
       },
       child: CircularCountDownTimer(
-        key: key1,
         controller: _.controllerCountDown,
         duration: _.returnTimer(),
         //Change time if micropause is selected
@@ -1118,10 +1171,9 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         _.controllerDemostration.pause();
       },
       child: CircularCountDownTimer(
-        key: key2,
         controller: _.controllerCountDown,
 
-        duration: 15,
+        duration: 5,
         //Change time if micropause is selected
         color: green,
         fillColor: Colors.white,

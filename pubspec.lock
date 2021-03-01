@@ -251,6 +251,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.11"
+  flutter_restart:
+    dependency: "direct main"
+    description:
+      name: flutter_restart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -409,7 +416,7 @@ packages:
     source: hosted
     version: "1.1.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.dartlang.org"

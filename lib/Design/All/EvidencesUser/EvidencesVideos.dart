@@ -6,6 +6,8 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
+import '../../../Database/Repository/EvidencesSentRepository.dart';
+import 'package:get_it/get_it.dart';
 
 class EvidencesVideos extends StatefulWidget {
   @override
@@ -13,7 +15,30 @@ class EvidencesVideos extends StatefulWidget {
 }
 
 class _EvidencesVideosState extends State<EvidencesVideos> {
+  EvidencesRepository evidencesRepository = GetIt.I.get();
+  List<bool> evidences = [];
   @override
+  void initState() {
+    super.initState();
+    getEvidence();
+  }
+
+  getEvidence() async {
+    var all = await evidencesRepository.getAllEvidences();
+    for (var i = 0; i < all.length; i++) {
+      if (all.isNotEmpty) {
+        setState(() {
+          evidences.add(all[i].finished);
+        });
+      } else {
+        setState(() {
+          evidences.add(false);
+        });
+      }
+    }
+    print(evidences.toString());
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: red,
@@ -21,19 +46,17 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
         backgroundColor: cyan,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 12.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text("Evidencias Videos".toUpperCase())),
+              height: 2.0.h,
+            ),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text("Evidencias Videos".toUpperCase())),
           ],
         ),
         centerTitle: true,
@@ -101,7 +124,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               color: blue,
                             ),
                             "1",
-                            false),
+                            evidences[0]),
                       ],
                     ),
                     Padding(
@@ -118,7 +141,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 color: blue,
                               ),
                               "2",
-                              false),
+                              evidences[1]),
                           circularActivity(
                               "title",
                               0,
@@ -128,7 +151,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 color: blue,
                               ),
                               "3",
-                              false),
+                              evidences[2]),
                         ],
                       ),
                     ),
@@ -144,7 +167,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               color: blue,
                             ),
                             "4",
-                            false),
+                            evidences[3]),
                       ],
                     ),
                     divider(green, "FASE 2"),
@@ -160,8 +183,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               size: 20.0.w,
                               color: Colors.white,
                             ),
-                            "1",
-                            true),
+                            "5",
+                            evidences[4]),
                       ],
                     ),
                     Padding(
@@ -177,8 +200,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "2",
-                              true),
+                              "6",
+                              evidences[5]),
                           circularActivity(
                               "title",
                               0,
@@ -187,8 +210,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "3",
-                              true),
+                              "7",
+                              evidences[6]),
                         ],
                       ),
                     ),
@@ -203,8 +226,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               size: 20.0.w,
                               color: Colors.white,
                             ),
-                            "4",
-                            true),
+                            "8",
+                            evidences[7]),
                       ],
                     ),
                     divider(cyan, "FASE 3"),
@@ -219,8 +242,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               size: 20.0.w,
                               color: Colors.white,
                             ),
-                            "1",
-                            true),
+                            "9",
+                            evidences[8]),
                       ],
                     ),
                     Padding(
@@ -236,8 +259,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "2",
-                              true),
+                              "10",
+                              evidences[9]),
                           circularActivity(
                               "title",
                               0,
@@ -246,8 +269,8 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "3",
-                              true),
+                              "11",
+                              evidences[10]),
                         ],
                       ),
                     ),
@@ -262,8 +285,421 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                               size: 20.0.w,
                               color: Colors.white,
                             ),
-                            "4",
-                            true),
+                            "12",
+                            evidences[11]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 4"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[12]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[13]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[14]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[15]),
+                      ],
+                    ),
+                    divider(green, "FASE 5"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[16]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[17]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[18]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[19]),
+                      ],
+                    ),
+                    divider(cyan, "FASE 6"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[20]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[21]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[22]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[23]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 7"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[24]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[25]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[26]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[27]),
+                      ],
+                    ),
+                    divider(green, "FASE 8"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[28]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[29]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[30]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[31]),
+                      ],
+                    ),
+                    divider(cyan, "FASE 9"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[32]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[33]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[34]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[35]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 10"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "9",
+                            evidences[36]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "10",
+                              evidences[37]),
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "11",
+                              evidences[38]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity(
+                            "title",
+                            0,
+                            Icon(
+                              Icons.camera_alt,
+                              size: 20.0.w,
+                              color: Colors.white,
+                            ),
+                            "12",
+                            evidences[39]),
                       ],
                     ),
                   ],
@@ -305,7 +741,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
       padding: const EdgeInsets.only(left: 9.0, right: 9),
       child: InkWell(
           onTap: () {
-            if (lock == false) {
+            if (lock == true) {
               // goToPlanification();
             } else {
               Toast.show("No has subido evidencias de esta sesión.", context,
@@ -318,7 +754,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
             children: [
               Container(
                 width: 35.0.w,
-                // color: red,
+                // color: blue,
                 child: CircularPercentIndicator(
                   percent: percentage,
                   progressColor: green,
@@ -326,9 +762,11 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                   radius: 29.0.w,
                   center: CircleAvatar(
                     radius: 12.8.w,
-                    backgroundColor: lock ? Colors.grey : yellow,
+                    backgroundColor: lock == false ? Colors.grey : yellow,
                     child: Container(
-                        margin: lock ? EdgeInsets.all(6.5) : EdgeInsets.all(0),
+                        margin: lock == false
+                            ? EdgeInsets.all(6.5)
+                            : EdgeInsets.all(0),
                         color: Colors.transparent,
                         child: img),
                   ),
@@ -343,7 +781,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                   center: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: Center(
-                        child: lock
+                        child: lock == false
                             ? Icon(
                                 Icons.close,
                                 color: red,

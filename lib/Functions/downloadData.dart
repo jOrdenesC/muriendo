@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Design/Widgets/Toast.dart';
 import 'package:flutter/material.dart';
 import '../Utils/Colors.dart';
+import 'dart:developer';
 
 import '../Database/Models/courseModel.dart';
 import '../Utils/UrlServer.dart';
@@ -26,6 +27,7 @@ import '../Design/Widgets/Loading.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
 import 'package:get/state_manager.dart';
+import 'package:path/path.dart' as p;
 
 class DownloadData {
   var dio = Dio();
@@ -70,6 +72,103 @@ class DownloadData {
     } else {
       toast(context,
           "Necesitas estar conectado a internet. Verifica tu conexión", red);
+    }
+  }
+
+  downloadVideosTest(List videoList) async {
+    log(videoList.toString());
+    List<Future> listDio = [];
+    List data = [];
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    var dir = await getApplicationDocumentsDirectory();
+    var format = "";
+    // String path = p.join("/storage/emulated/0/Movitronia/videos/");
+    if (Platform.isAndroid) {
+      format = ".webm";
+      print("${dir.path}/videos/${videoList[0]}$format");
+    } else if (Platform.isIOS) {
+      format = ".mp4";
+      print("${dir.path}/videos/${videoList[0]}$format");
+    }
+    Response response2 = await dio.post(
+        "https://intranet.movitronia.com/api/mobile/videos?token=$token",
+        data: {"platform": "android", "videoList": videoList});
+
+    print("Response Video List: ${response2.data.length}");
+
+    for (int i = 0; i < response2.data.length; i++) {
+      print(response2.data[i] + "  ${i.toString()}");
+      //Try Catch
+      try {
+        // data.add({
+        //   "link": response2.data[i].toString(),
+        //   "route": "$path/${videoList[i]}$format",
+        //   "index": i.toString()
+        // });
+
+        listDio.add(dio.download(
+            //
+            response2.data[i],
+            '${dir.path}/videos/${videoList[i]}$format',
+            onReceiveProgress: (rec, total) {
+          if (rec == total) {
+            print(i.toString() + " descargado");
+          }
+        }));
+      } catch (e) {
+        log(e);
+      }
+    }
+
+    // print(listDio[282].toString());
+    // log(data.toList().toString());
+    try {
+      await Future.wait(listDio, eagerError: true);
+    } catch (e) {
+      print(e);
+    }
+    // for (var i = 0; i < res.length; i++) {
+    //   print(i);
+    //   print(res[i].toString());
+    // }
+    // print(res[0]);
+    print("ok");
+  }
+
+  downloadAudiosTest(List audioList, String type) async {
+    log(audioList.toList().toString());
+    var dir = await getApplicationDocumentsDirectory();
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    List<Future> listDio = [];
+    int downloaded = 0;
+    // String path = p.join("/storage/emulated/0/Movitronia/audios/$type/");
+    Response response2 = await Dio().post(
+        "https://intranet.movitronia.com/api/mobile/audios?token=$token",
+        data: {"type": "$type", "audioList": audioList});
+    for (int i = 0; i < response2.data.length; i++) {
+      print("${i.toString()} ${response2.data[i]}");
+      try {
+        // ${audioList[i]}
+        listDio.add(Dio().download(
+            response2.data[i], '${dir.path}/audios/${audioList[i]}.mp3',
+            onReceiveProgress: (rec, total) {
+          if (rec == total) {
+            // print(i.toString() + " Descargado");
+            downloaded++;
+            print(downloaded);
+          }
+        }));
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    print(listDio.toString());
+    try {
+      await Future.wait(listDio);
+    } catch (e) {
+      print("ERRORRR $e");
     }
   }
 
@@ -237,7 +336,8 @@ class DownloadData {
               ],
             ),
           );
-          await audioDownload(audioNames, "tip");
+          // await audioDownload(audioNames, "tip");
+          await downloadAudiosTest(audioNames, "tip");
           Navigator.pop(context);
           print("Total Tips: ${tipsList.length}");
           print("Total Questions: ${questionList.length}");
@@ -311,7 +411,8 @@ class DownloadData {
           ],
         ),
       );
-      await videoDownload(videos);
+      // await videoDownload(videos);
+      await downloadVideosTest(videos);
       Navigator.pop(context);
       loading(
         context,
@@ -333,7 +434,8 @@ class DownloadData {
           ],
         ),
       );
-      await audioDownload(audios, "exercise");
+      // await audioDownload(audios, "exercise");
+      await downloadAudiosTest(audios, "exercise");
       Navigator.pop(context);
       /** Test Creating Exercise */
       print("Response ${response2.data[0]}");
@@ -544,16 +646,19 @@ class DownloadData {
   }
 
   Future<bool> downloadAll(BuildContext context, String level) async {
+    var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);
       print("Fin de descarga");
+      prefs.setBool("downloaded", true);
       return true;
     } else {
       toast(context,
           "Necesitas estar conectado a internet. Verifica tu conexión", red);
+      prefs.setBool("downloaded", false);
       return false;
     }
   }

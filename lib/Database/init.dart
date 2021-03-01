@@ -33,6 +33,9 @@ class Init {
   }
 
   static _registerRepositories() {
+    GetIt.I.registerLazySingleton<EvidencesRepository>(
+        () => SembastEvidenceRepository());
+
     GetIt.I.registerLazySingleton<ExcerciseDataRepository>(
         () => SembastExcerciseDataRepository());
 
@@ -50,8 +53,5 @@ class Init {
 
     GetIt.I.registerLazySingleton<CourseDataRepository>(
         () => SembastCourseRepository());
-
-    GetIt.I.registerLazySingleton<EvidencesRepository>(
-        () => SembastEvidenceRepository());
   }
 }

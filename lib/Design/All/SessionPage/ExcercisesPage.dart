@@ -18,20 +18,15 @@ class ExcercisesPage extends StatefulWidget {
 
 class _ExcercisesPageState extends State<ExcercisesPage>
     with TickerProviderStateMixin {
-  GifController controller1;
-
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
 
   @override
   void initState() {
-    controller1 = GifController(vsync: this);
-    controller1.repeat(period: Duration(seconds: 1), min: 0, max: 15);
     super.initState();
   }
 
   @override
   void dispose() {
-    controller1.dispose();
     super.dispose();
   }
 
@@ -40,12 +35,14 @@ class _ExcercisesPageState extends State<ExcercisesPage>
     var h = MediaQuery.of(context).size.height;
     final dynamic name =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
+    print(name);
+    print("EEEEEEEEEO");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cyan,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
@@ -102,80 +99,16 @@ class _ExcercisesPageState extends State<ExcercisesPage>
               // ),
             ],
           ),
-          name == "calentamiento"
-              ?
-              // ? SingleChildScrollView(
-              //     physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-              //     scrollDirection: Axis.vertical,
-              //     child: Column(
-              //       children: [
-              //         Text(""),
-              //         Text(""),
-              //         InkWell(
-              //           onTap: () {
-              //             goToDetailsExcercises(
-              //                 "FILA DE AIRE",
-              //                 "Assets/videos/C12",
-              //                 "13",
-              //                 "10",
-              //                 "Mantén la espalda erguida. Contrae el abdomen y los glúteos. No encojas los hombros. Junta las escapulas.");
-              //           },
-              //           child: Container(
-              //             color: Colors.white,
-              //             width: w,
-              //             child:
-              //                 Image.asset("Assets/images/thumbnails/C12T.jpg"),
-              //           ),
-              //         ),
-              //         Text(""),
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             Text(
-              //               "FILA DE AIRE",
-              //               style: TextStyle(
-              //                   fontSize: w * 0.06, color: Colors.white),
-              //             )
-              //           ],
-              //         ),
-              //         Text(""),
-              //         InkWell(
-              //           onTap: () {
-              //             goToDetailsExcercises(
-              //                 "LOW RUNNER",
-              //                 "Assets/videos/C7",
-              //                 "12",
-              //                 "10",
-              //                 "Mantén la espalda erguida. Flecta un poco las rodillas. No te inclines hacia adelante. Contrae el abdomen.");
-              //           },
-              //           child: Container(
-              //             color: Colors.white,
-              //             width: w,
-              //             child:
-              //                 Image.asset("Assets/images/thumbnails/C7T.jpg"),
-              //           ),
-              //         ),
-              //         Text(""),
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             Text(
-              //               "LOW RUNNER",
-              //               style: TextStyle(
-              //                   fontSize: w * 0.06, color: Colors.white),
-              //             )
-              //           ],
-              //         ),
-              //         Text(""),
-              //       ],
-              //     ),
-              //   )
-
-              ListView.builder(
+          name["name"] == "calentamiento"
+              ? ListView.builder(
+                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
                   itemCount: name["data"].length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
+                        SizedBox(
+                          height: 5.0.h,
+                        ),
                         InkWell(
                           onTap: () async {
                             var res = await excerciseDataRepository
@@ -210,12 +143,15 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                       ],
                     );
                   })
-              : name == "desarrollo"
+              : name["name"] == "desarrollo"
                   ? ListView.builder(
                       itemCount: name["data"].length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
+                            SizedBox(
+                              height: 4.0.h,
+                            ),
                             InkWell(
                               onTap: () async {
                                 var res = await excerciseDataRepository
@@ -256,6 +192,9 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
+                            SizedBox(
+                              height: 4.0.h,
+                            ),
                             InkWell(
                               onTap: () async {
                                 var res = await excerciseDataRepository

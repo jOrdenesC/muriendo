@@ -44,7 +44,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
           leading: IconButton(
             icon: Icon(
               Icons.menu,
-              size: 12.0.w,
+              size: 9.0.w,
             ),
             onPressed: () => _scaffoldKey.currentState.openDrawer(),
           ),

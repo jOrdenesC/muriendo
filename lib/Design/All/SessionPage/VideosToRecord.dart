@@ -13,6 +13,9 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
+import '../DetailsExercise/DetailsExcercise.dart';
+import 'package:get_it/get_it.dart';
+import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 class VideosToRecord extends StatefulWidget {
   final List exercises;
@@ -38,6 +41,9 @@ class _VideosToRecordState extends State<VideosToRecord>
   VideoController videoController = Get.put(VideoController());
   String gifName = "Assets/images/C1.gif";
   String gifName2 = "Assets/images/C2.gif";
+
+  ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +89,10 @@ class _VideosToRecordState extends State<VideosToRecord>
                   ),
                   FittedBox(
                       fit: BoxFit.fitWidth,
-                      child: Text('Grabación de ejercicios'.toUpperCase())),
+                      child: Text(
+                        'Grabación de ejercicios'.toUpperCase(),
+                        style: TextStyle(fontSize: 5.0.w),
+                      )),
                 ],
               ),
             ),
@@ -162,10 +171,18 @@ class _VideosToRecordState extends State<VideosToRecord>
                   child: _.loading == false
                       ? Column(children: [
                           SizedBox(
-                            height: 15.0.h,
+                            height: 10.0.h,
                           ),
                           InkWell(
-                            onTap: () async {},
+                            onTap: () async {
+                              print(1);
+                              var res = await excerciseDataRepository
+                                  .getExcerciseName(widget.exercises[0]);
+                              Get.to(DetailsExcercise(
+                                  widget.exercises[0],
+                                  res[0].mets.toString(),
+                                  res[0].recommendation));
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -185,7 +202,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                           "${widget.exercises[0]}",
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 6.0.w),
+                                              fontSize: 5.0.w),
                                         ),
                                       ),
                                     ),
@@ -197,10 +214,10 @@ class _VideosToRecordState extends State<VideosToRecord>
                                             border: Border.all(
                                                 color: red, width: 2)),
                                         width: 50.0.w,
-                                        height: 15.0.h,
+                                        height: 17.0.h,
                                         child: Image.asset(
                                           "Assets/thumbnails/${widget.exercises[0]}.png",
-                                          fit: BoxFit.fitWidth,
+                                          fit: BoxFit.fill,
                                         )
                                         // VideoPlayer(videoPlayerController1)
 
@@ -214,7 +231,15 @@ class _VideosToRecordState extends State<VideosToRecord>
                             height: 2.0.h,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              print(2);
+                              var res = await excerciseDataRepository
+                                  .getExcerciseName(widget.exercises[1]);
+                              Get.to(DetailsExcercise(
+                                  widget.exercises[1],
+                                  res[0].mets.toString(),
+                                  res[0].recommendation));
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -233,7 +258,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                           "${widget.exercises[1]}",
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 8.0.w),
+                                              fontSize: 5.0.w),
                                         ),
                                       ),
                                     ),
@@ -245,10 +270,10 @@ class _VideosToRecordState extends State<VideosToRecord>
                                             border: Border.all(
                                                 color: red, width: 3)),
                                         width: 50.0.w,
-                                        height: 15.0.h,
+                                        height: 17.0.h,
                                         child: Image.asset(
                                           "Assets/thumbnails/${widget.exercises[1]}.png",
-                                          fit: BoxFit.fitWidth,
+                                          fit: BoxFit.fill,
                                         ))
                                   ],
                                 ),
@@ -279,7 +304,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                             ),
                             Center(
                                 child: Text(
-                              "Procesando Video",
+                              "Procesando video...",
                               style: TextStyle(color: blue, fontSize: 30),
                             ))
                           ],

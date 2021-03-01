@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_restart/flutter_restart.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
@@ -6,8 +7,10 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
-import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../Database/Repository/EvidencesSentRepository.dart';
+import 'package:movitronia/Functions/downloadData.dart';
+import 'package:movitronia/Database/Repository/CourseRepository.dart';
 
 class Sessions extends StatefulWidget {
   @override
@@ -16,12 +19,29 @@ class Sessions extends StatefulWidget {
 
 class _SessionsState extends State<Sessions> {
   ClassDataRepository classDataRepository = GetIt.I.get();
+  EvidencesRepository evidencesRepository = GetIt.I.get();
   bool loaded = false;
   bool noData = false;
   List dataClasses = [];
   int phasePhone;
+  List<bool> evidences = [];
+  bool downloaded = false;
 
-  getClasses() async {
+  Future getEvidence() async {
+    var all = await evidencesRepository.getAllEvidences();
+    for (var i = 0; i < all.length; i++) {
+      if (all.isNotEmpty) {
+        evidences.add(all[i].finished);
+      } else {
+        evidences.add(false);
+      }
+    }
+    print(evidences.toString());
+    print("AAAAA " + evidences[0].toString());
+    return true;
+  }
+
+  Future getClasses() async {
     var res = await classDataRepository.getAllClassLevel();
     if (res.isNotEmpty) {
       for (var i = 0; i < res.length; i++) {
@@ -35,21 +55,63 @@ class _SessionsState extends State<Sessions> {
         noData = true;
       });
     }
+    return true;
   }
 
-  getPhase() async {
+  Future getPhase() async {
     var prefs = await SharedPreferences.getInstance();
     int phase = prefs.getInt("phase");
     setState(() {
       phasePhone = phase;
     });
+    return true;
+  }
+
+  Future getData() async {
+    await DownloadData().getUserData(context);
+    var prefs = await SharedPreferences.getInstance();
+    var down = prefs.getBool("downloaded" ?? false);
+    String level;
+    CourseDataRepository courseDataRepository = GetIt.I.get();
+    var course = await courseDataRepository.getAllCourse();
+    if (course.isNotEmpty) {
+      setState(() {
+        level = course[0].number;
+      });
+    }
+    setState(() {
+      downloaded = down;
+    });
+    if (downloaded == false || downloaded == null) {
+      await DownloadData().downloadAll(context, level);
+    }
+    return true;
+  }
+
+  void _restartApp() async {
+    FlutterRestart.restartApp();
   }
 
   @override
   void initState() {
-    getClasses();
-    getPhase();
+    getAll();
     super.initState();
+  }
+
+  getAll() async {
+    var prefs = await SharedPreferences.getInstance();
+    var downloaded = prefs.getBool("downloaded" ?? false);
+    if (downloaded == null || downloaded == false) {
+      await getData();
+      await getClasses();
+      await getPhase();
+      await getEvidence();
+      _restartApp();
+    } else {
+      await getClasses();
+      await getPhase();
+      await getEvidence();
+    }
   }
 
   Widget build(BuildContext context) {
@@ -104,351 +166,396 @@ class _SessionsState extends State<Sessions> {
                     createPhase([
                       //first
                       item(
-                          phasePhone == 1
+                          phasePhone >= 1
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 1 ? false : true,
                           dataClasses[0],
-                          dataClasses[0].number),
+                          dataClasses[0].number,
+                          true),
                       //fourth
                       item(
-                          phasePhone == 1
+                          phasePhone >= 1 && evidences[2]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 1 ? false : true,
                           dataClasses[3],
-                          dataClasses[3].number),
+                          dataClasses[3].number,
+                          evidences[2] == true ? true : false),
                       //second
-                      item(
-                          phasePhone == 1
-                              ? "Assets/images/buttons/1unlock.png"
-                              : "Assets/images/buttons/1lock.png",
-                          phasePhone == 1 ? false : true,
-                          dataClasses[1],
-                          dataClasses[1].number),
+                      InkWell(
+                        onTap: () {
+                          print("AAAAAAAAAA ${evidences[0]}");
+                        },
+                        child: item(
+                            phasePhone >= 1 && evidences[0]
+                                ? "Assets/images/buttons/1unlock.png"
+                                : "Assets/images/buttons/1lock.png",
+                            phasePhone == 1 ? false : true,
+                            dataClasses[1],
+                            dataClasses[1].number,
+                            evidences[0] ? true : true),
+                      ),
                       //third
                       item(
-                          phasePhone == 1
+                          phasePhone >= 1 && evidences[1]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 1 ? false : true,
                           dataClasses[2],
-                          dataClasses[2].number),
+                          dataClasses[2].number,
+                          evidences[1] ? true : false),
                     ]),
                     divider(green, "FASE 2"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 2
+                          phasePhone >= 2 && evidences[3]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 2 ? false : true,
                           dataClasses[4],
-                          dataClasses[4].number),
+                          dataClasses[4].number,
+                          evidences[3] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 2
+                          phasePhone >= 2 && evidences[6]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 2 ? false : true,
                           dataClasses[7],
-                          dataClasses[7].number),
+                          dataClasses[7].number,
+                          evidences[6] ? true : false),
                       //second
                       item(
-                          phasePhone == 2
+                          phasePhone >= 2 && evidences[4]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 2 ? false : true,
                           dataClasses[5],
-                          dataClasses[5].number),
+                          dataClasses[5].number,
+                          evidences[4] ? true : false),
                       //third
                       item(
-                          phasePhone == 2
+                          phasePhone >= 2 && evidences[5]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 2 ? false : true,
                           dataClasses[6],
-                          dataClasses[6].number),
+                          dataClasses[6].number,
+                          evidences[5] ? true : false),
                     ]),
                     divider(red, "FASE 3"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 3
+                          phasePhone >= 3 && evidences[7]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 3 ? false : true,
                           dataClasses[8],
-                          dataClasses[8].number),
+                          dataClasses[8].number,
+                          evidences[7] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 3
+                          phasePhone >= 3 && evidences[10]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 3 ? false : true,
                           dataClasses[11],
-                          dataClasses[11].number),
+                          dataClasses[11].number,
+                          evidences[10] ? true : false),
                       //second
                       item(
-                          phasePhone == 3
+                          phasePhone >= 3 && evidences[8]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 3 ? false : true,
                           dataClasses[9],
-                          dataClasses[9].number),
+                          dataClasses[9].number,
+                          evidences[8] ? true : false),
                       //third
                       item(
-                          phasePhone == 3
+                          phasePhone >= 3 && evidences[9]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 3 ? false : true,
                           dataClasses[10],
-                          dataClasses[10].number),
+                          dataClasses[10].number,
+                          evidences[9] ? true : false),
                     ]),
                     divider(yellow, "FASE 4"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 4
+                          phasePhone >= 4 && evidences[11]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 4 ? false : true,
                           dataClasses[12],
-                          dataClasses[12].number),
+                          dataClasses[12].number,
+                          evidences[11] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 4
+                          phasePhone >= 4 && evidences[14]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 4 ? false : true,
                           dataClasses[15],
-                          dataClasses[15].number),
+                          dataClasses[15].number,
+                          evidences[14] ? true : false),
                       //second
                       item(
-                          phasePhone == 4
+                          phasePhone >= 4 && evidences[12]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 4 ? false : true,
                           dataClasses[13],
-                          dataClasses[13].number),
+                          dataClasses[13].number,
+                          evidences[12] ? true : false),
                       //third
                       item(
-                          phasePhone == 4
+                          phasePhone >= 4 && evidences[13]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 4 ? false : true,
                           dataClasses[14],
-                          dataClasses[14].number),
+                          dataClasses[14].number,
+                          evidences[13] ? true : false),
                     ]),
                     divider(green, "FASE 5"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 5
+                          phasePhone >= 5 && evidences[15]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 5 ? false : true,
                           dataClasses[16],
-                          dataClasses[16].number),
+                          dataClasses[16].number,
+                          evidences[15] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 5
+                          phasePhone >= 5 && evidences[18]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 5 ? false : true,
                           dataClasses[19],
-                          dataClasses[19].number),
+                          dataClasses[19].number,
+                          evidences[18] ? true : false),
                       //second
                       item(
-                          phasePhone == 5
+                          phasePhone >= 5 && evidences[16]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 5 ? false : true,
                           dataClasses[17],
-                          dataClasses[17].number),
+                          dataClasses[17].number,
+                          evidences[16] ? true : false),
                       //third
                       item(
-                          phasePhone == 5
+                          phasePhone >= 5 && evidences[17]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 5 ? false : true,
                           dataClasses[18],
-                          dataClasses[18].number),
+                          dataClasses[18].number,
+                          evidences[17] ? true : false),
                     ]),
                     divider(red, "FASE 6"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 6
+                          phasePhone >= 6 && evidences[19]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 6 ? false : true,
                           dataClasses[20],
-                          dataClasses[20].number),
+                          dataClasses[20].number,
+                          evidences[19] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 6
+                          phasePhone >= 6 && evidences[22]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 6 ? false : true,
                           dataClasses[23],
-                          dataClasses[23].number),
+                          dataClasses[23].number,
+                          evidences[22] ? true : false),
                       //second
                       item(
-                          phasePhone == 6
+                          phasePhone >= 6 && evidences[20]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 6 ? false : true,
                           dataClasses[21],
-                          dataClasses[21].number),
+                          dataClasses[21].number,
+                          evidences[20] ? true : false),
                       //third
                       item(
-                          phasePhone == 6
+                          phasePhone >= 6 && evidences[21]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 6 ? false : true,
                           dataClasses[22],
-                          dataClasses[22].number),
+                          dataClasses[22].number,
+                          evidences[21] ? true : false),
                     ]),
                     divider(yellow, "FASE 7"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 7
+                          phasePhone >= 7 && evidences[23]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 7 ? false : true,
                           dataClasses[24],
-                          dataClasses[24].number),
+                          dataClasses[24].number,
+                          evidences[23] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 7
+                          phasePhone >= 7 && evidences[26]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 7 ? false : true,
                           dataClasses[27],
-                          dataClasses[27].number),
+                          dataClasses[27].number,
+                          evidences[26] ? true : false),
                       //second
                       item(
-                          phasePhone == 7
+                          phasePhone >= 7 && evidences[24]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 7 ? false : true,
                           dataClasses[25],
-                          dataClasses[25].number),
+                          dataClasses[25].number,
+                          evidences[24] ? true : false),
                       //third
                       item(
-                          phasePhone == 7
+                          phasePhone >= 7 && evidences[25]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 7 ? false : true,
                           dataClasses[26],
-                          dataClasses[26].number),
+                          dataClasses[26].number,
+                          evidences[25] ? true : false),
                     ]),
                     divider(green, "FASE 8"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 8
+                          phasePhone >= 8 && evidences[27]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 8 ? false : true,
                           dataClasses[28],
-                          dataClasses[28].number),
+                          dataClasses[28].number,
+                          evidences[27] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 8
+                          phasePhone >= 8 && evidences[30]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 8 ? false : true,
                           dataClasses[31],
-                          dataClasses[31].number),
+                          dataClasses[31].number,
+                          evidences[30] ? true : false),
                       //second
                       item(
-                          phasePhone == 8
+                          phasePhone >= 8 && evidences[28]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 8 ? false : true,
                           dataClasses[29],
-                          dataClasses[29].number),
+                          dataClasses[29].number,
+                          evidences[28] ? true : false),
                       //third
                       item(
-                          phasePhone == 8
+                          phasePhone >= 8 && evidences[29]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 8 ? false : true,
                           dataClasses[30],
-                          dataClasses[30].number),
+                          dataClasses[30].number,
+                          evidences[29] ? true : false),
                     ]),
                     divider(red, "FASE 9"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 9
+                          phasePhone >= 9 && evidences[31]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 9 ? false : true,
                           dataClasses[32],
-                          dataClasses[32].number),
+                          dataClasses[32].number,
+                          evidences[31] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 9
+                          phasePhone >= 9 && evidences[34]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 9 ? false : true,
                           dataClasses[35],
-                          dataClasses[35].number),
+                          dataClasses[35].number,
+                          evidences[34] ? true : false),
                       //second
                       item(
-                          phasePhone == 9
+                          phasePhone >= 9 && evidences[32]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 9 ? false : true,
                           dataClasses[33],
-                          dataClasses[33].number),
+                          dataClasses[33].number,
+                          evidences[32] ? true : false),
                       //third
                       item(
-                          phasePhone == 9
+                          phasePhone >= 9 && evidences[33]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 9 ? false : true,
                           dataClasses[34],
-                          dataClasses[34].number),
+                          dataClasses[34].number,
+                          evidences[33] ? true : false),
                     ]),
                     divider(yellow, "FASE 10"),
                     createPhase([
                       //first
                       item(
-                          phasePhone == 10
+                          phasePhone >= 10 && evidences[35]
                               ? "Assets/images/buttons/2unlock.png"
                               : "Assets/images/buttons/2lock.png",
                           phasePhone == 10 ? false : true,
                           dataClasses[36],
-                          dataClasses[36].number),
+                          dataClasses[36].number,
+                          evidences[35] ? true : false),
                       //fourth
                       item(
-                          phasePhone == 10
+                          phasePhone >= 10 && evidences[38]
                               ? "Assets/images/buttons/3unlock.png"
                               : "Assets/images/buttons/3lock.png",
                           phasePhone == 10 ? false : true,
                           dataClasses[39],
-                          dataClasses[39].number),
+                          dataClasses[39].number,
+                          evidences[38] ? true : false),
                       //second
                       item(
-                          phasePhone == 10
+                          phasePhone >= 10 && evidences[36]
                               ? "Assets/images/buttons/1unlock.png"
                               : "Assets/images/buttons/1lock.png",
                           phasePhone == 10 ? false : true,
                           dataClasses[37],
-                          dataClasses[37].number),
+                          dataClasses[37].number,
+                          evidences[36] ? true : false),
                       //third
                       item(
-                          phasePhone == 10
+                          phasePhone >= 10 && evidences[37]
                               ? "Assets/images/buttons/4unlock.png"
                               : "Assets/images/buttons/4lock.png",
                           phasePhone == 10 ? false : true,
                           dataClasses[38],
-                          dataClasses[38].number),
+                          dataClasses[38].number,
+                          evidences[37] ? true : false),
                     ]),
                   ],
                 ),
@@ -483,12 +590,13 @@ class _SessionsState extends State<Sessions> {
     );
   }
 
-  Widget item(String route, bool lock, var data, int number) {
+  Widget item(String route, bool phase, var data, int number, bool lock) {
     return InkWell(
       onTap: () {
-        if (lock == false) {
+        if (lock == true) {
           goToPlanification(data, number);
         } else {
+          print(lock);
           Toast.show("Debes completar las clases anteriores.", context,
               duration: Toast.LENGTH_LONG,
               gravity: Toast.CENTER,
@@ -587,7 +695,7 @@ class _SessionsState extends State<Sessions> {
               sessions[0],
               // item("Assets/images/buttons/2unlock.png"),
               SizedBox(
-                height: 5.0.h,
+                height: 7.0.h,
               ),
               sessions[1],
               // item("Assets/images/buttons/2lock.png"),

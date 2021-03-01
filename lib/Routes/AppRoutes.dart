@@ -259,13 +259,13 @@ class AppRoutes {
     page: MenuEvidences(),
     orientation: ScreenOrientation.portraitOnly,
   );
-
+/*
   static var detailsExcercises = RouteDetails(
     name: '/detailsExcercises',
     page: DetailsExcercise(),
     orientation: ScreenOrientation.portraitOnly,
   );
-
+*/
   static var recoverPass = RouteDetails(
     name: '/recoverPass',
     page: RecoverPass(),
@@ -329,7 +329,7 @@ class AppRoutes {
         menuEvidences,
         manuals,
         support,
-        detailsExcercises,
+        // detailsExcercises,
         recoverPass,
         settingsPage,
         teacherSelectCollege,

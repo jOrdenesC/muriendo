@@ -54,7 +54,7 @@ class _FinalPageState extends State<FinalPage>
       backgroundColor: blue,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(""),

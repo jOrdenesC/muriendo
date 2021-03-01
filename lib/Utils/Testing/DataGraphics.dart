@@ -19,9 +19,9 @@ class DataRepository {
 
   static Color getColor(double value) {
     if (value < 100) {
-      return red;
+      return green;
     } else if (value < 150) {
-      return cyan;
+      return green;
     } else
       return green;
   }
@@ -36,7 +36,7 @@ class DataRepository {
   static Icon getIcon(double value) {
     if (value < 100) {
       return Icon(
-        Icons.sentiment_neutral_rounded,
+        Icons.sentiment_very_satisfied_rounded,
         size: 24,
         color: getColor(value),
       );

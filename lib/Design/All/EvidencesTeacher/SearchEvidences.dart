@@ -38,7 +38,7 @@ class _SearchEvidencesState extends State<SearchEvidences> {
             leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              size: 12.0.w,
+              size: 9.0.w,
               color: Colors.white
             ),
             onPressed: () => Navigator.pop(context),

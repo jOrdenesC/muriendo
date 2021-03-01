@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:movitronia/Database/Models/ClassLevel.dart';
+import 'package:movitronia/Design/All/DetailsExercise/DetailsExcercise.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'AppRoutes.dart';
 
@@ -61,7 +62,11 @@ goToShowCalories(
 }
 
 goToEvidencesSession(
-    {List questionnaire, String idClass, double kCal, int number, List exercises}) {
+    {List questionnaire,
+    String idClass,
+    double kCal,
+    int number,
+    List exercises}) {
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
@@ -82,7 +87,11 @@ goToUploadData(
 }
 
 goToVideosToRecord(
-    {String uuidQuestionary, String idClass, double kCal, int number, List exercises}) {
+    {String uuidQuestionary,
+    String idClass,
+    double kCal,
+    int number,
+    List exercises}) {
   Get.toNamed(AppRoutes.videosToRecord.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
@@ -193,14 +202,8 @@ closeSession() async {
   Get.offAllNamed(AppRoutes.login.name);
 }
 
-goToDetailsExcercises(
-    String name, String asset, String kcal, String desc) {
-  Get.toNamed(AppRoutes.detailsExcercises.name, arguments: {
-    "name": name,
-    "desc": desc,
-    "kcal": kcal,
-    "asset": asset,
-  });
+goToDetailsExcercises(String name, String asset, String kcal, String desc) {
+  Get.to(DetailsExcercise(name, kcal, desc));
 }
 
 goToHomeTeacher() {

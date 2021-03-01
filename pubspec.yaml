@@ -91,6 +91,8 @@ dependencies:
   video_thumbnail: ^0.2.5+1
   flushbar: ^1.10.4
   flutter_vlc_player: ^5.0.4
+  path: ^1.7.0
+  flutter_restart: ^0.0.3
 
 dev_dependencies:
   flutter_test:

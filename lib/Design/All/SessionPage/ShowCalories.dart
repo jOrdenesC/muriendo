@@ -7,6 +7,12 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_it/get_it.dart';
+import '../../../Database/Repository/EvidencesSentRepository.dart';
+import 'package:get/get.dart';
+import '../HomePage/HomepageUser.dart';
+import '../../Widgets/Toast.dart';
+import 'package:flutter/services.dart';
 
 class ShowCalories extends StatefulWidget {
   final List mets;
@@ -27,10 +33,18 @@ class ShowCalories extends StatefulWidget {
 }
 
 class _ShowCaloriesState extends State<ShowCalories> {
+  EvidencesRepository sembastEvidenceRepository = GetIt.I.get();
+
+  bool exists = false;
   List args = [];
   double total = 0;
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+    print(widget.mets.toString());
     args.add({
       "mets": widget.mets,
       "exercises": widget.exercises,
@@ -58,23 +72,27 @@ class _ShowCaloriesState extends State<ShowCalories> {
                   // var res = await getData(args);
                   // print(res);
                   // log(args.toString());
-                  // var xd =  getTotalKCal(args).toString();
-                  // print(xd);
-                  goToEvidencesSession(
-                      exercises: widget.exercises,
-                      questionnaire: widget.questionnaire,
-                      kCal: total,
-                      number: widget.number,
-                      idClass: widget.idClass);
+                  if (exists) {
+                    toast(
+                        context,
+                        "Ya has subido los datos de esta sesión. Puedes volver a realizarlas las veces que quieras.",
+                        green);
+                  }
+
+                  exists
+                      ? Get.offAll(HomePageUser())
+                      : goToEvidencesSession(
+                          exercises: widget.exercises,
+                          questionnaire: widget.questionnaire,
+                          kCal: total,
+                          number: widget.number,
+                          idClass: widget.idClass);
                 }, text: "   CONTINUAR")
               ],
             ),
           ),
           appBar: AppBar(
-            // leading: IconButton(
-            //   icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
-            //   onPressed: () => Navigator.pop(context),
-            // ),
+            leading: SizedBox.shrink(),
             title: Column(
               children: [
                 SizedBox(
@@ -126,6 +144,18 @@ has quemado ${total.toString().substring(0, 4)} KCal""",
   }
 
   getData(args) async {
+    var res = await sembastEvidenceRepository.getEvidenceNumber(widget.number);
+    if (res.isNotEmpty) {
+      if (res[0].finished) {
+        setState(() {
+          exists = true;
+        });
+      } else {
+        setState(() {
+          exists = false;
+        });
+      }
+    }
     var xd = await getTotalKCal(args);
     setState(() {
       total = xd;

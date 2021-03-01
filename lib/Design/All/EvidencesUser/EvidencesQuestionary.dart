@@ -6,6 +6,8 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
+import '../../../Database/Repository/EvidencesSentRepository.dart';
+import 'package:get_it/get_it.dart';
 
 class EvidencesQuestionary extends StatefulWidget {
   @override
@@ -13,7 +15,30 @@ class EvidencesQuestionary extends StatefulWidget {
 }
 
 class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
+  EvidencesRepository evidencesRepository = GetIt.I.get();
+  List<bool> evidences = [];
   @override
+  void initState() {
+    getEvidence();
+    super.initState();
+  }
+
+  getEvidence() async {
+    var all = await evidencesRepository.getAllEvidences();
+    for (var i = 0; i < all.length; i++) {
+      if (all.isNotEmpty) {
+        setState(() {
+          evidences.add(all[i].finished);
+        });
+      } else {
+        setState(() {
+          evidences.add(false);
+        });
+      }
+    }
+    print(evidences.toString());
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: red,
@@ -21,21 +46,21 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
         backgroundColor: cyan,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 12.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
+              height: 2.0.h,
+            ),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                "Evidencias Cuestionario".toUpperCase(),
+                style: TextStyle(fontSize: 5.0.w),
               ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text("Evidencias Cuestionario".toUpperCase(), style: TextStyle(
-              fontSize: 5.0.w
-            ),),),
+            ),
           ],
         ),
         centerTitle: true,
@@ -94,8 +119,8 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "1", false),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[0]),
                       ],
                     ),
                     Padding(
@@ -103,18 +128,18 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "2", false),
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "3", false),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[1]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[2]),
                         ],
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "4", false),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[3]),
                       ],
                     ),
                     divider(green, "FASE 2"),
@@ -122,8 +147,8 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "1", true),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[4]),
                       ],
                     ),
                     Padding(
@@ -131,26 +156,26 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "2", true),
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "3", true),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[5]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[6]),
                         ],
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "4", true),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[7]),
                       ],
                     ),
                     divider(cyan, "FASE 3"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "1", true),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[8]),
                       ],
                     ),
                     Padding(
@@ -158,24 +183,213 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "2", true),
-                          circularActivity("title", 0,
-                              "Assets/images/docImage.png", "3", true),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[9]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[10]),
                         ],
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        circularActivity("title", 0,
-                            "Assets/images/docImage.png", "4", true),
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[11]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 4"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[12]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[13]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[14]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[15]),
+                      ],
+                    ),
+                    divider(green, "FASE 5"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[16]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[17]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[18]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[19]),
+                      ],
+                    ),
+                    divider(cyan, "FASE 6"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[20]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[21]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[22]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[23]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 7"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[24]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[25]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[26]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[27]),
+                      ],
+                    ),
+                    divider(green, "FASE 8"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[28]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[29]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[30]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[31]),
+                      ],
+                    ),
+                    divider(cyan, "FASE 9"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[32]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[33]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[34]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[35]),
+                      ],
+                    ),
+                    divider(yellow, "FASE 10"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[36]),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[37]),
+                          circularActivity("title",
+                              "Assets/images/docImage.png", "1", evidences[38]),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        circularActivity("title", "Assets/images/docImage.png",
+                            "1", evidences[39]),
                       ],
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ],
@@ -205,13 +419,12 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
     );
   }
 
-  Widget circularActivity(
-      String title, double percentage, String img, String number, bool lock) {
+  Widget circularActivity(String title, String img, String number, bool lock) {
     return Padding(
       padding: const EdgeInsets.only(left: 9.0, right: 9),
       child: InkWell(
           onTap: () {
-            if (lock == false) {
+            if (lock == true) {
               // goToPlanification();
             } else {
               Toast.show("No has subido evidencias de esta sesión.", context,
@@ -226,22 +439,24 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                 width: 35.0.w,
                 // color: red,
                 child: CircularPercentIndicator(
-                  percent: percentage,
+                  percent: 0.0,
                   progressColor: green,
                   lineWidth: 7,
                   radius: 29.0.w,
                   center: CircleAvatar(
                     radius: 12.8.w,
-                    backgroundColor: lock ? Colors.grey : yellow,
+                    backgroundColor: lock == false ? Colors.grey : yellow,
                     child: Container(
-                      margin: lock ? EdgeInsets.all(6.5) : EdgeInsets.all(0),
+                      margin: lock == false
+                          ? EdgeInsets.all(6.5)
+                          : EdgeInsets.all(0),
                       color: Colors.transparent,
                       child: Image.asset(
                         "$img",
-                        color: lock ? Colors.white : blue,
-                        fit: lock ? BoxFit.contain : BoxFit.contain,
-                        width: lock ? 14.0.w : 16.0.w,
-                        height: lock ? 20.0.h : 20.0.h,
+                        color: lock == false ? Colors.white : blue,
+                        fit: lock == false ? BoxFit.contain : BoxFit.contain,
+                        width: lock == false ? 14.0.w : 16.0.w,
+                        height: lock == false ? 20.0.h : 20.0.h,
                       ),
                     ),
                   ),
@@ -256,7 +471,7 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
                   center: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: Center(
-                        child: lock
+                        child: lock == false
                             ? Icon(
                                 Icons.close,
                                 color: red,
