@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
+import 'dart:developer' as dev;
 
 class HomePageUser extends StatefulWidget {
   @override
@@ -224,7 +225,16 @@ class _HomePageUserState extends State<HomePageUser> {
               icon: Image.asset("Assets/images/sessionIcon.png", width: 8.0.w),
               circleRadius: 6.0.w, func: () {
             Navigator.pop(context);
-            setState(() {
+            setState(() async {
+              CourseDataRepository courseDataRepository = GetIt.I.get();
+              ClassDataRepository classDataRepository = GetIt.I.get();
+              var res = await classDataRepository.getAllClassLevel();
+              var resCourse = await courseDataRepository.getAllCourse();
+              var prefs = await SharedPreferences.getInstance();
+              var res1 = prefs.getString("token");
+              print(res1);
+              dev.log("CLASES " + res[0].toMap().toString());
+              print(resCourse[0].toMap().toString());
               _currentIndex = 0;
             });
           },

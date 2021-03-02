@@ -78,7 +78,7 @@ class DownloadData {
   downloadVideosTest(List videoList) async {
     log(videoList.toString());
     List<Future> listDio = [];
-    List data = [];
+    List dataNotDownloaded = [];
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var dir = await getApplicationDocumentsDirectory();
@@ -114,6 +114,8 @@ class DownloadData {
             onReceiveProgress: (rec, total) {
           if (rec == total) {
             print(i.toString() + " descargado");
+          } else {
+            dataNotDownloaded.add(response2.data[i]);
           }
         }));
       } catch (e) {
@@ -128,6 +130,8 @@ class DownloadData {
     } catch (e) {
       print(e);
     }
+
+    print(dataNotDownloaded.toList().toString());
     // for (var i = 0; i < res.length; i++) {
     //   print(i);
     //   print(res[i].toString());
@@ -179,6 +183,7 @@ class DownloadData {
       bool hasInternet = await ConnectionStateClass().comprobationInternet();
       if (hasInternet) {
         print("HTTP");
+        print("INICIA DESCARGANDO DATOS");
         TipsDataRepository _tipsDataRepository = GetIt.I.get();
         QuestionDataRepository _questionDataRepository = GetIt.I.get();
         try {
@@ -205,9 +210,10 @@ class DownloadData {
               ],
             ),
           );
-          Response response = await dio.get(
+          Response responseClasses = await dio.get(
             "https://intranet.movitronia.com/api/mobile/classes/$level?token=$token",
           );
+          print("RESPONSEEEEEEEEEEE ${responseClasses.data}");
           Navigator.pop(context);
           //getExercises();
           //await getClass(response);
@@ -217,6 +223,7 @@ class DownloadData {
           List<TipsData> tipsList = [];
           List<QuestionData> questionList = [];
           List<String> audioNames = [];
+          print("Creando tips");
           loading(
             context,
             title: Text(
@@ -237,26 +244,43 @@ class DownloadData {
               ],
             ),
           );
-          for (int i = 0; i < response.data.length; i++) {
-            Map responseBody = response.data[i]; //Loop through all objects
+          print("LENGTH " + responseClasses.data.length.toString());
+          print("CLASSSSSSSSSSSSEES ${responseClasses.data}");
+          var responsess = ResultModel.fromJson(responseClasses.data[0]);
+          log("DAAAAAAAAAAAAAAAAAAAAAAATOS " + responsess.toJson().toString());
+          for (int i = 0; i < responseClasses.data.length; i++) {
+            print(i.toString() + " DATA DATA");
+            Map responseBody =
+                responseClasses.data[i]; //Loop through all objects
+            print("PASÓ RESPONSEBODY");
             ResultModel jsonResponse = ResultModel.fromJson(responseBody);
             for (int i = 0; i < jsonResponse.tips.length; i++) {
+              print("json RESPONSE $i");
               var tipsResponse = jsonResponse.tips[i];
+              // print(tipsResponse.toJson().toString());
               if (indexes.contains(int.parse(tipsResponse.tipId))) {
-                //print("Repetido");
+                print("Repetido");
               } else {
                 var audioQuestion;
                 var audioTips;
                 var audioVF;
                 if (tipsResponse.audios.isNotEmpty) {
-                  audioQuestion = tipsResponse.audios[0].link;
-                  audioTips = tipsResponse.audios[1].link;
-                  audioVF = tipsResponse.audios[2].link;
+                  for (int i = 0; i < tipsResponse.audios.length; i++) {
+                    if (tipsResponse.audios[i].type == "PREGUNTA") {
+                      audioQuestion = tipsResponse.audios[i].link;
+                    } else if (tipsResponse.audios[i].type == "TIPS") {
+                      audioTips = tipsResponse.audios[i].link;
+                    } else if (tipsResponse.audios[i].type == "VF") {
+                      audioVF = tipsResponse.audios[i].link;
+                    }
+                  }
                 } else {
                   audioQuestion = "[]";
                   audioTips = "[]";
                   audioVF = "[]";
                 }
+
+                print("#ENRTA A TIPS DATA");
 
                 TipsData tipsData = TipsData(
                     audioQuestion: audioQuestion,
@@ -277,6 +301,7 @@ class DownloadData {
                 print("TIP value of ${tipsData.tip}");
                 await _tipsDataRepository.insertTips(tipsData);
 
+                print("ENRTA A QUESTION DATA");
                 QuestionData questionData = QuestionData(
                     tipID: tipsResponse.sId,
                     questionVf: tipsResponse.questions.questionVf,
@@ -292,6 +317,8 @@ class DownloadData {
                 questionList.add(questionData);
               }
             }
+
+            print("ENtra primer for");
             for (int i = 0; i < tipsList.length; i++) {
               final result = await _tipsDataRepository
                   .getTips(tipsList[i].tipsID.toString());
@@ -303,6 +330,7 @@ class DownloadData {
               //_tipsDataRepository.insertTips(tipsList[i]);
             }
 
+            print("ENtra 2do for");
             for (int i = 0; i < questionList.length; i++) {
               final result = await _questionDataRepository
                   .getQuestion(questionList[i].tipID.toString());
@@ -343,7 +371,8 @@ class DownloadData {
           print("Total Questions: ${questionList.length}");
           var res = await _questionDataRepository.getAllQuestions();
           print(res.length);
-          getClass(response, context);
+          print("DESCARGANDO DATOS DE CLASES");
+          getClass(responseClasses, context);
         } catch (e) {
           print(e);
         }
@@ -646,6 +675,7 @@ class DownloadData {
   }
 
   Future<bool> downloadAll(BuildContext context, String level) async {
+    print("LEVEEEEEEEEEEEEEEEEL $level");
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {

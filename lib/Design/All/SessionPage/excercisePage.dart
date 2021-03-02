@@ -35,7 +35,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
 
   @override
   void initState() {
-    getRole();
+    // getRole();
     //
 
     //----------------- -----------------------------------//
