@@ -283,9 +283,9 @@ class Mp4Controller extends GetxController {
       excerciseNames.add(responseDB[0].nameExcercise);
     }
     excerciseDesarrolloList = responseclass[0].excerciseDesarrollo;
-    // recordingList.add(excerciseDesarrolloList[0]);
-    // recordingList
-    //     .add(excerciseDesarrolloList[excerciseDesarrolloList.length - 1]);
+    recordingList.add(excerciseDesarrolloList[0]);
+    recordingList
+        .add(excerciseDesarrolloList[excerciseDesarrolloList.length - 1]);
     for (int i = 0; i < responseclass[0].excerciseDesarrollo.length; i++) {
       //Loop through class excercises by category
       final responseDB = await _excerciseRepository

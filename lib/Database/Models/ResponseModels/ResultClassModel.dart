@@ -6,8 +6,8 @@ class ResultModel {
   List<Exercises> exercisesVueltaCalma;
   List<Tips> tips;
   String sId;
-  int number;
-  int level;
+  num number;
+  num level;
   List<Pauses> pauses;
   List<Questionnaire> questionnaire;
 
@@ -148,7 +148,7 @@ class Exercises {
   String recomendation;
   List<String> categories;
   String sId;
-  int metsPerMinute;
+  num metsPerMinute;
 
   Exercises(
       {this.exerciseId,

@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_restart/flutter_restart.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
@@ -11,6 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
+import 'package:path/path.dart' as p;
+import '../../Widgets/Loading.dart';
+import 'package:archive/archive.dart';
 
 class Sessions extends StatefulWidget {
   @override
@@ -71,8 +78,13 @@ class _SessionsState extends State<Sessions> {
     await DownloadData().getUserData(context);
     var prefs = await SharedPreferences.getInstance();
     var down = prefs.getBool("downloaded" ?? false);
+    var token = prefs.getString("token" ?? false);
     String level;
     CourseDataRepository courseDataRepository = GetIt.I.get();
+    Response response = await Dio().post(
+        "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
+        data: {"platform": "android"});
+    print("RESPONSEEE " + response.data);
     var course = await courseDataRepository.getAllCourse();
     if (course.isNotEmpty) {
       setState(() {
@@ -83,7 +95,10 @@ class _SessionsState extends State<Sessions> {
       downloaded = down;
     });
     if (downloaded == false || downloaded == null) {
-      await DownloadData().downloadAll(context, level);
+      await DownloadData()
+          .downloadAll(context, level, response.data, "videos.zip");
+      // await downloadFiles(response.data, "videos.zip");
+      // downloadFiles(url, filenames)
     }
     return true;
   }
@@ -95,6 +110,7 @@ class _SessionsState extends State<Sessions> {
   @override
   void initState() {
     getAll();
+    // getData();
     super.initState();
   }
 
@@ -106,7 +122,8 @@ class _SessionsState extends State<Sessions> {
       await getClasses();
       await getPhase();
       await getEvidence();
-      _restartApp();
+      prefs.setBool("downloaded", true);
+      // _restartApp();
     } else {
       await getClasses();
       await getPhase();

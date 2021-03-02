@@ -19,7 +19,7 @@ import '../Design/Widgets/Toast.dart';
 import 'package:flutter/material.dart';
 import '../Utils/Colors.dart';
 import 'dart:developer';
-
+import 'package:archive/archive.dart';
 import '../Database/Models/courseModel.dart';
 import '../Utils/UrlServer.dart';
 import '../Utils/ConnectionState.dart';
@@ -78,22 +78,25 @@ class DownloadData {
   downloadVideosTest(List videoList) async {
     log(videoList.toString());
     List<Future> listDio = [];
-    List dataNotDownloaded = [];
+    List dataDownloaded = [];
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var dir = await getApplicationDocumentsDirectory();
     var format = "";
+    var platform = "";
     // String path = p.join("/storage/emulated/0/Movitronia/videos/");
     if (Platform.isAndroid) {
       format = ".webm";
+      platform = "android";
       print("${dir.path}/videos/${videoList[0]}$format");
     } else if (Platform.isIOS) {
       format = ".mp4";
+      platform = "ios";
       print("${dir.path}/videos/${videoList[0]}$format");
     }
     Response response2 = await dio.post(
         "https://intranet.movitronia.com/api/mobile/videos?token=$token",
-        data: {"platform": "android", "videoList": videoList});
+        data: {"platform": platform, "videoList": videoList});
 
     print("Response Video List: ${response2.data.length}");
 
@@ -108,14 +111,11 @@ class DownloadData {
         // });
 
         listDio.add(dio.download(
-            //
-            response2.data[i],
-            '${dir.path}/videos/${videoList[i]}$format',
+            response2.data[i], '${dir.path}/videos/${videoList[i]}$format',
             onReceiveProgress: (rec, total) {
           if (rec == total) {
             print(i.toString() + " descargado");
-          } else {
-            dataNotDownloaded.add(response2.data[i]);
+            dataDownloaded.add(response2.data[i]);
           }
         }));
       } catch (e) {
@@ -131,7 +131,47 @@ class DownloadData {
       print(e);
     }
 
-    print(dataNotDownloaded.toList().toString());
+    List<Future> noExists = [];
+
+    getDownloaded(response2, videoList) {
+      response2.data.forEach((element) {
+        if (!dataDownloaded.contains(element)) {
+          noExists = response2.data
+              .toSet()
+              .difference(dataDownloaded.toSet())
+              .toList();
+          print("No descargado $element");
+          noExists.add(dio.download(response2[element],
+              '${dir.path}/videos/${videoList[element]}$format'));
+        }
+      });
+
+      // for (var i = 0; i < videoList.length; i++) {
+      //   if (videoList[i].contains(dataDownloaded[i])) {
+      //     print("descargado $i");
+      //   } else {
+      //     print("no descargado");
+      //     noExists.add(dio.download(
+      //         videoList[i], '${dir.path}/videos/${videoList[i]}$format',
+      //         onReceiveProgress: (rec, total) {
+      //       if (rec == total) {
+      //         print(i.toString() + " descargado");
+      //         dataDownloaded.add(response2.data[i]);
+      //       }
+      //     }));
+      //   }
+      // }
+
+      return true;
+    }
+
+    if (videoList != dataDownloaded) {
+      print("descargando los que no se descargaron");
+      getDownloaded(response2, videoList);
+      await Future.wait(noExists);
+    }
+
+    print(dataDownloaded.toList().toString());
     // for (var i = 0; i < res.length; i++) {
     //   print(i);
     //   print(res[i].toString());
@@ -365,7 +405,7 @@ class DownloadData {
             ),
           );
           // await audioDownload(audioNames, "tip");
-          await downloadAudiosTest(audioNames, "tip");
+          // await downloadAudiosTest(audioNames, "tip");
           Navigator.pop(context);
           print("Total Tips: ${tipsList.length}");
           print("Total Questions: ${questionList.length}");
@@ -441,7 +481,7 @@ class DownloadData {
         ),
       );
       // await videoDownload(videos);
-      await downloadVideosTest(videos);
+      // await downloadVideosTest(videos);
       Navigator.pop(context);
       loading(
         context,
@@ -464,7 +504,7 @@ class DownloadData {
         ),
       );
       // await audioDownload(audios, "exercise");
-      await downloadAudiosTest(audios, "exercise");
+      // await downloadAudiosTest(audios, "exercise");
       Navigator.pop(context);
       /** Test Creating Exercise */
       print("Response ${response2.data[0]}");
@@ -674,11 +714,65 @@ class DownloadData {
     }
   }
 
-  Future<bool> downloadAll(BuildContext context, String level) async {
+  Future downloadFiles(
+      String url, String filename, BuildContext context) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var progress = 0.0;
+    loading(context,
+        content: Center(
+          child: Column(
+            children: [
+              Text(progress.toString()),
+              Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
+            ],
+          ),
+        ),
+        title: Text(
+          "$progress %",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 6.0.w),
+        ));
+    var dio = Dio();
+    await dio.download(url, "${dir.path}/videos/$filename",
+        onReceiveProgress: (rec, total) {
+      progress = (rec / total) * 100;
+      print(progress);
+    });
+
+    await unarchiveAndSave(File("${dir.path}/videos/$filename"), context);
+    print("finish");
+    return null;
+  }
+
+  Future unarchiveAndSave(var zippedFile, BuildContext context) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = "${dir.path}/videos/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+    Navigator.pop(context);
+    return null;
+  }
+
+  Future<bool> downloadAll(
+      BuildContext context, String level, url, filename) async {
     print("LEVEEEEEEEEEEEEEEEEL $level");
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
+      await downloadFiles(url, filename, context);
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);

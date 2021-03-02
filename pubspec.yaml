@@ -93,6 +93,7 @@ dependencies:
   flutter_vlc_player: ^5.0.4
   path: ^1.7.0
   flutter_restart: ^0.0.3
+  archive: ^2.0.13
 
 dev_dependencies:
   flutter_test:
