@@ -216,7 +216,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                         width: 50.0.w,
                                         height: 17.0.h,
                                         child: Image.asset(
-                                          "Assets/thumbnails/${widget.exercises[0]}.png",
+                                          "Assets/thumbnails/${widget.exercises[0]}.jpeg",
                                           fit: BoxFit.fill,
                                         )
                                         // VideoPlayer(videoPlayerController1)
@@ -272,7 +272,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                         width: 50.0.w,
                                         height: 17.0.h,
                                         child: Image.asset(
-                                          "Assets/thumbnails/${widget.exercises[1]}.png",
+                                          "Assets/thumbnails/${widget.exercises[1]}.jpeg",
                                           fit: BoxFit.fill,
                                         ))
                                   ],

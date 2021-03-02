@@ -123,7 +123,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                             color: Colors.white,
                             width: w,
                             child: Image.asset(
-                                "Assets/thumbnails/${name["data"][index]}.png"),
+                                "Assets/thumbnails/${name["data"][index]}.jpeg"),
                           ),
                         ),
                         Text(""),
@@ -166,7 +166,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 color: Colors.white,
                                 width: w,
                                 child: Image.asset(
-                                    "Assets/thumbnails/${name["data"][index]}.png"),
+                                    "Assets/thumbnails/${name["data"][index]}.jpeg"),
                               ),
                             ),
                             Text(""),
@@ -209,7 +209,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 color: Colors.white,
                                 width: w,
                                 child: Image.asset(
-                                    "Assets/thumbnails/${name["data"][index]}.png"),
+                                    "Assets/thumbnails/${name["data"][index]}.jpeg"),
                               ),
                             ),
                             Text(""),
