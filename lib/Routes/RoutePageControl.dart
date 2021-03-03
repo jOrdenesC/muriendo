@@ -8,7 +8,9 @@ goToLogin() {
   Get.toNamed(AppRoutes.login.name);
 }
 
-goToHome(String role) {
+goToHome(
+  String role,
+) {
   if (role == "user") {
     Get.toNamed(AppRoutes.homeUser.name, arguments: role);
   } else {

@@ -1,4 +1,4 @@
-package com.michcom.movitronia
+package com.movitronia.michcom
 
 import io.flutter.embedding.android.FlutterActivity
 

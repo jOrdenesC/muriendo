@@ -174,14 +174,14 @@ class Mp4Controller extends GetxController {
     int i = 0;
     print('Macro Timer Started');
     macroTip.value = tips[i];
-    playAudio(audioName[i]);
+    playAudio(audioName[i], false);
     update();
     print("TIP MACRO TIP IS ${macroTip.value}");
     timer = Timer.periodic(Duration(seconds: time), (Timer _) {
       if (i != loops) {
         i++;
         macroTip.value = tips[i];
-        playAudio(audioName[i]);
+        playAudio(audioName[i], false);
         update();
         print("TIP MACRO TIP IS ${macroTip.value}");
       } else {
@@ -195,27 +195,34 @@ class Mp4Controller extends GetxController {
     print("TIP MACRO TIP METHOD");
     List<dynamic> tips = [];
     List<dynamic> audioTip = [];
-    for (int i = 0; i < macroList[index].length; i++) {
-      final result = await _tipsDataRepository.getTips(macroList[index][i]);
-      tips.add(result[0].tip);
-      audioTip.add(result[0].audioTips);
+    if (macroList[index].length != 1) {
+      for (int i = 0; i < macroList[index].length; i++) {
+        final result = await _tipsDataRepository.getTips(macroList[index][i]);
+        print("MacroResult: ${result[0].tip}");
+        print(
+            "MacroResult time: ${macroTime[step.value] / macroList[index].length} ");
+        tips.add(result[0].tip);
+        audioTip.add(result[0].audioTips);
+      }
+      /**Setting Counter for MacroTimer */
+      double getTime = macroTime[step.value] / macroList[index].length;
+      macrocounter.value = getTime.floor(); //TODO PROBABLY UNNECCESARY
+      int loops = macroList[step.value].length;
+      macroTimer(tips, loops, getTime.floor(), audioTip);
+      print(tips);
+    } else {
+      macroTip.value = "Preparate para el Siguiente Ejercicio";
     }
-    /**Setting Counter for MacroTimer */
-    double getTime = macroTime[step.value] / macroList[index].length;
-    macrocounter.value = getTime.floor(); //TODO PROBABLY UNNECCESARY
-    int loops = macroList[step.value].length;
-    macroTimer(tips, loops, getTime.floor(), audioTip);
-    print(tips);
   }
 
   playTip(String documentID) async {
     final result = await _tipsDataRepository.getTips(documentID);
     if (result.isNotEmpty) {
-      playAudio(result[0].audioTips);
+      playAudio(result[0].audioTips, true);
     }
   }
 
-  playAudio(String audioName) async {
+  playAudio(String audioName, bool tip) async {
     print("Play Audio");
     if (Platform.isIOS) {
       if (audioCache.fixedPlayer != null) {
@@ -224,7 +231,11 @@ class Mp4Controller extends GetxController {
     }
     //Testing Out a List with audio Names
     //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
-    await audioPlayer.play("${dir.path}/audios/$audioName.mp3");
+    if (tip == true) {
+      await audioPlayer.play("${dir.path}/audios/$audioName");
+    } else {
+      await audioPlayer.play("${dir.path}/audios/$audioName.mp3");
+    }
   }
 
   //Database Controller Actions
@@ -454,7 +465,7 @@ class Mp4Controller extends GetxController {
           } else {
             print("On Step Inside Else");
             print("On Step macropause");
-            macroTip.value = macroList[1][0];
+            macroTipMethod(1);
             update();
             index.value = 0;
             step.value++;
@@ -509,7 +520,7 @@ class Mp4Controller extends GetxController {
         print("On Step Time ${returnTimer()} ");
       } else {
         print('micropause off');
-        playAudio(exercisesAudio[globalindex.value]);
+        playAudio(exercisesAudio[globalindex.value], false);
         microPause.value = false;
         //MacroPause Must be under here deactivated
         macroPause.value = false;

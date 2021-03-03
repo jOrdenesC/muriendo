@@ -11,6 +11,7 @@ import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'dart:developer';
 
 class Splash extends StatefulWidget {
   @override
@@ -86,8 +87,17 @@ class _SplashState extends State<Splash> {
   }
 
   void startTimer() async {
+    List colleges = [];
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token") ?? null;
+    String scope = prefs.getString("scope");
+    var dio = Dio();
+    Response resProfessorData;
+    if (scope == "professor") {
+      resProfessorData =
+          await dio.get("$urlServer/api/mobile/user/course?token=$token");
+    }
+
     _start = 2;
     const oneSec = const Duration(seconds: 1);
     timer = new Timer.periodic(
@@ -100,12 +110,33 @@ class _SplashState extends State<Splash> {
             if (token != null) {
               getPhase(token);
             }
-
             // OtherController().insertData();
             bool logged = prefs.getBool("logged") ?? false;
-            String scope = prefs.getString("scope");
+
             if (logged) {
-              goToHome(scope);
+              if (scope == "user") {
+                goToHome(scope);
+              } else {
+                for (var i = 0; i < resProfessorData.data.length; i++) {
+                  print(resProfessorData.data[i].toString());
+                  if (colleges.toString().contains(
+                      resProfessorData.data[i]["college"]["_id"].toString())) {
+                    print("Ya existe");
+                  } else {
+                    colleges.add({
+                      "_id": resProfessorData.data[i]["college"]["_id"],
+                      "name": resProfessorData.data[i]["college"]["name"],
+                      "selected": false
+                    });
+                  }
+                }
+                log(resProfessorData.data.toString());
+                if (colleges.length > 1) {
+                  goToTeacherSelectCollege();
+                } else {
+                  goToHome(scope);
+                }
+              }
             } else {
               goToLogin();
             }

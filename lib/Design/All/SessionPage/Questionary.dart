@@ -57,10 +57,10 @@ class _QuestionaryState extends State<Questionary> {
   @override
   void initState() {
     super.initState();
-    eo();
+    initData();
   }
 
-  eo() async {
+  initData() async {
     dir = await getApplicationDocumentsDirectory();
     questions = await getData();
     for (var i = 0; i < tips.length; i++) {

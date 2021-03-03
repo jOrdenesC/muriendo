@@ -40,7 +40,7 @@ class _WelcomePageState extends State<WelcomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () {
-              goToHome(role);
+              goToHome(role, );
             }, text: "   COMENZAR")
           ],
         ),

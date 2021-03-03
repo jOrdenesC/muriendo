@@ -103,16 +103,18 @@ class _VideosToRecordState extends State<VideosToRecord>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buttonRounded(context, func: () {
-                    videoController.recordMovie(widget.uuidQuestionary,
-                        widget.idClass, widget.kCal, widget.number);
-                  },
-                      text: "   GRABAR",
-                      icon: Icon(
-                        Icons.videocam_rounded,
-                        color: blue,
-                        size: 10.0.w,
-                      ))
+                  _.loading.value != true
+                      ? buttonRounded(context, func: () {
+                          videoController.recordMovie(widget.uuidQuestionary,
+                              widget.idClass, widget.kCal, widget.number);
+                        },
+                          text: "   GRABAR",
+                          icon: Icon(
+                            Icons.videocam_rounded,
+                            color: blue,
+                            size: 10.0.w,
+                          ))
+                      : SizedBox.shrink()
                 ],
               ),
             ),

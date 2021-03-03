@@ -141,16 +141,24 @@ class _SessionsState extends State<Sessions> {
     var prefs = await SharedPreferences.getInstance();
     var downloaded = prefs.getBool("downloaded" ?? false);
     if (downloaded == null || downloaded == false) {
-      await getData();
-      await getClasses();
-      await getPhase();
-      await getEvidence();
-      prefs.setBool("downloaded", true);
-      // _restartApp();
+      try {
+        await getData();
+        await getClasses();
+        await getPhase();
+        await getEvidence();
+        prefs.setBool("downloaded", true);
+        _restartApp();
+      } catch (e) {
+        print(e);
+      }
     } else {
-      await getClasses();
-      await getPhase();
-      await getEvidence();
+      try {
+        await getClasses();
+        await getPhase();
+        await getEvidence();
+      } catch (e) {
+        print(e);
+      }
     }
   }
 

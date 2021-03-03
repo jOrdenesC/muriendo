@@ -52,8 +52,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       weight = res;
     });
 
-    final result = await _excerciseRepository 
-        .getExcerciseName(widget.name);
+    final result = await _excerciseRepository.getExcerciseName(widget.name);
     print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
   }
@@ -148,7 +147,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
                   size: 7.0.w,
                 ),
                 Text(
-                  " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 5 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 5) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
+                  " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 3 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 3) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
                   style: TextStyle(color: cyan, fontSize: 6.0.w),
                 ),
                 SizedBox(

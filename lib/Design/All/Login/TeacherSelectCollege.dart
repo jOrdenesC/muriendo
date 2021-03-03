@@ -5,6 +5,7 @@ import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
+import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
@@ -17,8 +18,42 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
   String collegeSelected;
   List colleges = [];
   bool loading = false;
+  var dio = Dio();
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    setState(() {
+      loading = true;
+    });
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    var resProfessorData =
+        await dio.get("$urlServer/api/mobile/user/course?token=$token");
+    for (var i = 0; i < resProfessorData.data.length; i++) {
+      print(resProfessorData.data[i].toString());
+      if (colleges
+          .toString()
+          .contains(resProfessorData.data[i]["college"]["_id"].toString())) {
+        print("Ya existe");
+      } else {
+        colleges.add({
+          "_id": resProfessorData.data[i]["college"]["_id"],
+          "name": resProfessorData.data[i]["college"]["name"],
+          "selected": false
+        });
+      }
+    }
+    print(colleges.toList().toString());
+    setState(() {
+      loading = false;
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: blue,
@@ -32,7 +67,9 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
             buttonRounded(context, func: () {
               loading == false
                   ? toast(context, "Debes seleccionar un colegio.", red)
-                  : goToHome("teacher");
+                  : collegeSelected.isEmpty
+                      ? toast(context, "Debes seleccionar un colegio.", red)
+                      : goToHome("teacher");
             }, text: "   CONTINUAR")
           ],
         ),
@@ -67,50 +104,71 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
                         ),
                       )),
                     ),
-                    Container(
-                      width: 80.0.w,
-                      height: 50.0.h,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return InkWell(
+                  ],
+                ),
+                SizedBox(
+                  height: 5.0.h,
+                ),
+                Container(
+                  width: 80.0.w,
+                  height: 50.0.h,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          InkWell(
                             onTap: () {
                               for (var i = 0; i < colleges.length; i++) {
                                 if (index != i) {
                                   setState(() {
-                                    colleges[i].selected = false;
+                                    colleges[i]["selected"] = false;
                                   });
                                 } else {
                                   setState(() {
-                                    colleges[index].selected = true;
+                                    colleges[index]["selected"] = true;
+                                    collegeSelected = colleges[i]["name"];
+                                    print(collegeSelected);
                                   });
                                 }
                               }
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: colleges[index]["selected"]
+                                      ? green
+                                      : Colors.white,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
+                                      BorderRadius.all(Radius.circular(50))),
                               width: 75.0.w,
                               height: 8.0.h,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8.0, right: 8),
+                                padding: const EdgeInsets.only(
+                                    left: 15.0, right: 15),
                                 child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(colleges[index].name),
+                                    Text(
+                                      "${colleges[index]["name"]}"
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          color: colleges[index]["selected"]
+                                              ? Colors.white
+                                              : blue,
+                                          fontSize: 7.0.w),
+                                    ),
                                     CircleAvatar(
-                                      backgroundColor: colleges[index].selected
+                                      backgroundColor: colleges[index]
+                                              ["selected"]
                                           ? Colors.white
                                           : blue,
-                                      radius: 2.0.w,
+                                      radius: 5.0.w,
                                       child: Center(
-                                          child: colleges[index].selected
+                                          child: colleges[index]["selected"]
                                               ? Icon(
                                                   Icons.check,
                                                   color: blue,
+                                                  size: 8.0.w,
                                                 )
                                               : SizedBox.shrink()),
                                     )
@@ -118,16 +176,16 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
                                 ),
                               ),
                             ),
-                          );
-                        },
-                        itemCount: colleges.length,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 5.0.h,
-                ),
+                          ),
+                          SizedBox(
+                            height: 2.0.h,
+                          )
+                        ],
+                      );
+                    },
+                    itemCount: colleges.length,
+                  ),
+                )
               ],
             ),
     );

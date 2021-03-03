@@ -17,6 +17,7 @@ import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
+import 'dart:developer';
 
 class Login extends StatefulWidget {
   @override
@@ -241,7 +242,7 @@ class _LoginState extends State<Login> {
                                                     counterText: "",
                                                     labelStyle:
                                                         TextStyle(color: blue),
-                                                    hintText: "Contraseña",
+                                                    hintText: "CONTRASEÑA",
                                                     hintStyle: TextStyle(
                                                         color: blue,
                                                         fontSize: w * 0.07),
@@ -346,6 +347,7 @@ class _LoginState extends State<Login> {
   }
 
   loginConnect() async {
+    List colleges = [];
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       loading(context,
@@ -396,6 +398,7 @@ class _LoginState extends State<Login> {
 
           bool termsAccepted = prefs.getBool("termsAccepted") ?? false;
           String role = prefs.getString("scope");
+          getPhase(token);
           if (termsAccepted) {
             var responseAllData = await dio.get(
               "$urlServer/api/mobile/userData?token=$token",
@@ -421,25 +424,41 @@ class _LoginState extends State<Login> {
                   "status", responseAllData.data["status"].toString());
               prefs.setString(
                   "membership", responseAllData.data["membership"].toString());
+              goToHome(role == "professor" ? "teacher" : "user");
             } else {
-              if (responseAllData.data["institutions"].length == 0) {
+              print("TOKEEEEEEEEEEN $token");
+              var resProfessorData = await dio
+                  .get("$urlServer/api/mobile/user/course?token=$token");
+              log(resProfessorData.data.toString());
+              for (var i = 0; i < resProfessorData.data.length; i++) {
+                print(resProfessorData.data[i].toString());
+                if (colleges.toString().contains(
+                    resProfessorData.data[i]["college"]["_id"].toString())) {
+                  print("Ya existe");
+                } else {
+                  colleges.add({
+                    "_id": resProfessorData.data[i]["college"]["_id"],
+                    "name": resProfessorData.data[i]["college"]["name"],
+                    "selected": false
+                  });
+                }
+              }
+              if (colleges.length == 0) {
                 toast(context, "No posees colegios asignados.", red);
                 Navigator.pop(context);
-              } else if (responseAllData.data["institutions"].length > 1) {
+              } else if (colleges.length > 1) {
                 goToTeacherSelectCollege();
               } else {
-                goToHome("teacher");
+                // goToHome(role == "professor" ? "teacher" : "user");
               }
-              print("$responseAllData");
             }
-            goToHome(role == "professor" ? "teacher" : "user");
           } else {
             print(token);
             print(encode);
             goToTerms(encode["scope"] == "professor" ? "teacher" : "user");
           }
           // goToTeacherSelectCollege();
-          getPhase(token);
+
         }
       } catch (e) {
         print(e);

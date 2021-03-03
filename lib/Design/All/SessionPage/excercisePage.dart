@@ -264,39 +264,22 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 Stack(
                   children: [
                     SvgPicture.asset("Assets/figures/micro.svg"),
-                    Row(
-                      children: [
-                        SizedBox(width: 2.5.h),
-                        Container(
-                          margin: EdgeInsets.only(top: 50),
-                          // color: red,
-                          width: 45.0.h,
-                          height: 55.0.w,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Column(
-                              children: [
-                                FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        _.tipsData[_.globalindex.value - 1]
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 5.9.w,
-                                          color: blue,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                    Container(
+                      margin: EdgeInsets.only(top: 50, left: 50),
+                      // color: red,
+                      width: 35.0.h,
+                      height: 55.0.w,
+                      child: Column(
+                        children: [
+                          Text(
+                            _.tipsData[_.globalindex.value - 1].toUpperCase(),
+                            style: TextStyle(
+                              fontSize: _.tipsData[_.globalindex.value - 1].length > 80 ? 2.0.h : 2.5.h,
+                              color: blue,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -478,7 +461,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                                         fontSize:
                                             _.tipsData[_.globalindex.value - 1]
                                                         .length >
-                                                    110
+                                                    80
                                                 ? 2.0.h
                                                 : 2.5.h,
                                         color: blue),
@@ -860,7 +843,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                               height: 13.0.h,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 21.0),
+                              padding: const EdgeInsets.only(left: 0.0),
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Container(
@@ -1212,7 +1195,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         width: MediaQuery.of(context).size.width / 2.5,
         onComplete: () {
           _.demonstration.value = false;
-          _.playAudio(_.exercisesAudio[_.globalindex.value]);
+          _.playAudio(_.exercisesAudio[_.globalindex.value], false);
         },
       ),
     );
