@@ -38,9 +38,13 @@ class _SessionsState extends State<Sessions> {
     var all = await evidencesRepository.getAllEvidences();
     for (var i = 0; i < all.length; i++) {
       if (all.isNotEmpty) {
-        evidences.add(all[i].finished);
+        setState(() {
+          evidences.add(all[i].finished);
+        });
       } else {
-        evidences.add(false);
+        setState(() {
+          evidences.add(false);
+        });
       }
     }
     print(evidences.toString());

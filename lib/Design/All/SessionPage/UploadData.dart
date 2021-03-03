@@ -156,7 +156,9 @@ class _UploadDataState extends State<UploadData> {
         if (response.statusCode == 201) {
           toast(context, "Los datos se han subido correctamente.", green);
           await DownloadData().downloadEvidencesData(context);
-          GET.Get.offAll(HomePageUser());
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePageUser()));
+          // GET.Get.offAll(HomePageUser());
         }
       } catch (e) {
         if (e is DioError) {

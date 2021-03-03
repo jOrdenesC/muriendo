@@ -174,14 +174,14 @@ class Mp4Controller extends GetxController {
     int i = 0;
     print('Macro Timer Started');
     macroTip.value = tips[i];
-    playAudio(audioName[i], false);
+    playAudio(audioName[i], true);
     update();
     print("TIP MACRO TIP IS ${macroTip.value}");
     timer = Timer.periodic(Duration(seconds: time), (Timer _) {
       if (i != loops) {
         i++;
         macroTip.value = tips[i];
-        playAudio(audioName[i], false);
+        playAudio(audioName[i], true);
         update();
         print("TIP MACRO TIP IS ${macroTip.value}");
       } else {
