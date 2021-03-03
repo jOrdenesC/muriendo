@@ -149,7 +149,13 @@ class _SessionsState extends State<Sessions> {
         await getData();
         await getClasses();
         await getPhase();
+        setState(() {
+          loaded = false;
+        });
         await getEvidence();
+        setState(() {
+          loaded = true;
+        });
         prefs.setBool("downloaded", true);
         _restartApp();
       } catch (e) {
@@ -159,7 +165,13 @@ class _SessionsState extends State<Sessions> {
       try {
         await getClasses();
         await getPhase();
+        setState(() {
+          loaded = false;
+        });
         await getEvidence();
+        setState(() {
+          loaded = true;
+        });
       } catch (e) {
         print(e);
       }
