@@ -17,6 +17,7 @@ import 'package:orientation_helper/orientation_helper.dart';
 import 'package:get_it/get_it.dart';
 import '../../../Database/Repository/QuestionaryRepository.dart';
 import '../../../Functions/downloadData.dart';
+import '../../../Database/Repository/CourseRepository.dart';
 
 class UploadData extends StatefulWidget {
   @override
@@ -105,6 +106,8 @@ class _UploadDataState extends State<UploadData> {
   }
 
   uploadQuestionary(args, videoData) async {
+    CourseDataRepository courseDataRepository = GetIt.I.get();
+    var course = await courseDataRepository.getAllCourse();
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     QuestionaryRepository offlineRepository = GetIt.I.get();
@@ -121,7 +124,8 @@ class _UploadDataState extends State<UploadData> {
           "class": args["idClass"].toString(),
           "totalKilocalories": args["mets"],
           "questionnaire": res[0].questionary,
-          "videoData": videoData
+          "videoData": videoData,
+          "course": course[0].courseId
         };
         log(data.toString());
         Navigator.pop(context);

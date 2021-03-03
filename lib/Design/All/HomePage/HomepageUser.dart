@@ -9,7 +9,6 @@ import 'package:movitronia/Design/All/Reports/reports.dart';
 import 'package:movitronia/Design/All/Sessions/Sessions.dart';
 import 'package:movitronia/Design/All/Settings/ProfilePage.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
-import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -81,10 +81,7 @@ class _SessionsState extends State<Sessions> {
     var token = prefs.getString("token" ?? false);
     String level;
     CourseDataRepository courseDataRepository = GetIt.I.get();
-    Response response = await Dio().post(
-        "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
-        data: {"platform": "android"});
-    print("RESPONSEEE " + response.data);
+
     var course = await courseDataRepository.getAllCourse();
     if (course.isNotEmpty) {
       setState(() {
@@ -94,9 +91,35 @@ class _SessionsState extends State<Sessions> {
     setState(() {
       downloaded = down;
     });
+
+    String platform = "";
+    if (Platform.isAndroid) {
+      platform = "android";
+    } else if (Platform.isIOS) {
+      platform = "ios";
+    }
+
+    Response responseVideos = await Dio().post(
+        "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
+        data: {"platform": platform});
+    print("RESPONSE VIDEOS " + responseVideos.data);
+    Response responseAudiosExercise = await Dio().get(
+        "https://intranet.movitronia.com/api/mobile/audiosExercisesZip?token=$token");
+    print("RESPONSE AUDIOS EXERCISE " + responseAudiosExercise.data);
+    Response responseAudiosLevel = await Dio().get(
+        "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
+    print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
+
     if (downloaded == false || downloaded == null) {
-      await DownloadData()
-          .downloadAll(context, level, response.data, "videos.zip");
+      await DownloadData().downloadAll(
+          context: context,
+          level: level,
+          url1: responseVideos.data,
+          filename1: "videos.zip",
+          url2: responseAudiosExercise.data,
+          filename2: "audiosExercise.zip",
+          url3: responseAudiosLevel.data,
+          filename3: "audiosLevel.zip");
       // await downloadFiles(response.data, "videos.zip");
       // downloadFiles(url, filenames)
     }
@@ -200,19 +223,14 @@ class _SessionsState extends State<Sessions> {
                           dataClasses[3].number,
                           evidences[2] == true ? true : false),
                       //second
-                      InkWell(
-                        onTap: () {
-                          print("AAAAAAAAAA ${evidences[0]}");
-                        },
-                        child: item(
-                            phasePhone >= 1 && evidences[0]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 1 ? false : true,
-                            dataClasses[1],
-                            dataClasses[1].number,
-                            evidences[0] ? true : true),
-                      ),
+                      item(
+                          phasePhone >= 1 && evidences[0]
+                              ? "Assets/images/buttons/1unlock.png"
+                              : "Assets/images/buttons/1lock.png",
+                          phasePhone == 1 ? false : true,
+                          dataClasses[1],
+                          dataClasses[1].number,
+                          evidences[0] ? true : false),
                       //third
                       item(
                           phasePhone >= 1 && evidences[1]
@@ -610,6 +628,8 @@ class _SessionsState extends State<Sessions> {
   Widget item(String route, bool phase, var data, int number, bool lock) {
     return InkWell(
       onTap: () {
+        print(evidences.toString());
+        print(lock);
         if (lock == true) {
           goToPlanification(data, number);
         } else {

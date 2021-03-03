@@ -94,6 +94,7 @@ dependencies:
   path: ^1.7.0
   flutter_restart: ^0.0.3
   archive: ^2.0.13
+  flutter_time_button: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:

@@ -1,14 +1,11 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
-import '../../../Database/Models/ExcerciseData.dart';
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 class ExcercisesPage extends StatefulWidget {

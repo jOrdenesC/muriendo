@@ -21,7 +21,7 @@ class SembastTipsDataRepository extends TipsDataRepository {
 
   @override
   Future deleteTips(int gifDataId) async {
-    print("Deleting ${gifDataId}");
+    print("Deleting $gifDataId");
     await _store.record(gifDataId).delete(_database);
   }
 

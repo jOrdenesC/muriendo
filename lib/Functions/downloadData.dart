@@ -26,8 +26,6 @@ import '../Utils/ConnectionState.dart';
 import '../Design/Widgets/Loading.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
-import 'package:get/state_manager.dart';
-import 'package:path/path.dart' as p;
 
 class DownloadData {
   var dio = Dio();
@@ -75,110 +73,110 @@ class DownloadData {
     }
   }
 
-  downloadVideosTest(List videoList) async {
-    log(videoList.toString());
-    List<Future> listDio = [];
-    List dataDownloaded = [];
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    var dir = await getApplicationDocumentsDirectory();
-    var format = "";
-    var platform = "";
-    // String path = p.join("/storage/emulated/0/Movitronia/videos/");
-    if (Platform.isAndroid) {
-      format = ".webm";
-      platform = "android";
-      print("${dir.path}/videos/${videoList[0]}$format");
-    } else if (Platform.isIOS) {
-      format = ".mp4";
-      platform = "ios";
-      print("${dir.path}/videos/${videoList[0]}$format");
-    }
-    Response response2 = await dio.post(
-        "https://intranet.movitronia.com/api/mobile/videos?token=$token",
-        data: {"platform": platform, "videoList": videoList});
+  // downloadVideosTest(List videoList) async {
+  //   log(videoList.toString());
+  //   List<Future> listDio = [];
+  //   List dataDownloaded = [];
+  //   var prefs = await SharedPreferences.getInstance();
+  //   var token = prefs.getString("token");
+  //   var dir = await getApplicationDocumentsDirectory();
+  //   var format = "";
+  //   var platform = "";
+  //   // String path = p.join("/storage/emulated/0/Movitronia/videos/");
+  //   if (Platform.isAndroid) {
+  //     format = ".webm";
+  //     platform = "android";
+  //     print("${dir.path}/videos/${videoList[0]}$format");
+  //   } else if (Platform.isIOS) {
+  //     format = ".mp4";
+  //     platform = "ios";
+  //     print("${dir.path}/videos/${videoList[0]}$format");
+  //   }
+  //   Response response2 = await dio.post(
+  //       "https://intranet.movitronia.com/api/mobile/videos?token=$token",
+  //       data: {"platform": platform, "videoList": videoList});
 
-    print("Response Video List: ${response2.data.length}");
+  //   print("Response Video List: ${response2.data.length}");
 
-    for (int i = 0; i < response2.data.length; i++) {
-      print(response2.data[i] + "  ${i.toString()}");
-      //Try Catch
-      try {
-        // data.add({
-        //   "link": response2.data[i].toString(),
-        //   "route": "$path/${videoList[i]}$format",
-        //   "index": i.toString()
-        // });
+  //   for (int i = 0; i < response2.data.length; i++) {
+  //     print(response2.data[i] + "  ${i.toString()}");
+  //     //Try Catch
+  //     try {
+  //       // data.add({
+  //       //   "link": response2.data[i].toString(),
+  //       //   "route": "$path/${videoList[i]}$format",
+  //       //   "index": i.toString()
+  //       // });
 
-        listDio.add(dio.download(
-            response2.data[i], '${dir.path}/videos/${videoList[i]}$format',
-            onReceiveProgress: (rec, total) {
-          if (rec == total) {
-            print(i.toString() + " descargado");
-            dataDownloaded.add(response2.data[i]);
-          }
-        }));
-      } catch (e) {
-        log(e);
-      }
-    }
+  //       listDio.add(dio.download(
+  //           response2.data[i], '${dir.path}/videos/${videoList[i]}$format',
+  //           onReceiveProgress: (rec, total) {
+  //         if (rec == total) {
+  //           print(i.toString() + " descargado");
+  //           dataDownloaded.add(response2.data[i]);
+  //         }
+  //       }));
+  //     } catch (e) {
+  //       log(e);
+  //     }
+  //   }
 
-    // print(listDio[282].toString());
-    // log(data.toList().toString());
-    try {
-      await Future.wait(listDio, eagerError: true);
-    } catch (e) {
-      print(e);
-    }
+  //   // print(listDio[282].toString());
+  //   // log(data.toList().toString());
+  //   try {
+  //     await Future.wait(listDio, eagerError: true);
+  //   } catch (e) {
+  //     print(e);
+  //   }
 
-    List<Future> noExists = [];
+  //   List<Future> noExists = [];
 
-    getDownloaded(response2, videoList) {
-      response2.data.forEach((element) {
-        if (!dataDownloaded.contains(element)) {
-          noExists = response2.data
-              .toSet()
-              .difference(dataDownloaded.toSet())
-              .toList();
-          print("No descargado $element");
-          noExists.add(dio.download(response2[element],
-              '${dir.path}/videos/${videoList[element]}$format'));
-        }
-      });
+  //   getDownloaded(response2, videoList) {
+  //     response2.data.forEach((element) {
+  //       if (!dataDownloaded.contains(element)) {
+  //         noExists = response2.data
+  //             .toSet()
+  //             .difference(dataDownloaded.toSet())
+  //             .toList();
+  //         print("No descargado $element");
+  //         noExists.add(dio.download(response2[element],
+  //             '${dir.path}/videos/${videoList[element]}$format'));
+  //       }
+  //     });
 
-      // for (var i = 0; i < videoList.length; i++) {
-      //   if (videoList[i].contains(dataDownloaded[i])) {
-      //     print("descargado $i");
-      //   } else {
-      //     print("no descargado");
-      //     noExists.add(dio.download(
-      //         videoList[i], '${dir.path}/videos/${videoList[i]}$format',
-      //         onReceiveProgress: (rec, total) {
-      //       if (rec == total) {
-      //         print(i.toString() + " descargado");
-      //         dataDownloaded.add(response2.data[i]);
-      //       }
-      //     }));
-      //   }
-      // }
+  //     // for (var i = 0; i < videoList.length; i++) {
+  //     //   if (videoList[i].contains(dataDownloaded[i])) {
+  //     //     print("descargado $i");
+  //     //   } else {
+  //     //     print("no descargado");
+  //     //     noExists.add(dio.download(
+  //     //         videoList[i], '${dir.path}/videos/${videoList[i]}$format',
+  //     //         onReceiveProgress: (rec, total) {
+  //     //       if (rec == total) {
+  //     //         print(i.toString() + " descargado");
+  //     //         dataDownloaded.add(response2.data[i]);
+  //     //       }
+  //     //     }));
+  //     //   }
+  //     // }
 
-      return true;
-    }
+  //     return true;
+  //   }
 
-    if (videoList != dataDownloaded) {
-      print("descargando los que no se descargaron");
-      getDownloaded(response2, videoList);
-      await Future.wait(noExists);
-    }
+  // if (videoList != dataDownloaded) {
+  //   print("descargando los que no se descargaron");
+  //   getDownloaded(response2, videoList);
+  //   await Future.wait(noExists);
+  // }
 
-    print(dataDownloaded.toList().toString());
-    // for (var i = 0; i < res.length; i++) {
-    //   print(i);
-    //   print(res[i].toString());
-    // }
-    // print(res[0]);
-    print("ok");
-  }
+  //   print(dataDownloaded.toList().toString());
+  //   // for (var i = 0; i < res.length; i++) {
+  //   //   print(i);
+  //   //   print(res[i].toString());
+  //   // }
+  //   // print(res[0]);
+  //   print("ok");
+  // }
 
   downloadAudiosTest(List audioList, String type) async {
     log(audioList.toList().toString());
@@ -382,28 +380,28 @@ class DownloadData {
               //_tipsDataRepository.insertTips(tipsList[i]);
             }
           }
-          Navigator.pop(context);
+          // Navigator.pop(context);
           //print(indexes);
-          loading(
-            context,
-            title: Text(
-              "Descargando audios...",
-              style: TextStyle(color: blue, fontSize: 6.0.w),
-              textAlign: TextAlign.center,
-            ),
-            content: Column(
-              children: [
-                Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ],
-            ),
-          );
+          // loading(
+          //   context,
+          //   title: Text(
+          //     "Descargando audios...",
+          //     style: TextStyle(color: blue, fontSize: 6.0.w),
+          //     textAlign: TextAlign.center,
+          //   ),
+          //   content: Column(
+          //     children: [
+          //       Center(
+          //         child: Image.asset(
+          //           "Assets/videos/loading.gif",
+          //           width: 70.0.w,
+          //           height: 15.0.h,
+          //           fit: BoxFit.contain,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // );
           // await audioDownload(audioNames, "tip");
           // await downloadAudiosTest(audioNames, "tip");
           Navigator.pop(context);
@@ -460,52 +458,52 @@ class DownloadData {
             await _excerciseRepository.insertExcercise(excercisedata);
         print(result);
       }
-      loading(
-        context,
-        title: Text(
-          "Descargando vídeos",
-          style: TextStyle(color: blue, fontSize: 6.0.w),
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          children: [
-            Center(
-              child: Image.asset(
-                "Assets/videos/loading.gif",
-                width: 70.0.w,
-                height: 15.0.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ],
-        ),
-      );
+      // loading(
+      //   context,
+      //   title: Text(
+      //     "Descargando vídeos",
+      //     style: TextStyle(color: blue, fontSize: 6.0.w),
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   content: Column(
+      //     children: [
+      //       Center(
+      //         child: Image.asset(
+      //           "Assets/videos/loading.gif",
+      //           width: 70.0.w,
+      //           height: 15.0.h,
+      //           fit: BoxFit.contain,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
       // await videoDownload(videos);
       // await downloadVideosTest(videos);
-      Navigator.pop(context);
-      loading(
-        context,
-        title: Text(
-          "Descargando audios...",
-          style: TextStyle(color: blue, fontSize: 6.0.w),
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          children: [
-            Center(
-              child: Image.asset(
-                "Assets/videos/loading.gif",
-                width: 70.0.w,
-                height: 15.0.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ],
-        ),
-      );
+      // Navigator.pop(context);
+      // loading(
+      //   context,
+      //   title: Text(
+      //     "Descargando audios...",
+      //     style: TextStyle(color: blue, fontSize: 6.0.w),
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   content: Column(
+      //     children: [
+      //       Center(
+      //         child: Image.asset(
+      //           "Assets/videos/loading.gif",
+      //           width: 70.0.w,
+      //           height: 15.0.h,
+      //           fit: BoxFit.contain,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
       // await audioDownload(audios, "exercise");
       // await downloadAudiosTest(audios, "exercise");
-      Navigator.pop(context);
+      // Navigator.pop(context);
       /** Test Creating Exercise */
       print("Response ${response2.data[0]}");
     } else {
@@ -535,7 +533,7 @@ class DownloadData {
             onReceiveProgress: (actualbytes, totalbytes) {
           var percentage = actualbytes / totalbytes * 100;
           print(actualbytes / totalbytes * 100);
-          // print(percentage);
+          print(percentage);
         });
       } catch (e) {}
     }
@@ -714,15 +712,14 @@ class DownloadData {
     }
   }
 
-  Future downloadFiles(
-      String url, String filename, BuildContext context) async {
+  Future downloadFiles(String url, String filename, BuildContext context,
+      String messageAlert, String route) async {
     var dir = await getApplicationDocumentsDirectory();
     var progress = 0.0;
     loading(context,
         content: Center(
           child: Column(
             children: [
-              Text(progress.toString()),
               Image.asset(
                 "Assets/videos/loading.gif",
                 width: 70.0.w,
@@ -733,28 +730,30 @@ class DownloadData {
           ),
         ),
         title: Text(
-          "$progress %",
+          "$messageAlert",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 6.0.w),
         ));
     var dio = Dio();
-    await dio.download(url, "${dir.path}/videos/$filename",
+    await dio.download(url, "${dir.path}/$route/$filename",
         onReceiveProgress: (rec, total) {
       progress = (rec / total) * 100;
-      print(progress);
+      print("$progress %");
     });
 
-    await unarchiveAndSave(File("${dir.path}/videos/$filename"), context);
+    await unarchiveAndSave(
+        File("${dir.path}/$route/$filename"), context, route);
     print("finish");
     return null;
   }
 
-  Future unarchiveAndSave(var zippedFile, BuildContext context) async {
+  Future unarchiveAndSave(
+      var zippedFile, BuildContext context, String route) async {
     var dir = await getApplicationDocumentsDirectory();
     var bytes = zippedFile.readAsBytesSync();
     var archive = ZipDecoder().decodeBytes(bytes);
     for (var file in archive) {
-      var fileName = "${dir.path}/videos/${file.name}";
+      var fileName = "${dir.path}/$route/${file.name}";
       if (file.isFile) {
         var outFile = File(fileName);
         print('file: ' + outFile.path);
@@ -767,12 +766,23 @@ class DownloadData {
   }
 
   Future<bool> downloadAll(
-      BuildContext context, String level, url, filename) async {
-    print("LEVEEEEEEEEEEEEEEEEL $level");
+      {BuildContext context,
+      String level,
+      String url1,
+      String filename1,
+      String url2,
+      String filename2,
+      String url3,
+      String filename3}) async {
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
-      await downloadFiles(url, filename, context);
+      await downloadFiles(
+          url1, filename1, context, "Descargando vídeos", "videos");
+      await downloadFiles(url2, filename2, context,
+          "Descargando audios de ejercicios", "audios");
+      await downloadFiles(
+          url3, filename3, context, "Descargando audios de tips", "audios");
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);

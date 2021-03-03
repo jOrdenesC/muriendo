@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -53,7 +52,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       weight = res;
     });
 
-    final result = await _excerciseRepository //TODO Search for
+    final result = await _excerciseRepository 
         .getExcerciseName(widget.name);
     print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
@@ -91,7 +90,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
     }
     //Testing Out a List with audio Names
     //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
-    await audioPlayer.play("${dir.path}/audios/${audioName}.mp3");
+    await audioPlayer.play("${dir.path}/audios/$audioName.mp3");
   }
 
   Widget build(BuildContext context) {

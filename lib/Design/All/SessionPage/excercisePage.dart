@@ -1,10 +1,9 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:flutter_time_button/flutter_time_button.dart';
 import 'package:get/get.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 //import 'package:movitronia/Functions/Controllers/VideoController.dart';
@@ -35,7 +34,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
 
   @override
   void initState() {
-    // getRole();
+    getRole();
     //
 
     //----------------- -----------------------------------//
@@ -59,6 +58,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     mp4Controller.videoPlayerController1 = null;
     mp4Controller.videoPlayerController1.dispose();
     imageCache.clear();
+
     super.dispose();
   }
 
@@ -68,6 +68,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     setState(() {
       dev = dev1;
     });
+    print("IsDev: $dev");
   }
 
   @override
@@ -93,14 +94,19 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
 
           return Scaffold(
             floatingActionButton: dev
-                ? FloatingActionButton(
-                    child: Icon(Icons.skip_next),
-                    backgroundColor: green,
-                    onPressed: () {
-                      _.controllTimer(
-                          widget.id, widget.questionnaire, widget.number);
-                    },
-                  )
+                ? _.demonstration.value == false
+                    ? SizedBox(
+                        width: 140,
+                        child: TimeButton(
+                            label: "Espera para avanzar",
+                            timeout: 3,
+                            onPressed: () {
+                              _.controllTimer(widget.id, widget.questionnaire,
+                                  widget.number);
+                            },
+                            toastMessage: "Adelantado"),
+                      )
+                    : SizedBox.shrink()
                 : SizedBox.shrink(),
             bottomNavigationBar: orientation == Orientation.landscape
                 ? SizedBox.shrink()

@@ -224,7 +224,7 @@ class Mp4Controller extends GetxController {
     }
     //Testing Out a List with audio Names
     //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
-    await audioPlayer.play("${dir.path}/audios/${audioName}.mp3");
+    await audioPlayer.play("${dir.path}/audios/$audioName.mp3");
   }
 
   //Database Controller Actions
@@ -257,7 +257,7 @@ class Mp4Controller extends GetxController {
       String value = responseDB[0].excerciseNameAudioId;
       print("Getting Audio Name ID: $value");
       print("Getting Audio Name: ${responseDB[0].nameExcercise}");
-      print("Getting Audio List: ${excerciseCalentamientoList}");
+      print("Getting Audio List: $excerciseCalentamientoList");
       exercisesAudio.add(value);
       obj = {
         "time": responseclass[0].timeCalentamiento,
@@ -351,9 +351,7 @@ class Mp4Controller extends GetxController {
       } else {
         if (i == macro1 || i == macro2 || i == macro3) {
           print("TIP Into Macro");
-          //TODO do some shit
           tipsList.add("   Prepárate para el \nsiguiente ejercicio");
-          //TODO add to a list
           macroList.add(responseclass[0].tips[i]);
           for (int i = 0; i < responseclass[0].tips[i].length; i++) {
             print("Result : ${responseclass[0].tips[i][0].toString()}");

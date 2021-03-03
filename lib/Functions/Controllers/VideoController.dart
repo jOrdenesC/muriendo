@@ -5,8 +5,6 @@ import 'dart:io';
 //import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-
-import 'package:chewie/chewie.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/state_manager.dart';
@@ -14,7 +12,6 @@ import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Models/ExcerciseData.dart';
 import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:quiver/async.dart';
 import 'package:video_player/video_player.dart';
 
@@ -141,7 +138,6 @@ class WebmController extends GetxController {
   Future<void> initializePlayer() async {
     videoPlayerController1 = VideoPlayerController.asset(
         'Assets/videos/${giflistdb[index.value].videoName}.webm');
-    //TODO
 
     await videoPlayerController1
       ..initialize().then((value) => null)
@@ -222,7 +218,6 @@ class WebmController extends GetxController {
   }
 
   _loadGifs() async {
-    //TODO Implement a copy of the same excercises twice to see memory load on device
     final gifs = await _gifRepository.loopSearch([
       12,
       7,
