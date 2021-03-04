@@ -25,20 +25,18 @@ class _ShowCycleState extends State<ShowCycle> {
               : yellow,
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 9.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         backgroundColor: cyan,
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text(args["nameCourse"].toString().toUpperCase())),
+              height: 2.0.h,
+            ),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(args["nameCourse"].toString().toUpperCase())),
           ],
         ),
         centerTitle: true,

@@ -8,6 +8,8 @@ import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:get/get.dart';
+import '../HomePage/HomePageTeacher.dart';
 
 class TeacherSelectCollege extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class TeacherSelectCollege extends StatefulWidget {
 }
 
 class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
-  String collegeSelected;
+  Map collegeSelected;
   List colleges = [];
   bool loading = false;
   var dio = Dio();
@@ -65,11 +67,16 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () {
-              loading == false
+              loading == true
                   ? toast(context, "Debes seleccionar un colegio.", red)
-                  : collegeSelected.isEmpty
-                      ? toast(context, "Debes seleccionar un colegio.", red)
-                      : goToHome("teacher");
+                  : collegeSelected.isNotEmpty && loading == false
+                      ? Get.to(HomePageTeacher(
+                          nameCollege: collegeSelected["name"],
+                          classId: collegeSelected["_id"],
+                        ))
+
+                      // goToHome("teacher", collegeSelected)
+                      : toast(context, "Debes seleccionar un colegio.", red);
             }, text: "   CONTINUAR")
           ],
         ),
@@ -126,7 +133,7 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
                                 } else {
                                   setState(() {
                                     colleges[index]["selected"] = true;
-                                    collegeSelected = colleges[i]["name"];
+                                    collegeSelected = colleges[i];
                                     print(collegeSelected);
                                   });
                                 }
@@ -198,7 +205,7 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
     if (hasInternet) {
       var dio = Dio();
       try {
-        Response response = await dio.get("path/$teacherId");
+        var response = await dio.get("path/$teacherId");
         if (response.statusCode == 200) {
           for (var i = 0; i < response.data.length; i++) {
             colleges.add({"name": response.data[i].name, "selected": false});

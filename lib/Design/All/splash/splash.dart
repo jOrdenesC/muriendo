@@ -115,7 +115,7 @@ class _SplashState extends State<Splash> {
 
             if (logged) {
               if (scope == "user") {
-                goToHome(scope);
+                goToHome(scope, {});
               } else {
                 for (var i = 0; i < resProfessorData.data.length; i++) {
                   print(resProfessorData.data[i].toString());
@@ -134,7 +134,7 @@ class _SplashState extends State<Splash> {
                 if (colleges.length > 1) {
                   goToTeacherSelectCollege();
                 } else {
-                  goToHome(scope);
+                  goToHome(scope, colleges[0]);
                 }
               }
             } else {

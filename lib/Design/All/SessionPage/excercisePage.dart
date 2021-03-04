@@ -13,6 +13,7 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Widgets/Toast.dart';
 
 //import '../../../Functions/Controllers/VideoController.dart';
 
@@ -31,6 +32,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   //bool isPause = false;
   Mp4Controller mp4Controller = Mp4Controller();
   bool dev = false;
+  int count = 0;
 
   @override
   void initState() {
@@ -92,121 +94,124 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
             }
           }
 
-          return Scaffold(
-            floatingActionButton: dev
-                ? _.demonstration.value == false
-                    ? SizedBox(
-                        width: 140,
-                        child: TimeButton(
-                            label: "Espera para avanzar",
-                            timeout: 3,
-                            onPressed: () {
-                              _.controllTimer(widget.id, widget.questionnaire,
-                                  widget.number);
-                            },
-                            toastMessage: "Adelantado"),
-                      )
-                    : SizedBox.shrink()
-                : SizedBox.shrink(),
-            bottomNavigationBar: orientation == Orientation.landscape
-                ? SizedBox.shrink()
-                :
-                // _.isPause.value == false
-                //     ? SizedBox.shrink()
-                //     :
-
-                _.macroPause.value || _.microPause.value
-                    ? SizedBox.shrink()
-                    : Container(
-                        width: 100.0.w,
-                        height: 10.0.h,
-                        color: cyan,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            buttonRounded(
-                              context,
-                              func: () {
-                                if (_.gif.value == false) {
-                                  _.pauseController();
-                                } else {
-                                  goToUploadData();
-                                }
-                                // setState(() {
-                                //   isPause = !isPause;
-                                // });
+          return WillPopScope(
+            onWillPop: pop,
+            child: Scaffold(
+              floatingActionButton: dev
+                  ? _.demonstration.value == false
+                      ? SizedBox(
+                          width: 140,
+                          child: TimeButton(
+                              label: "Espera para avanzar",
+                              timeout: 3,
+                              onPressed: () {
+                                _.controllTimer(widget.id, widget.questionnaire,
+                                    widget.number);
                               },
-                              icon: Icon(
-                                _.isPause.value == false
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: blue,
-                                size: 4.0.h,
-                              ),
-                              text: _.isPause.value == false
-                                  ? "PAUSAR"
-                                  : "  REANUDAR",
-                            )
-                          ],
+                              toastMessage: "Adelantado"),
+                        )
+                      : SizedBox.shrink()
+                  : SizedBox.shrink(),
+              bottomNavigationBar: orientation == Orientation.landscape
+                  ? SizedBox.shrink()
+                  :
+                  // _.isPause.value == false
+                  //     ? SizedBox.shrink()
+                  //     :
+
+                  _.macroPause.value || _.microPause.value
+                      ? SizedBox.shrink()
+                      : Container(
+                          width: 100.0.w,
+                          height: 10.0.h,
+                          color: cyan,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              buttonRounded(
+                                context,
+                                func: () {
+                                  if (_.gif.value == false) {
+                                    _.pauseController();
+                                  } else {
+                                    goToUploadData();
+                                  }
+                                  // setState(() {
+                                  //   isPause = !isPause;
+                                  // });
+                                },
+                                icon: Icon(
+                                  _.isPause.value == false
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  color: blue,
+                                  size: 4.0.h,
+                                ),
+                                text: _.isPause.value == false
+                                    ? "PAUSAR"
+                                    : "  REANUDAR",
+                              )
+                            ],
+                          ),
                         ),
+              backgroundColor: _.microPause.value
+                  ? _.index < 2
+                      ? cyan
+                      : _.index < 9
+                          ? green
+                          : yellow
+                  : blue,
+              appBar: orientation == Orientation.landscape
+                  ? null
+                  : AppBar(
+                      backgroundColor: cyan,
+                      elevation: 0,
+                      leading: IconButton(
+                        icon: Icon(Icons.arrow_back,
+                            size: 9.0.w, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
                       ),
-            backgroundColor: _.microPause.value
-                ? _.index < 2
-                    ? cyan
-                    : _.index < 9
-                        ? green
-                        : yellow
-                : blue,
-            appBar: orientation == Orientation.landscape
-                ? null
-                : AppBar(
-                    backgroundColor: cyan,
-                    elevation: 0,
-                    leading: IconButton(
-                      icon: Icon(Icons.arrow_back,
-                          size: 9.0.w, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+                      title: Column(
+                        children: [
+                          SizedBox(
+                            height: 2.0.h,
+                          ),
+                          FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Text(
+                                "SESIÓN ${widget.number}",
+                                style: TextStyle(fontSize: 5.0.w),
+                              )),
+                        ],
+                      ),
+                      centerTitle: true,
                     ),
-                    title: Column(
-                      children: [
-                        SizedBox(
-                          height: 2.0.h,
+              body: _.startgif == false
+                  ? orientation == Orientation.portrait
+                      ? preparePortrait()
+                      : prepareLandscape()
+                  : _.demonstration.value == true
+                      ? orientation == Orientation.portrait
+                          ? demostrationExcercisePortrait(_)
+                          : demostrationExcerciseLandscape(_)
+                      : OrientationBuilder(
+                          builder: (context, orientation) {
+                            if (orientation == Orientation.portrait) {
+                              return _.microPause.value == false
+                                  ? portraitDesign(_)
+                                  : _.macroPause.value == true
+                                      ? macroPausePortrait(_)
+                                      : pausePortrait(_);
+                            } else {
+                              return _.microPause.value == false
+                                  ? landscapeDesign(_)
+                                  : _.macroPause.value
+                                      ? macroPauseLandscape(_)
+                                      : pauseLandscape(_);
+                            }
+                          },
                         ),
-                        FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Text(
-                              "SESIÓN ${widget.number}",
-                              style: TextStyle(fontSize: 5.0.w),
-                            )),
-                      ],
-                    ),
-                    centerTitle: true,
-                  ),
-            body: _.startgif == false
-                ? orientation == Orientation.portrait
-                    ? preparePortrait()
-                    : prepareLandscape()
-                : _.demonstration.value == true
-                    ? orientation == Orientation.portrait
-                        ? demostrationExcercisePortrait(_)
-                        : demostrationExcerciseLandscape(_)
-                    : OrientationBuilder(
-                        builder: (context, orientation) {
-                          if (orientation == Orientation.portrait) {
-                            return _.microPause.value == false
-                                ? portraitDesign(_)
-                                : _.macroPause.value == true
-                                    ? macroPausePortrait(_)
-                                    : pausePortrait(_);
-                          } else {
-                            return _.microPause.value == false
-                                ? landscapeDesign(_)
-                                : _.macroPause.value
-                                    ? macroPauseLandscape(_)
-                                    : pauseLandscape(_);
-                          }
-                        },
-                      ),
+            ),
           );
         });
   }
@@ -274,7 +279,11 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                           Text(
                             _.tipsData[_.globalindex.value - 1].toUpperCase(),
                             style: TextStyle(
-                              fontSize: _.tipsData[_.globalindex.value - 1].length > 80 ? 2.0.h : 2.5.h,
+                              fontSize:
+                                  _.tipsData[_.globalindex.value - 1].length >
+                                          80
+                                      ? 2.0.h
+                                      : 2.5.h,
                               color: blue,
                             ),
                           ),
@@ -428,29 +437,32 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                         height: 40.0.h,
                         child: Center(
                             child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 10.0.w,
-                                ),
-                                /*Text(
-                                  _.tips[_.index.value],
-                                  style: TextStyle(
-                                    fontSize: 6.0.w,
-                                    color: blue,
-                                  ),
-                                )*/
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     SizedBox(
+                            //       width: 10.0.w,
+                            //     ),
+                            //     /*Text(
+                            //       _.tips[_.index.value],
+                            //       style: TextStyle(
+                            //         fontSize: 6.0.w,
+                            //         color: blue,
+                            //       ),
+                            //     )*/
+                            //   ],
+                            // ),
+                            Text(""),
+                            Text(""),
+                            Text(""),
                             Text(""),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width: 10.0.w,
+                                  width: 11.0.w,
                                 ),
                                 Flexible(
                                   fit: FlexFit.loose,
@@ -461,9 +473,9 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                                         fontSize:
                                             _.tipsData[_.globalindex.value - 1]
                                                         .length >
-                                                    80
-                                                ? 2.0.h
-                                                : 2.5.h,
+                                                    85
+                                                ? 2.05.h
+                                                : 2.4.h,
                                         color: blue),
                                     textAlign: TextAlign.center,
                                   ),
@@ -1352,5 +1364,25 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         ],
       ),
     );
+  }
+
+  Future<bool> pop() async {
+    setState(() {
+      count++;
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            count = 0;
+          });
+        }
+      });
+    });
+    if (count == 2) {
+      Navigator.pop(context);
+    } else if (count <= 1) {
+      toast(context, "Presiona nuevamente para salir de la clase.", red);
+    }
+
+    return false;
   }
 }

@@ -200,14 +200,15 @@ class Mp4Controller extends GetxController {
         final result = await _tipsDataRepository.getTips(macroList[index][i]);
         print("MacroResult: ${result[0].tip}");
         print(
-            "MacroResult time: ${macroTime[step.value] / macroList[index].length} ");
+            "MacroResult time: ${macroTime[index] / macroList[index].length} ");
         tips.add(result[0].tip);
         audioTip.add(result[0].audioTips);
       }
       /**Setting Counter for MacroTimer */
-      double getTime = macroTime[step.value] / macroList[index].length;
+      double getTime = macroTime[index] / macroList[index].length;
+      print("MacroResult: ${tips}");
       macrocounter.value = getTime.floor(); //TODO PROBABLY UNNECCESARY
-      int loops = macroList[step.value].length;
+      int loops = macroList[index].length;
       macroTimer(tips, loops, getTime.floor(), audioTip);
       print(tips);
     } else {

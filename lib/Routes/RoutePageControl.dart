@@ -8,13 +8,12 @@ goToLogin() {
   Get.toNamed(AppRoutes.login.name);
 }
 
-goToHome(
-  String role,
-) {
+goToHome(String role, Map college) {
   if (role == "user") {
     Get.toNamed(AppRoutes.homeUser.name, arguments: role);
   } else {
-    Get.toNamed(AppRoutes.homeTeacher.name, arguments: role);
+    Get.toNamed(AppRoutes.homeTeacher.name,
+        arguments: {"role": role, "college": college});
   }
 }
 

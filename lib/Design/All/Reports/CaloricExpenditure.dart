@@ -210,7 +210,8 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
           for (var i = 0; i < res.data.length; i++) {
             namesClass
                 .add("Sesión ${res.data[i]["class"]["number"]}".toString());
-            kCal.add(double.parse(res.data[i]["totalKilocalories"].toString()));
+            kCal.add(double.parse(
+                res.data[i]["totalKilocalories"].toStringAsFixed(2)));
             EvidencesSend evidencesSend = EvidencesSend(
                 number: res.data[i]["class"]["number"],
                 idEvidence: res.data[i]["class"]["_id"],

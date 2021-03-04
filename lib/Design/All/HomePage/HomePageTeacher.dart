@@ -10,8 +10,12 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
+import 'package:orientation_helper/orientation_helper.dart';
 
 class HomePageTeacher extends StatefulWidget {
+  final String classId;
+  final String nameCollege;
+  HomePageTeacher({this.classId, this.nameCollege});
   @override
   _HomePageTeacherState createState() => _HomePageTeacherState();
 }
@@ -22,11 +26,20 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
-
+  var args;
   @override
   void initState() {
     super.initState();
-    _screens.add(Cycles());
+    // Future.delayed(Duration.zero, () {
+    //   setState(() {
+    //     args =
+    //         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
+    //   });
+    //   print(args);
+    // });
+    _screens.add(Cycles(
+      courseId: widget.classId,
+    ));
     _screens.add(SearchEvidences());
     _screens.add(Support());
   }

@@ -45,9 +45,9 @@ class _SupportState extends State<Support> {
           SizedBox(
             height: 10.0.h,
           ),
-          button("CLAVE INTRANET", "342452"),
+          // button("CLAVE INTRANET", "342452"),
           SizedBox(
-            height: 3.0.h,
+            height: 6.0.h,
           ),
           button("FONO SOPORTE", "+56 9 2341 3425"),
           SizedBox(

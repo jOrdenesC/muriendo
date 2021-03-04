@@ -713,7 +713,7 @@ class DownloadData {
   }
 
   Future downloadFiles(String url, String filename, BuildContext context,
-      String messageAlert, String route) async {
+      String messageAlert, String route, String platform) async {
     var dir = await getApplicationDocumentsDirectory();
     var progress = 0.0;
     loading(context,
@@ -740,15 +740,20 @@ class DownloadData {
       progress = (rec / total) * 100;
       print("$progress %");
     });
+    if (route == "videos") {
+      await unarchiveAndSaveVideos(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    } else {
+      await unarchiveAndSave(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    }
 
-    await unarchiveAndSave(
-        File("${dir.path}/$route/$filename"), context, route);
     print("finish");
     return null;
   }
 
-  Future unarchiveAndSave(
-      var zippedFile, BuildContext context, String route) async {
+  Future unarchiveAndSave(var zippedFile, BuildContext context, String route,
+      String platform) async {
     var dir = await getApplicationDocumentsDirectory();
     var bytes = zippedFile.readAsBytesSync();
     var archive = ZipDecoder().decodeBytes(bytes);
@@ -765,6 +770,27 @@ class DownloadData {
     return null;
   }
 
+  Future unarchiveAndSaveVideos(var zippedFile, BuildContext context,
+      String route, String platform) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = platform == "ios"
+          ? "${dir.path}/$route/${file.name}".replaceAll(" ", "")
+          : "${dir.path}/$route/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+
+    Navigator.pop(context);
+    return null;
+  }
+
   Future<bool> downloadAll(
       {BuildContext context,
       String level,
@@ -773,16 +799,17 @@ class DownloadData {
       String url2,
       String filename2,
       String url3,
-      String filename3}) async {
+      String filename3,
+      String platform}) async {
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       await downloadFiles(
-          url1, filename1, context, "Descargando vídeos", "videos");
+          url1, filename1, context, "Descargando vídeos", "videos", platform);
       await downloadFiles(url2, filename2, context,
-          "Descargando audios de ejercicios", "audios");
-      await downloadFiles(
-          url3, filename3, context, "Descargando audios de tips", "audios");
+          "Descargando audios de ejercicios", "audios", platform);
+      await downloadFiles(url3, filename3, context,
+          "Descargando audios de tips", "audios", platform);
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);

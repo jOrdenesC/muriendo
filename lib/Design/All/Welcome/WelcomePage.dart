@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -12,6 +14,8 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  List colleges = [];
+  bool loading = false;
   String name;
   getName() async {
     var prefs = await SharedPreferences.getInstance();
@@ -20,12 +24,42 @@ class _WelcomePageState extends State<WelcomePage> {
       var res = nameLocal.toString().split(" ");
       name = res[0].toUpperCase();
     });
+    await getData();
   }
 
   @override
   void initState() {
     super.initState();
     getName();
+  }
+
+  getData() async {
+    var dio = Dio();
+    setState(() {
+      loading = true;
+    });
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    var resProfessorData =
+        await dio.get("$urlServer/api/mobile/user/course?token=$token");
+    for (var i = 0; i < resProfessorData.data.length; i++) {
+      print(resProfessorData.data[i].toString());
+      if (colleges
+          .toString()
+          .contains(resProfessorData.data[i]["college"]["_id"].toString())) {
+        print("Ya existe");
+      } else {
+        colleges.add({
+          "_id": resProfessorData.data[i]["college"]["_id"],
+          "name": resProfessorData.data[i]["college"]["name"],
+          "selected": false
+        });
+      }
+    }
+    print(colleges.toList().toString());
+    setState(() {
+      loading = false;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -39,9 +73,25 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buttonRounded(context, func: () {
-              goToHome(role, );
-            }, text: "   COMENZAR")
+            loading == false
+                ? buttonRounded(context, func: () {
+                    if (role == "user") {
+                      goToHome(
+                        role,
+                        {}
+                      );
+                    } else {
+                      if (colleges.length > 1) {
+                        goToTeacherSelectCollege();
+                      } else {
+                        goToHome(
+                          role,
+                          colleges[0]
+                        );
+                      }
+                    }
+                  }, text: "   COMENZAR")
+                : SizedBox.shrink()
           ],
         ),
       ),

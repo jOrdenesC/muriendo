@@ -98,9 +98,13 @@ class _SessionsState extends State<Sessions> {
 
     String platform = "";
     if (Platform.isAndroid) {
-      platform = "android";
+      setState(() {
+        platform = "android";
+      });
     } else if (Platform.isIOS) {
-      platform = "ios";
+      setState(() {
+        platform = "ios";
+      });
     }
 
     Response responseVideos = await Dio().post(
@@ -119,6 +123,7 @@ class _SessionsState extends State<Sessions> {
           context: context,
           level: level,
           url1: responseVideos.data,
+          platform: platform,
           filename1: "videos.zip",
           url2: responseAudiosExercise.data,
           filename2: "audiosExercise.zip",

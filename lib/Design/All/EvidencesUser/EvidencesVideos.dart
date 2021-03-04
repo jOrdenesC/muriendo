@@ -17,6 +17,7 @@ class EvidencesVideos extends StatefulWidget {
 class _EvidencesVideosState extends State<EvidencesVideos> {
   EvidencesRepository evidencesRepository = GetIt.I.get();
   List<bool> evidences = [];
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -24,6 +25,9 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
   }
 
   getEvidence() async {
+    setState(() {
+      loading = true;
+    });
     var all = await evidencesRepository.getAllEvidences();
     for (var i = 0; i < all.length; i++) {
       if (all.isNotEmpty) {
@@ -37,6 +41,9 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
       }
     }
     print(evidences.toString());
+    setState(() {
+      loading = false;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -61,7 +68,16 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
         ),
         centerTitle: true,
       ),
-      body: body(),
+      body: loading
+          ? Center(
+              child: Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
+            )
+          : body(),
     );
   }
 

@@ -424,7 +424,7 @@ class _LoginState extends State<Login> {
                   "status", responseAllData.data["status"].toString());
               prefs.setString(
                   "membership", responseAllData.data["membership"].toString());
-              goToHome(role == "professor" ? "teacher" : "user");
+              goToHome("user", {});
             } else {
               print("TOKEEEEEEEEEEN $token");
               var resProfessorData = await dio

@@ -59,9 +59,9 @@ class _ExcercisesPageState extends State<ExcercisesPage>
           Container(
             width: w,
             height: h,
-            color: name == "calentamiento"
+            color: name["name"] == "calentamiento"
                 ? cyan
-                : name == "desarrollo"
+                : name["name"] == "desarrollo"
                     ? green
                     : yellow,
           ),
