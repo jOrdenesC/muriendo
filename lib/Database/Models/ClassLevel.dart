@@ -1,7 +1,7 @@
 class ClassLevel {
   final int id;
   //Name of Gif document
-  final List<dynamic> tips; 
+  final List<dynamic> tips;
   //MicroPause
   final List<dynamic> pauses;
   //MacroPause

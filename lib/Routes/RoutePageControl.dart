@@ -33,14 +33,18 @@ goToWelcome(String role) {
   Get.toNamed(AppRoutes.welcome.name, arguments: role);
 }
 
-goToPlanification(ClassLevel data, int number) {
-  Get.toNamed(AppRoutes.planification.name,
-      arguments: {"data": data, "number": number});
+goToPlanification(ClassLevel data, int number, bool isTeacher, Map dataClass) {
+  Get.toNamed(AppRoutes.planification.name, arguments: {
+    "data": data,
+    "number": number,
+    "isTeacher": isTeacher,
+    "dataClass": dataClass
+  });
 }
 
-goToExcercisesPage(String name, List data) {
+goToExcercisesPage(String name, List data, bool isTeacher) {
   Get.toNamed(AppRoutes.excercisesPage.name,
-      arguments: {"data": data, "name": name});
+      arguments: {"data": data, "name": name, "isTeacher": isTeacher});
 }
 
 // goToSessionPage(String id) {
@@ -148,9 +152,15 @@ goToshowCycle(String nameCourse, int cycle) {
       arguments: {"nameCourse": nameCourse, "cycle": cycle});
 }
 
-goToShowPhases(int cycle, String title, bool isEvidence) {
-  Get.toNamed(AppRoutes.showPhases.name,
-      arguments: {"cycle": cycle, "title": title, "isEvidence": isEvidence});
+goToShowPhases(
+    int cycle, String title, bool isEvidence, bool isDefault, int level) {
+  Get.toNamed(AppRoutes.showPhases.name, arguments: {
+    "cycle": cycle,
+    "title": title,
+    "isEvidence": isEvidence,
+    "isDefault": isDefault,
+    "level": level
+  });
 }
 
 goToCreateClass() {
@@ -203,8 +213,9 @@ closeSession() async {
   Get.offAllNamed(AppRoutes.login.name);
 }
 
-goToDetailsExcercises(String name, String asset, String kcal, String desc) {
-  Get.to(DetailsExcercise(name, kcal, desc));
+goToDetailsExcercises(
+    String name, String asset, String kcal, String desc, bool isTeacher) {
+  Get.to(DetailsExcercise(name, kcal, desc, isTeacher));
 }
 
 goToHomeTeacher() {

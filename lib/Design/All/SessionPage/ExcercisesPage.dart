@@ -114,7 +114,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 "${name["data"][index]}",
                                 "Assets/videos/C12",
                                 "${res[0].mets}",
-                                "${res[0].recommendation}");
+                                "${res[0].recommendation}",
+                                name["isTeacher"]);
                           },
                           child: Container(
                             color: Colors.white,
@@ -157,7 +158,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                     "${name["data"][index]}",
                                     "Assets/videos/C12",
                                     "${res[0].mets}",
-                                    "${res[0].recommendation}");
+                                    "${res[0].recommendation}",
+                                    name["isTeacher"]);
                               },
                               child: Container(
                                 color: Colors.white,
@@ -200,7 +202,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                     "${name["data"][index]}",
                                     "Assets/videos/C12",
                                     "${res[0].mets}",
-                                    "${res[0].recommendation}");
+                                    "${res[0].recommendation}",
+                                    name["isTeacher"]);
                               },
                               child: Container(
                                 color: Colors.white,

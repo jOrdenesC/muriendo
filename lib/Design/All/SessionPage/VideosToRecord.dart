@@ -183,7 +183,8 @@ class _VideosToRecordState extends State<VideosToRecord>
                               Get.to(DetailsExcercise(
                                   widget.exercises[0],
                                   res[0].mets.toString(),
-                                  res[0].recommendation));
+                                  res[0].recommendation,
+                                  false));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -240,7 +241,8 @@ class _VideosToRecordState extends State<VideosToRecord>
                               Get.to(DetailsExcercise(
                                   widget.exercises[1],
                                   res[0].mets.toString(),
-                                  res[0].recommendation));
+                                  res[0].recommendation,
+                                  false));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -286,7 +288,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                             height: 5.0.h,
                           ),
                           Text(
-                            'Graba por 20 segundos estos dos ejercicios',
+                            'Graba por 30 segundos estos dos ejercicios',
                             style: TextStyle(fontSize: 6.0.w, color: blue),
                             textAlign: TextAlign.center,
                           ),

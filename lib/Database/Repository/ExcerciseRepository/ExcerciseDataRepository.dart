@@ -11,6 +11,8 @@ abstract class ExcerciseDataRepository {
 
   Future<List<ExcerciseData>> getExcerciseID(int id);
 
+  Future<List<ExcerciseData>> getExerciseById(String id);
+
   Future<List<ExcerciseData>> getExcerciseName(String name);
 
   Future<List<ExcerciseData>> loopSearch(List<int> listId);

@@ -36,7 +36,8 @@ class _ShowCycleState extends State<ShowCycle> {
             ),
             FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text(args["nameCourse"].toString().toUpperCase())),
+                child: Text(
+                    args["nameCourse"].toString().toUpperCase() + " BÁSICO")),
           ],
         ),
         centerTitle: true,
@@ -96,7 +97,8 @@ class _ShowCycleState extends State<ShowCycle> {
                   ),
                   InkWell(
                     onTap: () {
-                      goToShowPhases(args["cycle"], "POR DEFECTO", false);
+                      goToShowPhases(args["cycle"], "POR DEFECTO", false, true,
+                          int.parse(args["nameCourse"]));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -144,7 +146,8 @@ class _ShowCycleState extends State<ShowCycle> {
                   ),
                   InkWell(
                     onTap: () {
-                      goToShowPhases(args["cycle"], "CREAR CLASES", false);
+                      goToShowPhases(
+                          args["cycle"], "CREAR CLASES", false, false, null);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,

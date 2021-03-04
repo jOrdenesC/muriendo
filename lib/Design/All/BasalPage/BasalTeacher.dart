@@ -53,7 +53,8 @@ class _BasalTeacherState extends State<BasalTeacher> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () {
-              goToWelcome(role);
+              // goToWelcome(role);
+              validate();
             }, text: "   ENVIAR")
           ],
         ),
@@ -100,6 +101,7 @@ class _BasalTeacherState extends State<BasalTeacher> {
                       children: [
                         item(
                             child: TextField(
+                                enabled: false,
                                 controller: rut,
                                 style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
@@ -117,16 +119,16 @@ class _BasalTeacherState extends State<BasalTeacher> {
                                     hintStyle: TextStyle(color: Colors.white),
                                     hintText: 'Ingresa tu nombre')),
                             name: "Nombre"),
-                        item(
-                            child: TextField(
-                                controller: college,
-                                keyboardType: TextInputType.text,
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(color: Colors.white),
-                                    hintText: 'Ingresa tu colegio')),
-                            name: "Colegio"),
+                        // item(
+                        //     child: TextField(
+                        //         controller: college,
+                        //         keyboardType: TextInputType.text,
+                        //         style: TextStyle(color: Colors.white),
+                        //         decoration: InputDecoration(
+                        //             border: InputBorder.none,
+                        //             hintStyle: TextStyle(color: Colors.white),
+                        //             hintText: 'Ingresa tu colegio')),
+                        //     name: "Colegio"),
                         item(
                             child: TextField(
                                 controller: phone,
@@ -147,16 +149,16 @@ class _BasalTeacherState extends State<BasalTeacher> {
                                     hintStyle: TextStyle(color: Colors.white),
                                     hintText: 'Ingresa tu correo')),
                             name: "Correo electrónico"),
-                        item(
-                            child: TextField(
-                                controller: comune,
-                                keyboardType: TextInputType.text,
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(color: Colors.white),
-                                    hintText: 'Ingresa tu comuna')),
-                            name: "Comuna"),
+                        // item(
+                        //     child: TextField(
+                        //         controller: comune,
+                        //         keyboardType: TextInputType.text,
+                        //         style: TextStyle(color: Colors.white),
+                        //         decoration: InputDecoration(
+                        //             border: InputBorder.none,
+                        //             hintStyle: TextStyle(color: Colors.white),
+                        //             hintText: 'Ingresa tu comuna')),
+                        //     name: "Comuna"),
                       ],
                     ),
                   ),
@@ -200,14 +202,8 @@ class _BasalTeacherState extends State<BasalTeacher> {
       toast(context, "No puedes dejar el rut vacío.", red);
     } else if (name.text.isEmpty) {
       toast(context, "No puedes dejar el nombre vacío.", red);
-    } else if (phone.text.isEmpty) {
-      toast(context, "No puedes dejar el número de teléfono vacío.", red);
-    } else if (comune.text.isEmpty) {
-      toast(context, "No puedes dejar la comuna vacía.", red);
     } else if (mail.text.isEmpty) {
       toast(context, "No puedes dejar el correo vacío.", red);
-    } else if (college.text.isEmpty) {
-      toast(context, "No puedes dejar el colegio vacío.", red);
     } else {
       finishData();
     }
@@ -237,7 +233,7 @@ class _BasalTeacherState extends State<BasalTeacher> {
             "$urlServer/api/mobile/uploadProfessorData?token=$token",
             data: {
               "name": name.text,
-              "phone": phone.text,
+              "phone": phone.text.isEmpty ? "" : phone.text,
             });
         if (response.statusCode == 200) {
           toast(context, "Se han enviado los datos ingresados.", green);
@@ -255,6 +251,8 @@ class _BasalTeacherState extends State<BasalTeacher> {
 
           if (phone.text.isNotEmpty) {
             prefs.setString("phone", phone.text);
+          } else {
+            prefs.setString("phone", "Sin número de teléfono");
           }
           goToWelcome(encode["scope"] == "professor" ? "teacher" : "user");
         } else {

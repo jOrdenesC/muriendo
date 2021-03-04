@@ -124,7 +124,9 @@ class DownloadTeacher {
             recommendation: responseobject[i]['recomendation'],
             categories: responseobject[i]['categories'],
             level: responseobject[i]['levels'],
-            stages: responseobject[i]['stages']);
+            stages: responseobject[i]['stages'],
+            idMongo: responseobject[i]["_id"]
+            );
         videos.add(excercisedata.videoName);
         if (excercisedata.excerciseNameAudioId.isNotEmpty) {
           audios.add(excercisedata.excerciseNameAudioId);

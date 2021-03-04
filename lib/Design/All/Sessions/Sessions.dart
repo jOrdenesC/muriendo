@@ -660,7 +660,7 @@ class _SessionsState extends State<Sessions> {
         print(evidences.toString());
         print(lock);
         if (lock == true) {
-          goToPlanification(data, number);
+          goToPlanification(data, number, false, null);
         } else {
           print(lock);
           Toast.show("Debes completar las clases anteriores.", context,

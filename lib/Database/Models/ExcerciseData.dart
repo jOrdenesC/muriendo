@@ -5,7 +5,7 @@ class ExcerciseData {
   //Name of Video
   final String videoName;
   //ID of Audios
-  final String excerciseNameAudioId; 
+  final String excerciseNameAudioId;
 
   final String recomendationAudioId;
   //KiloCalories Base Multiplier
@@ -21,6 +21,7 @@ class ExcerciseData {
 
   final List<dynamic> stages;
 
+  final String idMongo;
   ExcerciseData(
       {this.id,
       this.exerciseID,
@@ -32,7 +33,8 @@ class ExcerciseData {
       this.recommendation,
       this.level,
       this.categories,
-      this.stages});
+      this.stages,
+      this.idMongo});
 
   Map<String, dynamic> toMap() {
     return {
@@ -45,7 +47,8 @@ class ExcerciseData {
       'recommendation': this.recommendation,
       'level': this.level,
       'categories': this.categories,
-      'stages': this.stages
+      'stages': this.stages,
+      'idMongo': this.idMongo
     };
   }
 
@@ -61,7 +64,8 @@ class ExcerciseData {
         recommendation: map['recommendation'],
         level: map['level'],
         categories: map['categories'],
-        stages: map['stages']);
+        stages: map['stages'],
+        idMongo: map['idMongo']);
   }
 
   ExcerciseData copyWith(

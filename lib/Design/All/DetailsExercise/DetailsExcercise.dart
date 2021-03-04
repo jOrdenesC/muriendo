@@ -16,7 +16,8 @@ class DetailsExcercise extends StatefulWidget {
   final String name;
   final String kcal;
   final String desc;
-  DetailsExcercise(this.name, this.kcal, this.desc);
+  final bool isTeacher;
+  DetailsExcercise(this.name, this.kcal, this.desc, this.isTeacher);
   @override
   _DetailsExcerciseState createState() => _DetailsExcerciseState();
 }
@@ -30,6 +31,11 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
   var audioRecommendation;
   @override
   void initState() {
+    print("""
+    Data
+    ${widget.isTeacher},
+    ${widget.name}
+    """);
     super.initState();
     getWeight();
   }
@@ -37,7 +43,9 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
   @override
   void dispose() {
     //webmController.controller.dispose();
-    audioPlayer.dispose();
+    if (widget.isTeacher == false) {
+      audioPlayer.dispose();
+    }
     videoPlayerController1.dispose();
     imageCache.clear();
     super.dispose();
@@ -73,7 +81,9 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       ..play();
     Future.delayed(const Duration(milliseconds: 500), () async {
 // Here you can write your code
-      await playAudio(audioName);
+      if (widget.isTeacher == false) {
+        await playAudio(audioName);
+      }
       setState(() {
         // Here you can write your code for open new view
       });
@@ -146,10 +156,12 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
                   color: cyan,
                   size: 7.0.w,
                 ),
-                Text(
-                  " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 3 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 3) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
-                  style: TextStyle(color: cyan, fontSize: 6.0.w),
-                ),
+                widget.isTeacher
+                    ? SizedBox.shrink()
+                    : Text(
+                        " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 3 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 3) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
+                        style: TextStyle(color: cyan, fontSize: 6.0.w),
+                      ),
                 SizedBox(
                   width: MediaQuery.of(context).size.height * 0.03,
                 )

@@ -20,22 +20,24 @@ class _PlanificationState extends State<Planification> {
     final dynamic args =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
-      bottomNavigationBar: Container(
-        width: double.infinity,
-        height: 10.0.h,
-        color: cyan,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buttonRounded(context, func: () async {
-              Get.to(
-                ExcerciseVideo(args['data'].toMap()["classID"].toString(),
-                    args["data"].questionnaire, args["number"]),
-              );
-            }, text: "   COMENZAR")
-          ],
-        ),
-      ),
+      bottomNavigationBar: args["isTeacher"]
+          ? SizedBox.shrink()
+          : Container(
+              width: double.infinity,
+              height: 10.0.h,
+              color: cyan,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buttonRounded(context, func: () async {
+                    Get.to(
+                      ExcerciseVideo(args['data'].toMap()["classID"].toString(),
+                          args["data"].questionnaire, args["number"]),
+                    );
+                  }, text: "   COMENZAR")
+                ],
+              ),
+            ),
       backgroundColor: blue,
       appBar: AppBar(
         leading: IconButton(
@@ -50,7 +52,9 @@ class _PlanificationState extends State<Planification> {
             ),
             FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text("EJECUCIÓN SESIÓN ${args["number"]}")),
+                child: Text(args["isTeacher"] == true
+                    ? "EJECUCIÓN SESIÓN ${args["dataClass"]["session"]}"
+                    : "EJECUCIÓN SESIÓN ${args["number"]}")),
           ],
         ),
         centerTitle: true,
@@ -92,14 +96,36 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          List calentamiento = [];
-                          setState(() {
-                            calentamiento
-                                .add(args['data'].excerciseCalentamiento);
-                            calentamiento
-                                .add(args['data'].exerciseFlexibilidad);
-                          });
-                          goToExcercisesPage("calentamiento", calentamiento);
+                          print(args["data"].exerci.toString());
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "calentamiento",
+                                args["dataClass"]["exercisesCalentamiento"],
+                                args["isTeacher"]);
+                          } else {
+                            List calentamiento = [];
+                            for (var i = 0;
+                                i < args['data'].excerciseCalentamiento.length;
+                                i++) {
+                              setState(() {
+                                calentamiento.add(
+                                    args['data'].excerciseCalentamiento[i]);
+                              });
+                            }
+
+                            for (var i = 0;
+                                i < args['data'].excerciseFlexibilidad.length;
+                                i++) {
+                              setState(() {
+                                calentamiento
+                                    .add(args['data'].excerciseFlexibilidad[i]);
+                              });
+                            }
+
+                            // print(calentamiento);
+                            goToExcercisesPage("calentamiento", calentamiento,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -151,14 +177,35 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          List calentamiento = [];
-                          setState(() {
-                            calentamiento
-                                .addAll(args['data'].excerciseCalentamiento);
-                            calentamiento
-                                .addAll(args['data'].excerciseFlexibilidad);
-                          });
-                          goToExcercisesPage("calentamiento", calentamiento);
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "calentamiento",
+                                args["dataClass"]["exercisesCalentamiento"],
+                                args["isTeacher"]);
+                          } else {
+                            List calentamiento = [];
+                            for (var i = 0;
+                                i < args['data'].excerciseCalentamiento.length;
+                                i++) {
+                              setState(() {
+                                calentamiento.add(
+                                    args['data'].excerciseCalentamiento[i]);
+                              });
+                            }
+
+                            for (var i = 0;
+                                i < args['data'].excerciseFlexibilidad.length;
+                                i++) {
+                              setState(() {
+                                calentamiento
+                                    .add(args['data'].excerciseFlexibilidad[i]);
+                              });
+                            }
+
+                            // print(calentamiento);
+                            goToExcercisesPage("calentamiento", calentamiento,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           children: [
@@ -181,8 +228,17 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage(
-                              "desarrollo", args['data'].excerciseDesarrollo);
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "desarrollo",
+                                args["dataClass"]["exercisesDesarrollo"],
+                                args["isTeacher"]);
+                          } else {
+                            goToExcercisesPage(
+                                "desarrollo",
+                                args['data'].excerciseDesarrollo,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -234,8 +290,17 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage(
-                              "desarrollo", args['data'].excerciseDesarrollo);
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "desarrollo",
+                                args["dataClass"]["exercisesDesarrollo"],
+                                args["isTeacher"]);
+                          } else {
+                            goToExcercisesPage(
+                                "desarrollo",
+                                args['data'].excerciseDesarrollo,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           children: [
@@ -258,8 +323,17 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("vuelta a la calma",
-                              args['data'].excerciseVueltaCalm);
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "vuelta a la calma",
+                                args["dataClass"]["exercisesVueltaCalma"],
+                                args["isTeacher"]);
+                          } else {
+                            goToExcercisesPage(
+                                "vuelta a la calma",
+                                args['data'].excerciseVueltaCalma,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -311,8 +385,17 @@ class _PlanificationState extends State<Planification> {
                       ),
                       InkWell(
                         onTap: () {
-                          goToExcercisesPage("vuelta a la calma",
-                              args['data'].excerciseVueltaCalma);
+                          if (args["isTeacher"]) {
+                            goToExcercisesPage(
+                                "vuelta a la calma",
+                                args["dataClass"]["exercisesVueltaCalma"],
+                                args["isTeacher"]);
+                          } else {
+                            goToExcercisesPage(
+                                "vuelta a la calma",
+                                args['data'].excerciseVueltaCalma,
+                                args["isTeacher"]);
+                          }
                         },
                         child: Row(
                           children: [

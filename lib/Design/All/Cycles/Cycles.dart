@@ -60,7 +60,7 @@ class _CyclesState extends State<Cycles> {
       // downloadFiles(url, filenames)
     }
 
-    if (downloaded == false) {
+    if (downloaded == false || downloaded == null) {
       loading(context,
           content: Center(
             child: Image.asset(
@@ -160,28 +160,28 @@ class _CyclesState extends State<Cycles> {
                             1,
                             "RO",
                             coursesNumber.contains(1) ? true : false,
-                            "primero básico",
+                            "1",
                             1),
                         element(
                             green,
                             2,
                             "DO",
                             coursesNumber.contains(2) ? true : false,
-                            "segundo básico",
+                            "2",
                             1),
                         element(
                             green,
                             3,
                             "RO",
                             coursesNumber.contains(3) ? true : false,
-                            "tercero básico",
+                            "3",
                             1),
                         element(
                             green,
                             4,
                             "TO",
                             coursesNumber.contains(4) ? true : false,
-                            "cuarto básico",
+                            "4",
                             1),
                         Text("")
                       ],
@@ -201,7 +201,7 @@ class _CyclesState extends State<Cycles> {
                             5,
                             "TO",
                             coursesNumber.contains(5) ? true : false,
-                            "quinto básico",
+                            "5",
                             2),
                         SizedBox(
                           width: 5.0.w,
@@ -211,7 +211,7 @@ class _CyclesState extends State<Cycles> {
                             6,
                             "TO",
                             coursesNumber.contains(6) ? true : false,
-                            "sexto básico",
+                            "6",
                             2),
                         SizedBox(
                           width: 10.0.w,
@@ -233,7 +233,7 @@ class _CyclesState extends State<Cycles> {
                             7,
                             "TO",
                             coursesNumber.contains(7) ? true : false,
-                            "séptimo básico",
+                            "7",
                             3),
                         SizedBox(
                           width: 5.0.w,
@@ -243,7 +243,7 @@ class _CyclesState extends State<Cycles> {
                             8,
                             "VO",
                             coursesNumber.contains(8) ? true : false,
-                            "octavo básico",
+                            "8",
                             3),
                         SizedBox(
                           width: 10.0.w,

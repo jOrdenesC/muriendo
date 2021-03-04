@@ -26,19 +26,15 @@ class _MenuEvidencesState extends State<MenuEvidences> {
         backgroundColor: cyan,
         centerTitle: true,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 9.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text("EVIDENCIAS")),
+              height: 2.0.h,
+            ),
+            FittedBox(fit: BoxFit.fitWidth, child: Text("EVIDENCIAS")),
           ],
         ),
         elevation: 0,
@@ -90,7 +86,7 @@ class _MenuEvidencesState extends State<MenuEvidences> {
           ),
           InkWell(
             onTap: () {
-              goToShowPhases(2, "VIDEOS", true);
+              goToShowPhases(2, "VIDEOS", true, false, null);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -134,7 +130,7 @@ class _MenuEvidencesState extends State<MenuEvidences> {
           ),
           InkWell(
             onTap: () {
-              goToShowPhases(2, "CUESTIONARIOS", true);
+              goToShowPhases(2, "CUESTIONARIOS", true, false, null);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
