@@ -42,7 +42,7 @@ class DataRepository {
       );
     } else if (value < 150) {
       return Icon(
-        Icons.sentiment_satisfied_alt_rounded,
+        Icons.sentiment_very_satisfied_rounded,
         size: 24,
         color: getColor(value),
       );

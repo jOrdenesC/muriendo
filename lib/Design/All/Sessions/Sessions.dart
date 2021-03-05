@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
@@ -15,9 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
-import 'package:path/path.dart' as p;
-import '../../Widgets/Loading.dart';
-import 'package:archive/archive.dart';
 
 class Sessions extends StatefulWidget {
   @override

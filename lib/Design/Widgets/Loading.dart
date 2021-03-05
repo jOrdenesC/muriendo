@@ -3,7 +3,7 @@ import 'package:sizer/sizer.dart';
 
 loading(BuildContext context, {Widget title, Widget content, Widget buttons}) {
   return showDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
       builder: (_) => WillPopScope(
             onWillPop: pop,

@@ -458,53 +458,7 @@ class DownloadData {
             await _excerciseRepository.insertExcercise(excercisedata);
         print(result);
       }
-      // loading(
-      //   context,
-      //   title: Text(
-      //     "Descargando vídeos",
-      //     style: TextStyle(color: blue, fontSize: 6.0.w),
-      //     textAlign: TextAlign.center,
-      //   ),
-      //   content: Column(
-      //     children: [
-      //       Center(
-      //         child: Image.asset(
-      //           "Assets/videos/loading.gif",
-      //           width: 70.0.w,
-      //           height: 15.0.h,
-      //           fit: BoxFit.contain,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // );
-      // await videoDownload(videos);
-      // await downloadVideosTest(videos);
-      // Navigator.pop(context);
-      // loading(
-      //   context,
-      //   title: Text(
-      //     "Descargando audios...",
-      //     style: TextStyle(color: blue, fontSize: 6.0.w),
-      //     textAlign: TextAlign.center,
-      //   ),
-      //   content: Column(
-      //     children: [
-      //       Center(
-      //         child: Image.asset(
-      //           "Assets/videos/loading.gif",
-      //           width: 70.0.w,
-      //           height: 15.0.h,
-      //           fit: BoxFit.contain,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // );
-      // await audioDownload(audios, "exercise");
-      // await downloadAudiosTest(audios, "exercise");
-      // Navigator.pop(context);
-      /** Test Creating Exercise */
+      prefs.setBool("downloadedExercisesBd", true);
       print("Response ${response2.data[0]}");
     } else {
       toast(context,
@@ -701,6 +655,7 @@ class DownloadData {
                 idEvidence: res.data[i]["_id"],
                 phase: res.data[i]["phase"],
                 classObject: res.data[i]["class"],
+                questionnaire: res.data[i]["questionnaire"],
                 finished: true);
             await evidencesRepository.updateEvidence(evidencesSend);
           }
@@ -814,6 +769,7 @@ class DownloadData {
       await getHttp(context, level);
       await downloadEvidencesData(context);
       print("Fin de descarga");
+      prefs.setBool("downloadedVideos", true);
       prefs.setBool("downloaded", true);
       return true;
     } else {

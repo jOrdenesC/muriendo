@@ -95,6 +95,7 @@ dependencies:
   flutter_restart: ^0.0.3
   archive: ^2.0.13
   flutter_time_button: ^1.0.0+1
+  screen: ^0.0.5
 
 dev_dependencies:
   flutter_test:

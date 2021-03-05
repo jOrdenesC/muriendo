@@ -10,6 +10,7 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Functions/Controllers/mp4Controller.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:screen/screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,10 +34,13 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   Mp4Controller mp4Controller = Mp4Controller();
   bool dev = false;
   int count = 0;
+  final key = GlobalKey();
+  final key2 = GlobalKey();
 
   @override
   void initState() {
     getRole();
+    Screen.keepOn(true);
     //
 
     //----------------- -----------------------------------//
@@ -1156,60 +1160,51 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   }
 
   Widget circTimer(Mp4Controller _) {
-    return InkWell(
-      onTap: () {
-        _.controllerCountDown.resume();
+    return CircularCountDownTimer(
+      key: key,
+      controller: _.controllerCountDown,
+      duration: _.returnTimer(),
+      //Change time if micropause is selected
+      color: green,
+      fillColor: Colors.white,
+      backgroundColor: yellow,
+      strokeWidth: 10.0,
+      textStyle: TextStyle(
+          fontFamily: "Gotham",
+          fontSize: 30.0,
+          color: Colors.white,
+          fontWeight: FontWeight.bold),
+      isReverse: true,
+      height: MediaQuery.of(context).size.height / 2.5,
+      width: MediaQuery.of(context).size.width / 2.5,
+      onComplete: () {
+        _.controllTimer(widget.id, widget.questionnaire, widget.number);
       },
-      child: CircularCountDownTimer(
-        controller: _.controllerCountDown,
-        duration: _.returnTimer(),
-        //Change time if micropause is selected
-        color: green,
-        fillColor: Colors.white,
-        backgroundColor: yellow,
-        strokeWidth: 10.0,
-        textStyle: TextStyle(
-            fontFamily: "Gotham",
-            fontSize: 30.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold),
-        isReverse: true,
-        height: MediaQuery.of(context).size.height / 2.5,
-        width: MediaQuery.of(context).size.width / 2.5,
-        onComplete: () {
-          _.controllTimer(widget.id, widget.questionnaire, widget.number);
-        },
-      ),
     );
   }
 
   Widget circTimerDemostration(Mp4Controller _) {
-    return InkWell(
-      onTap: () {
-        _.controllerDemostration.pause();
+    return CircularCountDownTimer(
+      controller: _.controllerCountDown,
+      key: key2,
+      duration: 5,
+      //Change time if micropause is selected
+      color: green,
+      fillColor: Colors.white,
+      backgroundColor: yellow,
+      strokeWidth: 10.0,
+      textStyle: TextStyle(
+          fontFamily: "Gotham",
+          fontSize: 30.0,
+          color: Colors.white,
+          fontWeight: FontWeight.bold),
+      isReverse: true,
+      height: MediaQuery.of(context).size.height / 2.5,
+      width: MediaQuery.of(context).size.width / 2.5,
+      onComplete: () {
+        _.demonstration.value = false;
+        _.playAudio(_.exercisesAudio[_.globalindex.value], false);
       },
-      child: CircularCountDownTimer(
-        controller: _.controllerCountDown,
-
-        duration: 5,
-        //Change time if micropause is selected
-        color: green,
-        fillColor: Colors.white,
-        backgroundColor: yellow,
-        strokeWidth: 10.0,
-        textStyle: TextStyle(
-            fontFamily: "Gotham",
-            fontSize: 30.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold),
-        isReverse: true,
-        height: MediaQuery.of(context).size.height / 2.5,
-        width: MediaQuery.of(context).size.width / 2.5,
-        onComplete: () {
-          _.demonstration.value = false;
-          _.playAudio(_.exercisesAudio[_.globalindex.value], false);
-        },
-      ),
     );
   }
 

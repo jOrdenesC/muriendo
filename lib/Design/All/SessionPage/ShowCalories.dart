@@ -156,11 +156,11 @@ has quemado ${total.toString().substring(0, 4)} KCal""",
         });
       }
     }
-    var xd = await getTotalKCal(args);
+    var responseCalories = await getTotalKCal(args);
     setState(() {
-      total = xd;
+      total = responseCalories;
     });
-    print(xd);
+    print(responseCalories);
   }
 
   Future<double> getTotalKCal(args) async {
@@ -170,9 +170,11 @@ has quemado ${total.toString().substring(0, 4)} KCal""",
     var prefs = await SharedPreferences.getInstance();
     var weight = prefs.getString("weight");
     for (var i = 0; i < args[0]["mets"].length; i++) {
-      var totalXd = (args[0]["mets"][i]["mets"] * 0.0175 * double.parse(weight)) / 60;
+      var totalXd =
+          (args[0]["mets"][i]["mets"] * 0.0175 * double.parse(weight)) / 60;
       kcal.add(totalXd);
-      totalWithTime.add((kcal[i] * args[0]["mets"][i]["time"]).toStringAsFixed(2));
+      totalWithTime
+          .add((kcal[i] * args[0]["mets"][i]["time"]).toStringAsFixed(2));
       totalKcalories = totalKcalories + double.parse(totalWithTime[i]);
     }
     return totalKcalories;

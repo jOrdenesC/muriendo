@@ -82,12 +82,13 @@ goToEvidencesSession(
 }
 
 goToUploadData(
-    {String uuidQuestionary, String idClass, double mets, int number}) {
+    {String uuidQuestionary, String idClass, double mets, int number, List exercises}) {
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
     "mets": mets,
-    "number": number
+    "number": number,
+    "exercises": exercises
   });
 }
 

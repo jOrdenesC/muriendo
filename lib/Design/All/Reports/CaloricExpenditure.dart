@@ -130,7 +130,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                                 Container(
                                   child: Center(
                                     child: Text(
-                                      "${totalKcal.roundToDouble().toString().length > 6 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
+                                      "${totalKcal.roundToDouble().toString().length > 5 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
                                       style: TextStyle(
                                           fontSize: 5.0.w, color: blue),
                                     ),
@@ -218,6 +218,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                 phase: res.data[i]["phase"],
                 classObject: res.data[i]["class"],
                 finished: true,
+                questionnaire: res.data[i]["questionnaire"],
                 kilocalories: res.data[i]["totalKilocalories"].toString());
             evidencesRepository.updateEvidence(evidencesSend);
           }

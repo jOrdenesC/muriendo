@@ -18,6 +18,7 @@ import '../../../Database/Repository/TipsDataRepository/TipsDataRepository.dart'
 import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import '../SessionPage/VideosToRecord.dart';
+import 'package:flutter/services.dart';
 
 class Questionary extends StatefulWidget {
   final int number;
@@ -57,6 +58,10 @@ class _QuestionaryState extends State<Questionary> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     initData();
   }
 
@@ -538,7 +543,7 @@ class _QuestionaryState extends State<Questionary> {
                                     children: [
                                       FittedBox(
                                         fit: BoxFit.fitWidth,
-                                        child: Row(
+                                                                              child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
@@ -584,12 +589,12 @@ class _QuestionaryState extends State<Questionary> {
                                                                     ["response"]
                                                             ? green
                                                             : red,
-                                                        borderRadius: BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    90),
-                                                            bottomRight:
-                                                                Radius.circular(90))),
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topRight: Radius
+                                                                    .circular(90),
+                                                                bottomRight:
+                                                                    Radius.circular(90))),
                                                     width: 25.0.w,
                                                     height: 10.0.h,
                                                     child: Center(
@@ -601,8 +606,7 @@ class _QuestionaryState extends State<Questionary> {
                                                                 .toString()
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                    10.0.w,
+                                                                fontSize: 10.0.w,
                                                                 color: Colors
                                                                     .white))),
                                                   ),

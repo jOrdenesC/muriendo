@@ -5,6 +5,7 @@ class EvidencesSend {
   final Map classObject;
   final bool finished;
   final String kilocalories;
+  final List questionnaire;
 
   EvidencesSend(
       {this.number,
@@ -12,7 +13,8 @@ class EvidencesSend {
       this.phase,
       this.classObject,
       this.finished,
-      this.kilocalories});
+      this.kilocalories,
+      this.questionnaire});
 
   Map<String, dynamic> toMap() {
     return {
@@ -21,7 +23,8 @@ class EvidencesSend {
       'phase': this.phase,
       'classObject': this.classObject,
       'finished': this.finished,
-      'kilocalories': this.kilocalories
+      'kilocalories': this.kilocalories,
+      'questionnaire': this.questionnaire
     };
   }
 
@@ -32,6 +35,7 @@ class EvidencesSend {
         phase: map['phase'],
         classObject: map['classObject'],
         finished: map['finished'],
-        kilocalories: map['kilocalories']);
+        kilocalories: map['kilocalories'],
+        questionnaire: map['questionnaire']);
   }
 }

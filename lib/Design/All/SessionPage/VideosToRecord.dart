@@ -106,7 +106,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                   _.loading.value != true
                       ? buttonRounded(context, func: () {
                           videoController.recordMovie(widget.uuidQuestionary,
-                              widget.idClass, widget.kCal, widget.number);
+                              widget.idClass, widget.kCal, widget.number, widget.exercises);
                         },
                           text: "   GRABAR",
                           icon: Icon(

@@ -154,7 +154,30 @@ class _UploadDataState extends State<UploadData> {
         print(response.data);
         // goToFinalPage();
         if (response.statusCode == 201) {
-          toast(context, "Los datos se han subido correctamente.", green);
+          List corrects = [];
+          int total = res[0].questionary.length;
+          var quest = res[0].questionary;
+          for (var i = 0; i < quest.length; i++) {
+            if (quest[i]["type"] == "vf") {
+              if (quest[i]["correctVf"] == quest[i]["studentResponseVf"]) {
+                setState(() {
+                  corrects.add(quest[i]);
+                });
+              }
+            } else {
+              if (quest[i]["correctAl"] == quest[i]["studentResponseAl"]) {
+                setState(() {
+                  corrects.add(quest[i]);
+                });
+              }
+            }
+          }
+
+          toast(
+              context,
+              "Se han subido los datos correctamente.\n\nTuviste ${corrects.length} correctas de $total en este cuestionario.",
+              green);
+
           await DownloadData().downloadEvidencesData(context);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePageUser()));
@@ -240,7 +263,7 @@ class _UploadDataState extends State<UploadData> {
         // await file.delete();
         var videoData = {
           "uuid": uuid,
-          "exercises": ["skipping", "jumping jacks"],
+          "exercises": args["exercises"],
           "cloudflareId": response2.data["result"]["uid"]
         };
         //Call API for send data of video in cloudflare
