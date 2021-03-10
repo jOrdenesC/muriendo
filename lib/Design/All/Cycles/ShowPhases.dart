@@ -21,7 +21,7 @@ class _ShowPhasesState extends State<ShowPhases> {
   bool isDefault;
   String title;
   dynamic arguments;
-  int level;
+  String level;
   int numberClass = 0;
   List phases = [
     {"numberClass": 1},
@@ -143,7 +143,7 @@ class _ShowPhasesState extends State<ShowPhases> {
             text: "FASE",
             textStyle: TextStyle(fontSize: 8.0.w, color: Colors.white),
             height: 9.0.h,
-            circleRadius: 8.0.w,
+            circleRadius: 6.0.w,
             icon: Center(
                 child: Text(
               "$index",
@@ -152,20 +152,21 @@ class _ShowPhasesState extends State<ShowPhases> {
         SizedBox(height: 3.0.h),
         InkWell(
           onTap: () async {
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Buscando datos...",
-                  textAlign: TextAlign.center,
-                ));
             if (isDefault) {
+              loading(context,
+                  content: Center(
+                    child: Image.asset(
+                      "Assets/videos/loading.gif",
+                      width: 70.0.w,
+                      height: 15.0.h,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  title: Text(
+                    "Buscando datos...",
+                    textAlign: TextAlign.center,
+                  ));
+
               if (index == 1) {
                 setState(() {
                   numberClass = 1;
@@ -265,9 +266,50 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass);
+              goToPlanification(null, index, true, dataClass, null);
             } else {
-              goToCreateClass();
+              if (index == 1) {
+                setState(() {
+                  numberClass = 1;
+                });
+              } else if (index == 2) {
+                setState(() {
+                  numberClass = 5;
+                });
+              } else if (index == 3) {
+                setState(() {
+                  numberClass = 9;
+                });
+              } else if (index == 4) {
+                setState(() {
+                  numberClass = 13;
+                });
+              } else if (index == 5) {
+                setState(() {
+                  numberClass = 17;
+                });
+              } else if (index == 6) {
+                setState(() {
+                  numberClass = 21;
+                });
+              } else if (index == 7) {
+                setState(() {
+                  numberClass = 25;
+                });
+              } else if (index == 8) {
+                setState(() {
+                  numberClass = 31;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 33;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 37;
+                });
+              }
+              goToCreateClass(level.toString(), numberClass.toString());
             }
           },
           child: buttonRounded(context,
@@ -297,7 +339,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                                                       : "CLASE",
               textStyle: TextStyle(fontSize: 8.0.w, color: blue),
               height: 9.0.h,
-              circleRadius: 8.0.w,
+              circleRadius: 6.0.w,
               icon: Center(
                   child: Icon(
                 Icons.check,
@@ -306,26 +348,27 @@ class _ShowPhasesState extends State<ShowPhases> {
                     : arguments["cycle"] == 2
                         ? red
                         : yellow,
-                size: 15.0.w,
+                size: 12.0.w,
               ))),
         ),
         SizedBox(height: 3.0.h),
         InkWell(
           onTap: () async {
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Buscando datos...",
-                  textAlign: TextAlign.center,
-                ));
             if (isDefault) {
+              loading(context,
+                  content: Center(
+                    child: Image.asset(
+                      "Assets/videos/loading.gif",
+                      width: 70.0.w,
+                      height: 15.0.h,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  title: Text(
+                    "Buscando datos...",
+                    textAlign: TextAlign.center,
+                  ));
+
               if (index == 1) {
                 setState(() {
                   numberClass = 2;
@@ -425,9 +468,51 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass);
+              goToPlanification(null, index, true, dataClass, null);
             } else {
-              goToCreateClass();
+              if (index == 1) {
+                setState(() {
+                  numberClass = 2;
+                });
+              } else if (index == 2) {
+                setState(() {
+                  numberClass = 6;
+                });
+              } else if (index == 3) {
+                setState(() {
+                  numberClass = 10;
+                });
+              } else if (index == 4) {
+                setState(() {
+                  numberClass = 14;
+                });
+              } else if (index == 5) {
+                setState(() {
+                  numberClass = 18;
+                });
+              } else if (index == 6) {
+                setState(() {
+                  numberClass = 22;
+                });
+              } else if (index == 7) {
+                setState(() {
+                  numberClass = 26;
+                });
+              } else if (index == 8) {
+                setState(() {
+                  numberClass = 30;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 34;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 38;
+                });
+              }
+
+              goToCreateClass(arguments["level"], numberClass.toString());
             }
           },
           child: buttonRounded(context,
@@ -465,7 +550,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                                                       : "CLASE",
               textStyle: TextStyle(fontSize: 8.0.w, color: blue),
               height: 9.0.h,
-              circleRadius: 8.0.w,
+              circleRadius: 6.0.w,
               icon: Center(
                   child: Icon(
                 Icons.check,
@@ -474,26 +559,26 @@ class _ShowPhasesState extends State<ShowPhases> {
                     : arguments["cycle"] == 2
                         ? red
                         : yellow,
-                size: 15.0.w,
+                size: 12.0.w,
               ))),
         ),
         SizedBox(height: 3.0.h),
         InkWell(
           onTap: () async {
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Buscando datos...",
-                  textAlign: TextAlign.center,
-                ));
             if (isDefault) {
+              loading(context,
+                  content: Center(
+                    child: Image.asset(
+                      "Assets/videos/loading.gif",
+                      width: 70.0.w,
+                      height: 15.0.h,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  title: Text(
+                    "Buscando datos...",
+                    textAlign: TextAlign.center,
+                  ));
               if (index == 1) {
                 setState(() {
                   numberClass = 3;
@@ -593,9 +678,50 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass);
+              goToPlanification(null, index, true, dataClass, null);
             } else {
-              goToCreateClass();
+              if (index == 1) {
+                setState(() {
+                  numberClass = 3;
+                });
+              } else if (index == 2) {
+                setState(() {
+                  numberClass = 7;
+                });
+              } else if (index == 3) {
+                setState(() {
+                  numberClass = 11;
+                });
+              } else if (index == 4) {
+                setState(() {
+                  numberClass = 15;
+                });
+              } else if (index == 5) {
+                setState(() {
+                  numberClass = 19;
+                });
+              } else if (index == 6) {
+                setState(() {
+                  numberClass = 23;
+                });
+              } else if (index == 7) {
+                setState(() {
+                  numberClass = 27;
+                });
+              } else if (index == 8) {
+                setState(() {
+                  numberClass = 31;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 35;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 39;
+                });
+              }
+              goToCreateClass(arguments["level"], numberClass.toString());
             }
           },
           child: buttonRounded(context,
@@ -633,7 +759,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                                                       : "CLASE",
               textStyle: TextStyle(fontSize: 8.0.w, color: blue),
               height: 9.0.h,
-              circleRadius: 8.0.w,
+              circleRadius: 6.0.w,
               icon: Center(
                   child: Icon(
                 Icons.check,
@@ -642,26 +768,26 @@ class _ShowPhasesState extends State<ShowPhases> {
                     : arguments["cycle"] == 2
                         ? red
                         : yellow,
-                size: 15.0.w,
+                size: 12.0.w,
               ))),
         ),
         SizedBox(height: 3.0.h),
         InkWell(
           onTap: () async {
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Buscando datos...",
-                  textAlign: TextAlign.center,
-                ));
             if (isDefault) {
+              loading(context,
+                  content: Center(
+                    child: Image.asset(
+                      "Assets/videos/loading.gif",
+                      width: 70.0.w,
+                      height: 15.0.h,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  title: Text(
+                    "Buscando datos...",
+                    textAlign: TextAlign.center,
+                  ));
               if (index == 1) {
                 setState(() {
                   numberClass = 4;
@@ -761,9 +887,50 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass);
+              goToPlanification(null, index, true, dataClass, null);
             } else {
-              goToCreateClass();
+              if (index == 1) {
+                setState(() {
+                  numberClass = 4;
+                });
+              } else if (index == 2) {
+                setState(() {
+                  numberClass = 8;
+                });
+              } else if (index == 3) {
+                setState(() {
+                  numberClass = 12;
+                });
+              } else if (index == 4) {
+                setState(() {
+                  numberClass = 16;
+                });
+              } else if (index == 5) {
+                setState(() {
+                  numberClass = 20;
+                });
+              } else if (index == 6) {
+                setState(() {
+                  numberClass = 24;
+                });
+              } else if (index == 7) {
+                setState(() {
+                  numberClass = 28;
+                });
+              } else if (index == 8) {
+                setState(() {
+                  numberClass = 32;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 36;
+                });
+              } else if (index == 9) {
+                setState(() {
+                  numberClass = 40;
+                });
+              }
+              goToCreateClass(arguments["level"], numberClass.toString());
             }
           },
           child: buttonRounded(context,
@@ -801,7 +968,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                                                       : "CLASE",
               textStyle: TextStyle(fontSize: 8.0.w, color: blue),
               height: 9.0.h,
-              circleRadius: 8.0.w,
+              circleRadius: 6.0.w,
               icon: Center(
                   child: Icon(
                 Icons.check,
@@ -810,7 +977,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                     : arguments["cycle"] == 2
                         ? red
                         : yellow,
-                size: 15.0.w,
+                size: 12.0.w,
               ))),
         ),
         SizedBox(height: 3.0.h),

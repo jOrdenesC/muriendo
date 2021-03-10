@@ -13,11 +13,12 @@ import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 
 class DetailsExcercise extends StatefulWidget {
+  final String nameVideo;
   final String name;
   final String kcal;
   final String desc;
   final bool isTeacher;
-  DetailsExcercise(this.name, this.kcal, this.desc, this.isTeacher);
+  DetailsExcercise(this.nameVideo ,this.name, this.kcal, this.desc, this.isTeacher);
   @override
   _DetailsExcerciseState createState() => _DetailsExcerciseState();
 }
@@ -73,7 +74,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       format = ".mp4";
     }
     videoPlayerController1 = VideoPlayerController.file(
-        File('${dir.path}/videos/${widget.name}$format'));
+        File('${dir.path}/videos/${widget.nameVideo}$format'));
 
     await videoPlayerController1
       ..initialize().then((value) => null)
@@ -151,13 +152,19 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(
-                  Icons.local_fire_department,
-                  color: cyan,
-                  size: 7.0.w,
-                ),
                 widget.isTeacher
-                    ? SizedBox.shrink()
+                    ? Text(
+                        "Mets: ",
+                        style: TextStyle(color: Colors.white, fontSize: 7.0.w),
+                      )
+                    : Icon(
+                        Icons.local_fire_department,
+                        color: cyan,
+                        size: 7.0.w,
+                      ),
+                widget.isTeacher
+                    ? Text(widget.kcal,
+                        style: TextStyle(color: Colors.white, fontSize: 7.0.w))
                     : Text(
                         " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 3 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 3) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
                         style: TextStyle(color: cyan, fontSize: 6.0.w),

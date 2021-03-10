@@ -37,4 +37,10 @@ class SembastCourseRepository extends CourseDataRepository {
         .map((snapshot) => CourseData.fromMap(snapshot.value))
         .toList(growable: false);
   }
+
+  Future deleteAll() async {
+    print("eliminadas todos los cursos");
+    await _store.delete(_database);
+    return null;
+  }
 }

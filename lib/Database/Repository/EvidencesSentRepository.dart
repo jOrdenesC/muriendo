@@ -7,6 +7,8 @@ abstract class EvidencesRepository {
 
   Future deleteEvidence(String gifDataId);
 
+  Future deleteAll();
+
   Future<List<EvidencesSend>> getAllEvidences();
 
   Future<List<EvidencesSend>> getEvidenceID(String id);

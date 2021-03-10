@@ -207,6 +207,7 @@ class _EvidencesSessionState extends State<EvidencesSession> {
       classId: args["idClass"],
       exercises: args["exercises"],
       kCal: args["kCal"],
+      phase: args["phase"],
     ));
   }
 

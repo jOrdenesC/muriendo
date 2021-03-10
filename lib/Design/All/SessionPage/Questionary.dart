@@ -25,8 +25,10 @@ class Questionary extends StatefulWidget {
   final String classId;
   final double kCal;
   final List exercises;
+  final String phase;
 
-  Questionary({this.number, this.classId, this.exercises, this.kCal});
+  Questionary(
+      {this.number, this.classId, this.exercises, this.kCal, this.phase});
   @override
   _QuestionaryState createState() => _QuestionaryState();
 }
@@ -82,7 +84,7 @@ class _QuestionaryState extends State<Questionary> {
     }
     //Testing Out a List with audio Names
     //audioPlayer = await audioCache.play('audio/${exercisesAudio[index.value]}');
-    await audioPlayer.play("${dir.path}/audios/${audioName}.mp3");
+    await audioPlayer.play("${dir.path}/audios/$audioName");
   }
 
   Future getData() async {
@@ -151,11 +153,13 @@ class _QuestionaryState extends State<Questionary> {
       var uuid = Uuid().v4();
       await save(uuid);
       Get.to(VideosToRecord(
-          uuidQuestionary: uuid,
-          kCal: widget.kCal,
-          exercises: widget.exercises,
-          number: widget.number,
-          idClass: widget.classId));
+        uuidQuestionary: uuid,
+        kCal: widget.kCal,
+        exercises: widget.exercises,
+        number: widget.number,
+        idClass: widget.classId,
+        phase: widget.phase,
+      ));
       // Get.back(result: uuid.toString());
     } else {
       toast(context, "Te falta responder $notResponsed preguntas.", red);
@@ -543,7 +547,7 @@ class _QuestionaryState extends State<Questionary> {
                                     children: [
                                       FittedBox(
                                         fit: BoxFit.fitWidth,
-                                                                              child: Row(
+                                        child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
@@ -589,12 +593,12 @@ class _QuestionaryState extends State<Questionary> {
                                                                     ["response"]
                                                             ? green
                                                             : red,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                topRight: Radius
-                                                                    .circular(90),
-                                                                bottomRight:
-                                                                    Radius.circular(90))),
+                                                        borderRadius: BorderRadius.only(
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    90),
+                                                            bottomRight:
+                                                                Radius.circular(90))),
                                                     width: 25.0.w,
                                                     height: 10.0.h,
                                                     child: Center(
@@ -606,7 +610,8 @@ class _QuestionaryState extends State<Questionary> {
                                                                 .toString()
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                                fontSize: 10.0.w,
+                                                                fontSize:
+                                                                    10.0.w,
                                                                 color: Colors
                                                                     .white))),
                                                   ),

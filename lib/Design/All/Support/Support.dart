@@ -11,35 +11,31 @@ class Support extends StatefulWidget {
 class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
-    final dynamic args =
-        (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
-      appBar: args == true
-          ? AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-              title: Column(
-                children: [
-                  SizedBox(
-                    height: 2.0.h,
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 2.0.h,
-                      ),
-                      FittedBox(fit: BoxFit.fitWidth, child: Text("SOPORTE")),
-                    ],
-                  ),
-                ],
-              ),
-              backgroundColor: cyan,
-              centerTitle: true,
-              elevation: 0,
-            )
-          : null,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Column(
+          children: [
+            SizedBox(
+              height: 2.0.h,
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 2.0.h,
+                ),
+                FittedBox(fit: BoxFit.fitWidth, child: Text("SOPORTE")),
+              ],
+            ),
+          ],
+        ),
+        backgroundColor: cyan,
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Column(
         children: [
           SizedBox(
@@ -53,7 +49,7 @@ class _SupportState extends State<Support> {
           SizedBox(
             height: 3.0.h,
           ),
-          button("CORREO ELECTRÓNICO", "INFO@MOVITRONIA.COM"),
+          button("CORREO ELECTRÓNICO", "CONTACTO@MOVITRONIA.COM"),
           SizedBox(
             height: 7.0.h,
           ),
@@ -91,7 +87,7 @@ class _SupportState extends State<Support> {
           child: Center(
               child: Text(
             data,
-            style: TextStyle(color: blue, fontSize: 5.5.w),
+            style: TextStyle(color: blue, fontSize: 5.0.w)
           )),
         )
       ],

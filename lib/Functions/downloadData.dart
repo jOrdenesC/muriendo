@@ -257,7 +257,6 @@ class DownloadData {
           //await getClass(response);
           //testDownload();
           List<num> indexes = [];
-          List<num> indexesQuestions = [];
           List<TipsData> tipsList = [];
           List<QuestionData> questionList = [];
           List<String> audioNames = [];
@@ -337,7 +336,13 @@ class DownloadData {
                   audioNames.add(tipsResponse.audios[i].link);
                 }
                 print("TIP value of ${tipsData.tip}");
-                await _tipsDataRepository.insertTips(tipsData);
+                var res = await _tipsDataRepository.getTips(tipsResponse.sId);
+                if (res.isEmpty) {
+                  await _tipsDataRepository.insertTips(tipsData);
+                } else {
+                  print("ya existe");
+                  await _tipsDataRepository.updateTips(tipsData);
+                }
 
                 print("ENRTA A QUESTION DATA");
                 QuestionData questionData = QuestionData(
@@ -407,8 +412,8 @@ class DownloadData {
           Navigator.pop(context);
           print("Total Tips: ${tipsList.length}");
           print("Total Questions: ${questionList.length}");
-          var res = await _questionDataRepository.getAllQuestions();
-          print(res.length);
+          // var res = await _questionDataRepository.getAllQuestions();
+          // print(res.length);
           print("DESCARGANDO DATOS DE CLASES");
           getClass(responseClasses, context);
         } catch (e) {
@@ -445,7 +450,9 @@ class DownloadData {
             recommendation: responseobject[i]['recomendation'],
             categories: responseobject[i]['categories'],
             level: responseobject[i]['levels'],
-            stages: responseobject[i]['stages']);
+            stages: responseobject[i]['stages'],
+            idMongo: responseobject[i]["_id"]
+            );
         videos.add(excercisedata.videoName);
         if (excercisedata.excerciseNameAudioId.isNotEmpty) {
           audios.add(excercisedata.excerciseNameAudioId);
@@ -526,6 +533,7 @@ class DownloadData {
   }
 
   getClass(Response response, BuildContext context) async {
+    print("EMPIEZA A CREAR CLAAAAASESSS");
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       List<int> pauses = [];
@@ -632,6 +640,7 @@ class DownloadData {
   }
 
   Future downloadEvidencesData(BuildContext context) async {
+    log("Downloading evidences data");
     EvidencesRepository evidencesRepository = GetIt.I.get();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet == false) {
@@ -665,6 +674,7 @@ class DownloadData {
         print(e);
       }
     }
+    log("finish evidence data");
   }
 
   Future downloadFiles(String url, String filename, BuildContext context,
@@ -759,17 +769,26 @@ class DownloadData {
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
-      await downloadFiles(
-          url1, filename1, context, "Descargando vídeos", "videos", platform);
-      await downloadFiles(url2, filename2, context,
-          "Descargando audios de ejercicios", "audios", platform);
+      if (prefs.getBool("downloadedVideos") == false ||
+          prefs.getBool("downloadedVideos") == null) {
+        await downloadFiles(
+            url1, filename1, context, "Descargando vídeos", "videos", platform);
+        prefs.setBool("downloadedVideos", true);
+      }
+      if (prefs.getBool("downloadedAudioExercises") == null ||
+          prefs.getBool("downloadedAudioExercises") == false) {
+        await downloadFiles(url2, filename2, context,
+            "Descargando audios de ejercicios", "audios", platform);
+        prefs.setBool("downloadedAudioExercises", true);
+      }
+
       await downloadFiles(url3, filename3, context,
           "Descargando audios de tips", "audios", platform);
+
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);
       print("Fin de descarga");
-      prefs.setBool("downloadedVideos", true);
       prefs.setBool("downloaded", true);
       return true;
     } else {

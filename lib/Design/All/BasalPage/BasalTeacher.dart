@@ -9,7 +9,6 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,8 +41,6 @@ class _BasalTeacherState extends State<BasalTeacher> {
   }
 
   Widget build(BuildContext context) {
-    final dynamic role =
-        (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
       bottomNavigationBar: Container(
         width: double.infinity,

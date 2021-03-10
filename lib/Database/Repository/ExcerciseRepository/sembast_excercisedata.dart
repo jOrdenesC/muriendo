@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Models/ExcerciseData.dart';
 import 'package:sembast/sembast.dart';
+import 'dart:developer';
 import 'ExcerciseDataRepository.dart';
 
 class SembastExcerciseDataRepository extends ExcerciseDataRepository {
@@ -63,9 +64,37 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
     final finder = Finder(filter: Filter.equals('videoName', name));
 
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
+    return snapshots
+        .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
+        .toList(growable: false);
+  }
+
+  Future<List<ExcerciseData>> getExercisesByCategories(
+      String stage, String category, String subCategory, String level) async {
+    log("""
+        stage: $stage
+        category: $category
+        subCategory: $subCategory
+        """);
+    final finder = Finder(
+        filter: Filter.and([
+      Filter.equals('stages', stage, anyInList: true),
+      Filter.equals('categories', category, anyInList: true),
+      Filter.equals('categories', subCategory, anyInList: true)
+    ]));
+
+    final snapshots = await _store.find(_database, finder: finder);
+    return snapshots
+        .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
+        .toList(growable: false);
+  }
+
+  Future<List<ExcerciseData>> getExercisesPie(String category) async {
+    final finder = Finder(
+      filter: Filter.equals('categories', category, anyInList: true),
+    );
+
+    final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
@@ -81,5 +110,11 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
     }
 
     return listGifs;
+  }
+
+  Future deleteAll() async {
+    print("eliminados los ejercicios");
+    await _store.delete(_database);
+    return null;
   }
 }

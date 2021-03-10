@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Utils/UrlServer.dart';
 import '../../Widgets/Toast.dart';
+import 'dart:developer';
 
 class Cycles extends StatefulWidget {
   final String courseId;
@@ -28,6 +29,7 @@ class _CyclesState extends State<Cycles> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var down = prefs.getBool("downloaded" ?? false);
+    var downloadedVideo = prefs.getBool("downloadedVideos" ?? false);
 
     setState(() {
       downloaded = down;
@@ -49,15 +51,19 @@ class _CyclesState extends State<Cycles> {
         data: {"platform": platform});
 
     if (downloaded == false || downloaded == null) {
-      await DownloadTeacher().downloadFiles(
-          url: responseVideos.data,
-          platform: platform,
-          filename: "videos.zip",
-          context: context,
-          messageAlert: "Descargando vídeos...",
-          route: "videos");
-      // await downloadFiles(response.data, "videos.zip");
-      // downloadFiles(url, filenames)
+      if (downloadedVideo == false || downloadedVideo == null) {
+        await DownloadTeacher().downloadFiles(
+            url: responseVideos.data,
+            platform: platform,
+            filename: "videos.zip",
+            context: context,
+            messageAlert: "Descargando vídeos...",
+            route: "videos");
+        // await downloadFiles(response.data, "videos.zip");
+        // downloadFiles(url, filenames)
+      } else {
+        print("Ya descargados los videos");
+      }
     }
 
     if (downloaded == false || downloaded == null) {
@@ -82,18 +88,23 @@ class _CyclesState extends State<Cycles> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var dio = Dio();
-    Response responseCourses = await dio.get(
-        "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
-    print(responseCourses.data.toString());
-    for (var i = 0; i < responseCourses.data.length; i++) {
+    log("TESTING " + "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
+    try {
+      Response responseCourses = await dio.get(
+          "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
+      log(responseCourses.data.toString());
+      for (var i = 0; i < responseCourses.data.length; i++) {
+        setState(() {
+          courses.add(responseCourses.data[i]);
+          coursesNumber.add(int.parse(responseCourses.data[i]["number"]));
+        });
+      }
       setState(() {
-        courses.add(responseCourses.data[i]);
-        coursesNumber.add(int.parse(responseCourses.data[i]["number"]));
+        loaded = true;
       });
+    } catch (e) {
+      log(e.response.toString());
     }
-    setState(() {
-      loaded = true;
-    });
   }
 
   @override
@@ -155,34 +166,14 @@ class _CyclesState extends State<Cycles> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(""),
-                        element(
-                            green,
-                            1,
-                            "RO",
-                            coursesNumber.contains(1) ? true : false,
-                            "1",
-                            1),
-                        element(
-                            green,
-                            2,
-                            "DO",
-                            coursesNumber.contains(2) ? true : false,
-                            "2",
-                            1),
-                        element(
-                            green,
-                            3,
-                            "RO",
-                            coursesNumber.contains(3) ? true : false,
-                            "3",
-                            1),
-                        element(
-                            green,
-                            4,
-                            "TO",
-                            coursesNumber.contains(4) ? true : false,
-                            "4",
-                            1),
+                        element(green, 1, "RO",
+                            coursesNumber.contains(1) ? true : false, "1", 1),
+                        element(green, 2, "DO",
+                            coursesNumber.contains(2) ? true : false, "2", 1),
+                        element(green, 3, "RO",
+                            coursesNumber.contains(3) ? true : false, "3", 1),
+                        element(green, 4, "TO",
+                            coursesNumber.contains(4) ? true : false, "4", 1),
                         Text("")
                       ],
                     ),
@@ -196,23 +187,13 @@ class _CyclesState extends State<Cycles> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        element(
-                            red,
-                            5,
-                            "TO",
-                            coursesNumber.contains(5) ? true : false,
-                            "5",
-                            2),
+                        element(red, 5, "TO",
+                            coursesNumber.contains(5) ? true : false, "5", 2),
                         SizedBox(
                           width: 5.0.w,
                         ),
-                        element(
-                            red,
-                            6,
-                            "TO",
-                            coursesNumber.contains(6) ? true : false,
-                            "6",
-                            2),
+                        element(red, 6, "TO",
+                            coursesNumber.contains(6) ? true : false, "6", 2),
                         SizedBox(
                           width: 10.0.w,
                         )
@@ -228,23 +209,13 @@ class _CyclesState extends State<Cycles> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        element(
-                            yellow,
-                            7,
-                            "TO",
-                            coursesNumber.contains(7) ? true : false,
-                            "7",
-                            3),
+                        element(yellow, 7, "TO",
+                            coursesNumber.contains(7) ? true : false, "7", 3),
                         SizedBox(
                           width: 5.0.w,
                         ),
-                        element(
-                            yellow,
-                            8,
-                            "VO",
-                            coursesNumber.contains(8) ? true : false,
-                            "8",
-                            3),
+                        element(yellow, 8, "VO",
+                            coursesNumber.contains(8) ? true : false, "8", 3),
                         SizedBox(
                           width: 10.0.w,
                         )

@@ -7,6 +7,8 @@ abstract class CourseDataRepository {
 
   Future deleteCourse(String gifDataId);
 
+  Future deleteAll();
+
   Future<List<CourseData>> getAllCourse();
 
   Future<List<CourseData>> getCourseID(String id);

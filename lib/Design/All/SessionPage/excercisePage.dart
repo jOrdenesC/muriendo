@@ -22,7 +22,8 @@ class ExcerciseVideo extends StatefulWidget {
   final String id;
   final List questionnaire;
   final int number;
-  ExcerciseVideo(this.id, this.questionnaire, this.number);
+  final String phase;
+  ExcerciseVideo(this.id, this.questionnaire, this.number, this.phase);
   @override
   _ExcerciseVideoState createState() => _ExcerciseVideoState();
 }
@@ -71,10 +72,15 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   getRole() async {
     var prefs = await SharedPreferences.getInstance();
     var dev1 = prefs.getBool("dev");
-    setState(() {
-      dev = dev1;
-    });
-    print("IsDev: $dev");
+    if (dev1 == null) {
+      setState(() {
+        dev = false;
+      });
+    } else {
+      setState(() {
+        dev = dev1;
+      });
+    }
   }
 
   @override
@@ -110,7 +116,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                               timeout: 3,
                               onPressed: () {
                                 _.controllTimer(widget.id, widget.questionnaire,
-                                    widget.number);
+                                    widget.number, widget.phase);
                               },
                               toastMessage: "Adelantado"),
                         )
@@ -534,8 +540,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                     InkWell(
                       onTap: () {
                         print("Button pressed");
-                        _.controllTimer(
-                            widget.id, widget.questionnaire, widget.number);
+                        _.controllTimer(widget.id, widget.questionnaire,
+                            widget.number, widget.phase);
                       },
                       child: Icon(
                         Icons.volume_up_rounded,
@@ -1178,7 +1184,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
       height: MediaQuery.of(context).size.height / 2.5,
       width: MediaQuery.of(context).size.width / 2.5,
       onComplete: () {
-        _.controllTimer(widget.id, widget.questionnaire, widget.number);
+        _.controllTimer(
+            widget.id, widget.questionnaire, widget.number, widget.phase);
       },
     );
   }

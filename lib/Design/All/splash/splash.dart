@@ -192,23 +192,11 @@ class _SplashState extends State<Splash> {
   }
 
   insertEvidencesFalse() async {
-    var prefs = await SharedPreferences.getInstance();
-    var createdEvidence1 = prefs.getBool("createdEvidence");
-    if (createdEvidence1 == null) {
-      setState(() {
-        createdEvidence = false;
-      });
-    } else {
-      setState(() {
-        createdEvidence = createdEvidence1;
-      });
-    }
-    if (createdEvidence) {
-      print("ok");
-    } else {
-      EvidencesRepository evidencesRepository = GetIt.I.get();
-      for (var i = 0; i < 40; i++) {
-        print(i);
+    EvidencesRepository evidencesRepository = GetIt.I.get();
+    for (var i = 0; i < 40; i++) {
+      print(i);
+      var res = await evidencesRepository.getEvidenceNumber(i + 1);
+      if (res.isEmpty) {
         EvidencesSend evidencesSend = EvidencesSend(
             number: i + 1,
             kilocalories: null,
@@ -216,8 +204,18 @@ class _SplashState extends State<Splash> {
             phase: null,
             classObject: null,
             finished: false);
+        print("Se nsertó una evidencia");
         await evidencesRepository.insertEvidence(evidencesSend);
-        prefs.setBool("createdEvidence", true);
+      } else {
+        EvidencesSend evidencesSend = EvidencesSend(
+            number: i + 1,
+            kilocalories: res[0].kilocalories,
+            idEvidence: res[0].idEvidence,
+            phase: res[0].phase,
+            classObject: res[0].classObject,
+            finished: res[0].finished);
+        print("Se actualizó una evidencia");
+        await evidencesRepository.updateEvidence(evidencesSend);
       }
     }
   }

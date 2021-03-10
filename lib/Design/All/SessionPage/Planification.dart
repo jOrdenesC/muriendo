@@ -32,7 +32,7 @@ class _PlanificationState extends State<Planification> {
                   buttonRounded(context, func: () async {
                     Get.to(
                       ExcerciseVideo(args['data'].toMap()["classID"].toString(),
-                          args["data"].questionnaire, args["number"]),
+                          args["data"].questionnaire, args["number"], args["phase"]),
                     );
                   }, text: "   COMENZAR")
                 ],

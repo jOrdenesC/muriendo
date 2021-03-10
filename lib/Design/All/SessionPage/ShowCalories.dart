@@ -20,13 +20,16 @@ class ShowCalories extends StatefulWidget {
   final String idClass;
   final List questionnaire;
   final int number;
+  final String phase;
 
   ShowCalories(
       {this.mets,
       this.exercises,
       this.idClass,
       this.questionnaire,
-      this.number});
+      this.number,
+      this.phase
+      });
 
   @override
   _ShowCaloriesState createState() => _ShowCaloriesState();
@@ -86,7 +89,9 @@ class _ShowCaloriesState extends State<ShowCalories> {
                           questionnaire: widget.questionnaire,
                           kCal: total,
                           number: widget.number,
-                          idClass: widget.idClass);
+                          idClass: widget.idClass,
+                          phase: widget.phase
+                          );
                 }, text: "   CONTINUAR")
               ],
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:movitronia/Database/Repository/CourseRepository.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool isMenu;
@@ -18,10 +20,17 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController birthday = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController mail = TextEditingController();
+  TextEditingController college = TextEditingController();
+  TextEditingController courseText = TextEditingController();
 
   getDataUser() async {
     var prefs = await SharedPreferences.getInstance();
+    CourseDataRepository courseDataRepository = GetIt.I.get();
+    var course = await courseDataRepository.getAllCourse();
+
     setState(() {
+      college.text = course[0].college["name"].toString().toUpperCase();
+      courseText.text = "${course[0].number} ${course[0].letter}".toUpperCase();
       name.text = prefs.getString("name");
       height.text = prefs.getString("height");
       weight.text = prefs.getString("weight");
@@ -120,6 +129,26 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(
                     height: 2.0.h,
                   ),
+                  item(
+                      name: "Colegio",
+                      child: TextFormField(
+                        // initialValue: name.text,
+                        enabled: false,
+                        decoration: InputDecoration(border: InputBorder.none),
+                        controller: college,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 5.5.w),
+                      )),
+                  item(
+                      name: "Curso",
+                      child: TextFormField(
+                        // initialValue: name.text,
+                        enabled: false,
+                        decoration: InputDecoration(border: InputBorder.none),
+                        controller: courseText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 5.5.w),
+                      )),
                   item(
                       name: "Nombres",
                       child: TextFormField(

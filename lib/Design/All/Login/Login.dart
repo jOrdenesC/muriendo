@@ -18,6 +18,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'dart:developer';
+import 'package:get_it/get_it.dart';
+import '../../../Database/Models/evidencesSend.dart';
+import '../../../Database/Repository/EvidencesSentRepository.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -403,6 +406,7 @@ class _LoginState extends State<Login> {
             var responseAllData = await dio.get(
               "$urlServer/api/mobile/userData?token=$token",
             );
+            log(responseAllData.data.toString());
             if (role == "user") {
               prefs.setString(
                   "phone", responseAllData.data["phone"].toString());
@@ -424,6 +428,34 @@ class _LoginState extends State<Login> {
                   "status", responseAllData.data["status"].toString());
               prefs.setString(
                   "membership", responseAllData.data["membership"].toString());
+
+              EvidencesRepository evidencesRepository = GetIt.I.get();
+              for (var i = 0; i < 40; i++) {
+                print(i);
+
+                var res = await evidencesRepository.getEvidenceNumber(i + 1);
+                if (res.isEmpty) {
+                  EvidencesSend evidencesSend = EvidencesSend(
+                      number: i + 1,
+                      kilocalories: null,
+                      idEvidence: null,
+                      phase: null,
+                      classObject: null,
+                      finished: false);
+                  print("Se nsertó una evidencia");
+                  await evidencesRepository.insertEvidence(evidencesSend);
+                } else {
+                  EvidencesSend evidencesSend = EvidencesSend(
+                      number: i + 1,
+                      kilocalories: res[0].kilocalories,
+                      idEvidence: res[0].idEvidence,
+                      phase: res[0].phase,
+                      classObject: res[0].classObject,
+                      finished: res[0].finished);
+                  print("Se actualizó una evidencia");
+                  await evidencesRepository.updateEvidence(evidencesSend);
+                }
+              }
               goToHome("user", {});
             } else {
               print("TOKEEEEEEEEEEN $token");
@@ -449,7 +481,7 @@ class _LoginState extends State<Login> {
               } else if (colleges.length > 1) {
                 goToTeacherSelectCollege();
               } else {
-                // goToHome(role == "professor" ? "teacher" : "user");
+                goToHome("professor", colleges[0]);
               }
             }
           } else {

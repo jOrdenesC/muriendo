@@ -1,8 +1,15 @@
 import 'package:get/get.dart';
 import 'package:movitronia/Database/Models/ClassLevel.dart';
 import 'package:movitronia/Design/All/DetailsExercise/DetailsExcercise.dart';
+import 'package:movitronia/Functions/Controllers/ListsController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'AppRoutes.dart';
+import 'package:get_it/get_it.dart';
+import '../Database/Repository/EvidencesSentRepository.dart';
+import '../Database/Repository/CourseRepository.dart';
+import '../Design/All/EvidencesTeacher/SearchEvidences.dart';
+import '../Design/All/HomePage/HomePageTeacher.dart';
+import '../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 goToLogin() {
   Get.toNamed(AppRoutes.login.name);
@@ -12,8 +19,10 @@ goToHome(String role, Map college) {
   if (role == "user") {
     Get.toNamed(AppRoutes.homeUser.name, arguments: role);
   } else {
-    Get.toNamed(AppRoutes.homeTeacher.name,
-        arguments: {"role": role, "college": college});
+    Get.to(HomePageTeacher(
+      classId: college["_id"],
+      nameCollege: college["name"],
+    ));
   }
 }
 
@@ -33,12 +42,14 @@ goToWelcome(String role) {
   Get.toNamed(AppRoutes.welcome.name, arguments: role);
 }
 
-goToPlanification(ClassLevel data, int number, bool isTeacher, Map dataClass) {
+goToPlanification(
+    ClassLevel data, int number, bool isTeacher, Map dataClass, String phase) {
   Get.toNamed(AppRoutes.planification.name, arguments: {
     "data": data,
     "number": number,
     "isTeacher": isTeacher,
-    "dataClass": dataClass
+    "dataClass": dataClass,
+    "phase": phase
   });
 }
 
@@ -71,24 +82,32 @@ goToEvidencesSession(
     String idClass,
     double kCal,
     int number,
-    List exercises}) {
+    List exercises,
+    String phase}) {
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
     "kCal": kCal,
     "number": number,
-    "exercises": exercises
+    "exercises": exercises,
+    "phase": phase
   });
 }
 
 goToUploadData(
-    {String uuidQuestionary, String idClass, double mets, int number, List exercises}) {
+    {String uuidQuestionary,
+    String idClass,
+    double mets,
+    int number,
+    List exercises,
+    String phase}) {
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
     "mets": mets,
     "number": number,
-    "exercises": exercises
+    "exercises": exercises,
+    "phase": phase
   });
 }
 
@@ -154,7 +173,7 @@ goToshowCycle(String nameCourse, int cycle) {
 }
 
 goToShowPhases(
-    int cycle, String title, bool isEvidence, bool isDefault, int level) {
+    int cycle, String title, bool isEvidence, bool isDefault, String level) {
   Get.toNamed(AppRoutes.showPhases.name, arguments: {
     "cycle": cycle,
     "title": title,
@@ -164,36 +183,58 @@ goToShowPhases(
   });
 }
 
-goToCreateClass() {
-  Get.toNamed(AppRoutes.createClass.name);
+goToCreateClass(String level, String number) {
+  ListController().finishCreateClass();
+  Get.toNamed(AppRoutes.createClass.name,
+      arguments: {"level": level, "number": number});
 }
 
-goToExcercisesClass(String title) {
-  Get.toNamed(AppRoutes.excercisesClass.name, arguments: title);
+goToExcercisesClass(String title, String level, String number) {
+  Get.toNamed(AppRoutes.excercisesClass.name,
+      arguments: {"title": title, "level": level, "number": number});
 }
 
-goToFilterExcercises(String title) {
-  Get.toNamed(AppRoutes.filterExcercises.name, arguments: title);
+goToFilterExcercises(
+    String category, String stage, String level, String number, bool isPie) {
+  Get.toNamed(AppRoutes.filterExcercises.name, arguments: {
+    "category": category,
+    "stage": stage,
+    "level": level,
+    "number": number,
+    "isPie": isPie
+  });
 }
 
-goToAddExcercises(String title) {
-  Get.toNamed(AppRoutes.addExcercises.name, arguments: title);
+goToAddExcercises(String subCategory, String stage, String category,
+    String level, String number) {
+  Get.toNamed(AppRoutes.addExcercises.name, arguments: {
+    "subCategory": subCategory,
+    "stage": stage,
+    "category": category,
+    "level": level,
+    "number": number
+  });
 }
 
-goToFinishCreateClass() {
-  Get.toNamed(AppRoutes.finishCreateClass.name);
+goToFinishCreateClass(String level, String number, var response) {
+  Get.toNamed(AppRoutes.finishCreateClass.name,
+      arguments: {"level": level, "number": number, "response": response});
 }
 
-goToAssignCreatedClass() {
-  Get.toNamed(AppRoutes.assignCreatedClass.name);
+goToAssignCreatedClass(String level, String number, var response) {
+  Get.toNamed(AppRoutes.assignCreatedClass.name,
+      arguments: {"level": level, "number": number, "response": response});
 }
 
 goToMessageUploadData() {
   Get.toNamed(AppRoutes.messageUploadData.name);
 }
 
-goToSearchEvidences(bool isFull) {
-  Get.toNamed(AppRoutes.searchEvidences.name, arguments: isFull);
+goToSearchEvidences(bool isFull, String idCollege) {
+  Get.to(SearchEvidences(
+    isFull: isFull,
+    idCollege: idCollege,
+  ));
 }
 
 goToMenuEvidences() {
@@ -209,14 +250,36 @@ goToManuals(bool isFull) {
 }
 
 closeSession() async {
+  CourseDataRepository courseDataRepository = GetIt.I.get();
+  await courseDataRepository.deleteAll();
+  EvidencesRepository evidencesRepository = GetIt.I.get();
+  ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
+  await evidencesRepository.deleteAll();
+  await excerciseDataRepository.deleteAll();
   var prefs = await SharedPreferences.getInstance();
-  prefs.clear();
+  prefs.setInt("phase", null);
+  prefs.setString("rut", null);
+  prefs.setString("name", null);
+  prefs.setString("email", null);
+  prefs.setString("token", null);
+  prefs.setString("scope", null);
+  prefs.setString("charge", null);
+  prefs.setBool("termsAccepted", null);
+  prefs.setString("gender", null);
+  prefs.setString("phone", null);
+  prefs.setString("uuid", null);
+  prefs.setString("birthday", null);
+  prefs.setString("weight", null);
+  prefs.setString("height", null);
+  prefs.setString("frequencyOfPhysicalActivity", null);
+  prefs.setString("actualVideo", null);
+  prefs.setBool("downloaded", null);
   Get.offAllNamed(AppRoutes.login.name);
 }
 
 goToDetailsExcercises(
-    String name, String asset, String kcal, String desc, bool isTeacher) {
-  Get.to(DetailsExcercise(name, kcal, desc, isTeacher));
+    String nameVideo, String name, String kcal, String desc, bool isTeacher) {
+  Get.to(DetailsExcercise(nameVideo, name, kcal, desc, isTeacher));
 }
 
 goToHomeTeacher() {

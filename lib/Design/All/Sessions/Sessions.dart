@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
+import 'dart:developer';
 
 class Sessions extends StatefulWidget {
   @override
@@ -44,11 +45,11 @@ class _SessionsState extends State<Sessions> {
       }
     }
     print(evidences.toString());
-    print("AAAAA " + evidences[0].toString());
     return true;
   }
 
   Future getClasses() async {
+    print("get Classes");
     var res = await classDataRepository.getAllClassLevel();
     if (res.isNotEmpty) {
       for (var i = 0; i < res.length; i++) {
@@ -75,6 +76,7 @@ class _SessionsState extends State<Sessions> {
   }
 
   Future getData() async {
+    print("Init get data");
     await DownloadData().getUserData(context);
     var prefs = await SharedPreferences.getInstance();
     var down = prefs.getBool("downloaded" ?? false);
@@ -128,6 +130,7 @@ class _SessionsState extends State<Sessions> {
       // await downloadFiles(response.data, "videos.zip");
       // downloadFiles(url, filenames)
     }
+    print("fin getData");
     return true;
   }
 
@@ -147,12 +150,16 @@ class _SessionsState extends State<Sessions> {
     var downloaded = prefs.getBool("downloaded" ?? false);
     if (downloaded == null || downloaded == false) {
       try {
+        log("Get data");
         await getData();
+        log("Get classes");
         await getClasses();
+        log("get phase");
         await getPhase();
         setState(() {
           loaded = false;
         });
+        log("get evidence");
         await getEvidence();
         setState(() {
           loaded = true;
@@ -164,11 +171,14 @@ class _SessionsState extends State<Sessions> {
       }
     } else {
       try {
+        log("get classes");
         await getClasses();
+        log("get phase");
         await getPhase();
         setState(() {
           loaded = false;
         });
+        log("get evidence");
         await getEvidence();
         setState(() {
           loaded = true;
@@ -237,7 +247,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[0],
                           dataClasses[0].number,
-                          true),
+                          true,
+                          "1"),
                       //fourth
                       item(
                           phasePhone >= 1 && evidences[2]
@@ -246,7 +257,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[3],
                           dataClasses[3].number,
-                          evidences[2] == true ? true : false),
+                          evidences[2] == true ? true : false,
+                          "1"),
                       //second
                       item(
                           phasePhone >= 1 && evidences[0]
@@ -255,7 +267,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[1],
                           dataClasses[1].number,
-                          evidences[0] ? true : false),
+                          evidences[0] ? true : false,
+                          "1"),
                       //third
                       item(
                           phasePhone >= 1 && evidences[1]
@@ -264,7 +277,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[2],
                           dataClasses[2].number,
-                          evidences[1] ? true : false),
+                          evidences[1] ? true : false,
+                          "1"),
                     ]),
                     divider(green, "FASE 2"),
                     createPhase([
@@ -276,7 +290,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[4],
                           dataClasses[4].number,
-                          evidences[3] ? true : false),
+                          evidences[3] ? true : false,
+                          "2"),
                       //fourth
                       item(
                           phasePhone >= 2 && evidences[6]
@@ -285,7 +300,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[7],
                           dataClasses[7].number,
-                          evidences[6] ? true : false),
+                          evidences[6] ? true : false,
+                          "2"),
                       //second
                       item(
                           phasePhone >= 2 && evidences[4]
@@ -294,7 +310,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[5],
                           dataClasses[5].number,
-                          evidences[4] ? true : false),
+                          evidences[4] ? true : false,
+                          "2"),
                       //third
                       item(
                           phasePhone >= 2 && evidences[5]
@@ -303,7 +320,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[6],
                           dataClasses[6].number,
-                          evidences[5] ? true : false),
+                          evidences[5] ? true : false,
+                          "2"),
                     ]),
                     divider(red, "FASE 3"),
                     createPhase([
@@ -315,7 +333,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[8],
                           dataClasses[8].number,
-                          evidences[7] ? true : false),
+                          evidences[7] ? true : false,
+                          "3"),
                       //fourth
                       item(
                           phasePhone >= 3 && evidences[10]
@@ -324,7 +343,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[11],
                           dataClasses[11].number,
-                          evidences[10] ? true : false),
+                          evidences[10] ? true : false,
+                          "3"),
                       //second
                       item(
                           phasePhone >= 3 && evidences[8]
@@ -333,7 +353,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[9],
                           dataClasses[9].number,
-                          evidences[8] ? true : false),
+                          evidences[8] ? true : false,
+                          "3"),
                       //third
                       item(
                           phasePhone >= 3 && evidences[9]
@@ -342,7 +363,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[10],
                           dataClasses[10].number,
-                          evidences[9] ? true : false),
+                          evidences[9] ? true : false,
+                          "3"),
                     ]),
                     divider(yellow, "FASE 4"),
                     createPhase([
@@ -354,7 +376,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[12],
                           dataClasses[12].number,
-                          evidences[11] ? true : false),
+                          evidences[11] ? true : false,
+                          "4"),
                       //fourth
                       item(
                           phasePhone >= 4 && evidences[14]
@@ -363,7 +386,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[15],
                           dataClasses[15].number,
-                          evidences[14] ? true : false),
+                          evidences[14] ? true : false,
+                          "4"),
                       //second
                       item(
                           phasePhone >= 4 && evidences[12]
@@ -372,7 +396,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[13],
                           dataClasses[13].number,
-                          evidences[12] ? true : false),
+                          evidences[12] ? true : false,
+                          "4"),
                       //third
                       item(
                           phasePhone >= 4 && evidences[13]
@@ -381,7 +406,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[14],
                           dataClasses[14].number,
-                          evidences[13] ? true : false),
+                          evidences[13] ? true : false,
+                          "4"),
                     ]),
                     divider(green, "FASE 5"),
                     createPhase([
@@ -393,7 +419,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[16],
                           dataClasses[16].number,
-                          evidences[15] ? true : false),
+                          evidences[15] ? true : false,
+                          "5"),
                       //fourth
                       item(
                           phasePhone >= 5 && evidences[18]
@@ -402,7 +429,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[19],
                           dataClasses[19].number,
-                          evidences[18] ? true : false),
+                          evidences[18] ? true : false,
+                          "5"),
                       //second
                       item(
                           phasePhone >= 5 && evidences[16]
@@ -411,7 +439,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[17],
                           dataClasses[17].number,
-                          evidences[16] ? true : false),
+                          evidences[16] ? true : false,
+                          "5"),
                       //third
                       item(
                           phasePhone >= 5 && evidences[17]
@@ -420,7 +449,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[18],
                           dataClasses[18].number,
-                          evidences[17] ? true : false),
+                          evidences[17] ? true : false,
+                          "5"),
                     ]),
                     divider(red, "FASE 6"),
                     createPhase([
@@ -432,7 +462,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[20],
                           dataClasses[20].number,
-                          evidences[19] ? true : false),
+                          evidences[19] ? true : false,
+                          "6"),
                       //fourth
                       item(
                           phasePhone >= 6 && evidences[22]
@@ -441,7 +472,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[23],
                           dataClasses[23].number,
-                          evidences[22] ? true : false),
+                          evidences[22] ? true : false,
+                          "6"),
                       //second
                       item(
                           phasePhone >= 6 && evidences[20]
@@ -450,7 +482,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[21],
                           dataClasses[21].number,
-                          evidences[20] ? true : false),
+                          evidences[20] ? true : false,
+                          "6"),
                       //third
                       item(
                           phasePhone >= 6 && evidences[21]
@@ -459,7 +492,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[22],
                           dataClasses[22].number,
-                          evidences[21] ? true : false),
+                          evidences[21] ? true : false,
+                          "6"),
                     ]),
                     divider(yellow, "FASE 7"),
                     createPhase([
@@ -471,7 +505,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[24],
                           dataClasses[24].number,
-                          evidences[23] ? true : false),
+                          evidences[23] ? true : false,
+                          "7"),
                       //fourth
                       item(
                           phasePhone >= 7 && evidences[26]
@@ -480,7 +515,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[27],
                           dataClasses[27].number,
-                          evidences[26] ? true : false),
+                          evidences[26] ? true : false,
+                          "7"),
                       //second
                       item(
                           phasePhone >= 7 && evidences[24]
@@ -489,7 +525,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[25],
                           dataClasses[25].number,
-                          evidences[24] ? true : false),
+                          evidences[24] ? true : false,
+                          "7"),
                       //third
                       item(
                           phasePhone >= 7 && evidences[25]
@@ -498,7 +535,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[26],
                           dataClasses[26].number,
-                          evidences[25] ? true : false),
+                          evidences[25] ? true : false,
+                          "7"),
                     ]),
                     divider(green, "FASE 8"),
                     createPhase([
@@ -510,7 +548,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[28],
                           dataClasses[28].number,
-                          evidences[27] ? true : false),
+                          evidences[27] ? true : false,
+                          "8"),
                       //fourth
                       item(
                           phasePhone >= 8 && evidences[30]
@@ -519,7 +558,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[31],
                           dataClasses[31].number,
-                          evidences[30] ? true : false),
+                          evidences[30] ? true : false,
+                          "8"),
                       //second
                       item(
                           phasePhone >= 8 && evidences[28]
@@ -528,7 +568,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[29],
                           dataClasses[29].number,
-                          evidences[28] ? true : false),
+                          evidences[28] ? true : false,
+                          "8"),
                       //third
                       item(
                           phasePhone >= 8 && evidences[29]
@@ -537,7 +578,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[30],
                           dataClasses[30].number,
-                          evidences[29] ? true : false),
+                          evidences[29] ? true : false,
+                          "8"),
                     ]),
                     divider(red, "FASE 9"),
                     createPhase([
@@ -549,7 +591,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[32],
                           dataClasses[32].number,
-                          evidences[31] ? true : false),
+                          evidences[31] ? true : false,
+                          "9"),
                       //fourth
                       item(
                           phasePhone >= 9 && evidences[34]
@@ -558,7 +601,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[35],
                           dataClasses[35].number,
-                          evidences[34] ? true : false),
+                          evidences[34] ? true : false,
+                          "9"),
                       //second
                       item(
                           phasePhone >= 9 && evidences[32]
@@ -567,7 +611,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[33],
                           dataClasses[33].number,
-                          evidences[32] ? true : false),
+                          evidences[32] ? true : false,
+                          "9"),
                       //third
                       item(
                           phasePhone >= 9 && evidences[33]
@@ -576,7 +621,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[34],
                           dataClasses[34].number,
-                          evidences[33] ? true : false),
+                          evidences[33] ? true : false,
+                          "9"),
                     ]),
                     divider(yellow, "FASE 10"),
                     createPhase([
@@ -588,7 +634,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[36],
                           dataClasses[36].number,
-                          evidences[35] ? true : false),
+                          evidences[35] ? true : false,
+                          "10"),
                       //fourth
                       item(
                           phasePhone >= 10 && evidences[38]
@@ -597,7 +644,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[39],
                           dataClasses[39].number,
-                          evidences[38] ? true : false),
+                          evidences[38] ? true : false,
+                          "10"),
                       //second
                       item(
                           phasePhone >= 10 && evidences[36]
@@ -606,7 +654,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[37],
                           dataClasses[37].number,
-                          evidences[36] ? true : false),
+                          evidences[36] ? true : false,
+                          "10"),
                       //third
                       item(
                           phasePhone >= 10 && evidences[37]
@@ -615,7 +664,8 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[38],
                           dataClasses[38].number,
-                          evidences[37] ? true : false),
+                          evidences[37] ? true : false,
+                          "10"),
                     ]),
                   ],
                 ),
@@ -650,13 +700,14 @@ class _SessionsState extends State<Sessions> {
     );
   }
 
-  Widget item(String route, bool phase, var data, int number, bool lock) {
+  Widget item(String route, bool phase, var data, int number, bool lock,
+      String phaseNumber) {
     return InkWell(
       onTap: () {
         print(evidences.toString());
         print(lock);
         if (lock == true) {
-          goToPlanification(data, number, false, null);
+          goToPlanification(data, number, false, null, phaseNumber);
         } else {
           print(lock);
           Toast.show("Debes completar las clases anteriores.", context,

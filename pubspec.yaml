@@ -133,13 +133,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Gotham
-      fonts:
-        - asset: Assets/fonts/gothamrounded-bold.otf
-        - asset: Assets/fonts/gothamroundedbold_21016.ttf
-        - asset: Assets/fonts/gothamrounded-book.otf
-        - asset: Assets/fonts/gothamroundedbook_21018.ttf
-
     - family: Nunito
       fonts:
         # - asset: Assets/fonts/Nunito-ExtraBold.ttf

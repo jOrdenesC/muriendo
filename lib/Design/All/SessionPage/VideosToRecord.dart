@@ -23,12 +23,14 @@ class VideosToRecord extends StatefulWidget {
   final String uuidQuestionary;
   final int number;
   final String idClass;
+  final String phase;
   VideosToRecord(
       {this.exercises,
       this.kCal,
       this.idClass,
       this.number,
-      this.uuidQuestionary});
+      this.uuidQuestionary,
+      this.phase});
   @override
   _VideosToRecordState createState() => _VideosToRecordState();
 }
@@ -105,8 +107,13 @@ class _VideosToRecordState extends State<VideosToRecord>
                 children: [
                   _.loading.value != true
                       ? buttonRounded(context, func: () {
-                          videoController.recordMovie(widget.uuidQuestionary,
-                              widget.idClass, widget.kCal, widget.number, widget.exercises);
+                          videoController.recordMovie(
+                              widget.uuidQuestionary,
+                              widget.idClass,
+                              widget.kCal,
+                              widget.number,
+                              widget.exercises,
+                              widget.phase);
                         },
                           text: "   GRABAR",
                           icon: Icon(
@@ -182,6 +189,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                   .getExcerciseName(widget.exercises[0]);
                               Get.to(DetailsExcercise(
                                   widget.exercises[0],
+                                  widget.exercises[0],
                                   res[0].mets.toString(),
                                   res[0].recommendation,
                                   false));
@@ -239,6 +247,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                               var res = await excerciseDataRepository
                                   .getExcerciseName(widget.exercises[1]);
                               Get.to(DetailsExcercise(
+                                  widget.exercises[1],
                                   widget.exercises[1],
                                   res[0].mets.toString(),
                                   res[0].recommendation,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
-import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
+import 'package:get/get.dart';
+import '../Cycles/AddExcercises.dart';
 
 class FilterExcercises extends StatefulWidget {
   @override
@@ -20,20 +21,18 @@ class _FilterExcercisesState extends State<FilterExcercises> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 9.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         backgroundColor: cyan,
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text(title)),
+              height: 2.0.h,
+            ),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text("${title["category"]} | ${title["stage"]}")),
           ],
         ),
         centerTitle: true,
@@ -64,16 +63,23 @@ class _FilterExcercisesState extends State<FilterExcercises> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buttonRounded(context, func: () {
-                    goToAddExcercises("SOBRE EL SUELO");
+                    Get.to(AddExcercises(
+                      level: title["level"],
+                      category: title["category"],
+                      subCategory: "SOBRE SUELO",
+                      stage: title["stage"],
+                      number: title["number"],
+                      isPie: false,
+                    ));
                   },
-                      text: "SOBRE EL SUELO",
+                      text: "SOBRE SUELO",
                       width: 90.0.w,
                       height: 9.0.h,
-                      circleRadius: 8.0.w,
+                      circleRadius: 6.0.w,
                       icon: Icon(
                         Icons.arrow_forward_ios,
                         color: blue,
-                        size: 10.0.w,
+                        size: 8.0.w,
                       )),
                 ],
               ),
@@ -84,16 +90,23 @@ class _FilterExcercisesState extends State<FilterExcercises> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buttonRounded(context, func: () {
-                    goToAddExcercises("DE PIE");
+                    Get.to(AddExcercises(
+                      level: title["level"],
+                      category: title["category"],
+                      subCategory: "DE PIE",
+                      stage: title["stage"],
+                      number: title["number"],
+                      isPie: false,
+                    ));
                   },
                       text: "DE PIE",
                       width: 90.0.w,
                       height: 9.0.h,
-                      circleRadius: 8.0.w,
+                      circleRadius: 6.0.w,
                       icon: Icon(
                         Icons.arrow_forward_ios,
                         color: blue,
-                        size: 10.0.w,
+                        size: 8.0.w,
                       )),
                 ],
               )

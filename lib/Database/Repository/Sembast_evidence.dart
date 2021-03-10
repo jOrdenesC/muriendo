@@ -48,4 +48,10 @@ class SembastEvidenceRepository extends EvidencesRepository {
         .map((snapshot) => EvidencesSend.fromMap(snapshot.value))
         .toList(growable: false);
   }
+
+  Future deleteAll() async {
+    print("eliminadas todas las evidencias");
+    await _store.delete(_database);
+    return null;
+  }
 }

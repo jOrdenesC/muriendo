@@ -32,8 +32,6 @@ class _ExcercisesPageState extends State<ExcercisesPage>
     var h = MediaQuery.of(context).size.height;
     final dynamic name =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
-    print(name);
-    print("EEEEEEEEEO");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cyan,
@@ -111,8 +109,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                             var res = await excerciseDataRepository
                                 .getExcerciseName(name["data"][index]);
                             goToDetailsExcercises(
+                                res[0].videoName,
                                 "${name["data"][index]}",
-                                "Assets/videos/C12",
                                 "${res[0].mets}",
                                 "${res[0].recommendation}",
                                 name["isTeacher"]);
@@ -155,8 +153,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 var res = await excerciseDataRepository
                                     .getExcerciseName(name["data"][index]);
                                 goToDetailsExcercises(
+                                    res[0].videoName,
                                     "${name["data"][index]}",
-                                    "Assets/videos/C12",
                                     "${res[0].mets}",
                                     "${res[0].recommendation}",
                                     name["isTeacher"]);
@@ -199,8 +197,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 var res = await excerciseDataRepository
                                     .getExcerciseName(name["data"][index]);
                                 goToDetailsExcercises(
+                                    res[0].videoName,
                                     "${name["data"][index]}",
-                                    "Assets/videos/C12",
                                     "${res[0].mets}",
                                     "${res[0].recommendation}",
                                     name["isTeacher"]);

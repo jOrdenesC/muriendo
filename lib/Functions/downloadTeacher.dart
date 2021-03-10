@@ -13,6 +13,7 @@ import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import '../Functions/Controllers/mp4Controller.dart';
 
 class DownloadTeacher {
   Future downloadFiles(
@@ -22,8 +23,10 @@ class DownloadTeacher {
       String messageAlert,
       String route,
       String platform}) async {
+    var prefs = await SharedPreferences.getInstance();
     var dir = await getApplicationDocumentsDirectory();
     var progress = 0.0;
+    var mp4Progress = Mp4Controller().percentage;
     loading(context,
         content: Center(
           child: Column(
@@ -38,15 +41,16 @@ class DownloadTeacher {
           ),
         ),
         title: Text(
-          "$messageAlert",
+          """$messageAlert""",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 6.0.w),
-        ));
+        ),
+        percentage: progress.toString());
     var dio = Dio();
+
     await dio.download(url, "${dir.path}/$route/$filename",
         onReceiveProgress: (rec, total) {
-      progress = (rec / total) * 100;
-      print("$progress %");
+      print("${rec/total}");
     });
     if (route == "videos") {
       await unarchiveAndSaveVideos(
@@ -55,7 +59,7 @@ class DownloadTeacher {
       await unarchiveAndSave(
           File("${dir.path}/$route/$filename"), context, route, platform);
     }
-
+    prefs.setBool("downloadedVideo", true);
     print("finish");
     return null;
   }
@@ -125,8 +129,7 @@ class DownloadTeacher {
             categories: responseobject[i]['categories'],
             level: responseobject[i]['levels'],
             stages: responseobject[i]['stages'],
-            idMongo: responseobject[i]["_id"]
-            );
+            idMongo: responseobject[i]["_id"]);
         videos.add(excercisedata.videoName);
         if (excercisedata.excerciseNameAudioId.isNotEmpty) {
           audios.add(excercisedata.excerciseNameAudioId);

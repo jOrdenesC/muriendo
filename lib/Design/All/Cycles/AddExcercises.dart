@@ -1,41 +1,118 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
+import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
+import 'package:get_it/get_it.dart';
+import 'dart:developer';
+import '../../../Database/Models/ExcerciseData.dart';
+import '../../Widgets/Toast.dart';
+import '../../../Functions/Controllers/ListsController.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddExcercises extends StatefulWidget {
+  final String level;
+  final String number;
+  final String category;
+  final String subCategory;
+  final String stage;
+  final bool isPie;
+  AddExcercises(
+      {this.level,
+      this.number,
+      this.category,
+      this.subCategory,
+      this.stage,
+      this.isPie});
   @override
   _AddExcercisesState createState() => _AddExcercisesState();
 }
 
 class _AddExcercisesState extends State<AddExcercises> {
-  bool _switchValue1 = false;
-  bool _switchValue2 = false;
-  bool _switchValue3 = false;
-  bool _switchValue4 = false;
-  bool _switchValue5 = false;
+  var args;
+  List bools = [];
+  List<ExcerciseData> response = [];
+  bool loading = false;
+  var max = 0;
+  var maxStatic = 0;
+  ListController listController = ListController();
 
   @override
+  void initState() {
+    super.initState();
+    getVideos(widget.level, widget.number, widget.category, widget.subCategory,
+        widget.stage);
+    getMax();
+    getMaxStatic();
+  }
+
+  getMax() async {
+    if (widget.stage == "CALENTAMIENTO") {
+      print("Entra a if");
+      var res = await ListController().getMaxCalentamiento();
+      print(res);
+      setState(() {
+        max = res;
+      });
+    } else if (widget.stage == "FLEXIBILIDAD") {
+      print("Entra a if");
+      var res = await ListController().getMaxFlexibilidad();
+      print(res);
+      setState(() {
+        max = res;
+      });
+    } else if (widget.stage == "DESARROLLO") {
+      print("Entra a if");
+      var res = await ListController().getMaxDesarrollo();
+      print(res);
+      setState(() {
+        max = res;
+      });
+    } else if (widget.stage == "VUELTA A LA CALMA") {
+      print("Entra a if");
+      var res = await ListController().getMaxVueltaCalma();
+      print(res);
+      setState(() {
+        max = res;
+      });
+    }
+  }
+
+  getMaxStatic() async {
+    if (widget.stage == "CALENTAMIENTO") {
+      print("Entra a if");
+      var res = await ListController().getMaxStaticCalentamiento();
+      print(res);
+      setState(() {
+        maxStatic = res;
+      });
+    } else if (widget.stage == "FLEXIBILIDAD") {
+      print("Entra a if");
+      var res = await ListController().getMaxStaticFlexibilidad();
+      print(res);
+      setState(() {
+        maxStatic = res;
+      });
+    } else if (widget.stage == "DESARROLLO") {
+      print("Entra a if");
+      var res = await ListController().getMaxStaticDesarrollo();
+      print(res);
+      setState(() {
+        maxStatic = res;
+      });
+    } else if (widget.stage == "VUELTA A LA CALMA") {
+      print("Entra a if");
+      var res = await ListController().getMaxStaticVueltaCalma();
+      print(res);
+      setState(() {
+        maxStatic = res;
+      });
+    }
+  }
+
   Widget build(BuildContext context) {
-    final dynamic title =
-        (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
-      bottomNavigationBar: Container(
-        width: 100.0.w,
-        height: 10.0.h,
-        color: cyan,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buttonRounded(context, func: () {
-              goToFinishCreateClass();
-            }, text: "   ENVIAR")
-          ],
-        ),
-      ),
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
@@ -51,586 +128,377 @@ class _AddExcercisesState extends State<AddExcercises> {
             SizedBox(
               height: 2.0.h,
             ),
-            FittedBox(fit: BoxFit.fitWidth, child: Text(title)),
+            FittedBox(fit: BoxFit.fitWidth, child: Text(widget.subCategory)),
           ],
         ),
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 3.0.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50)),
-                  border: Border.all(color: Colors.white, width: 3),
-                  color: red,
-                ),
-                width: 95.0.w,
-                height: 8.0.h,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          "ESCOGE SÓLO 5 EJERCICIOS",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 5.0.w),
-                        ),
-                      ],
-                    ),
-                    CircleAvatar(
-                      backgroundColor: red,
-                      radius: 7.0.w,
-                      child: CircleAvatar(
-                        radius: 6.0.w,
-                        backgroundColor: Colors.white,
-                        child: Center(
-                          child: Text(
-                            "5",
-                            style: TextStyle(color: red, fontSize: 8.0.w),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 3.0.h),
-          InkWell(
-            onTap: () {
-              viewInfo(
-                  "Assets/images/C1.gif",
-                  10,
-                  "Mantén la zona abdominal contraída. Mueve los brazos al ritmo de las piernas. Mantén la espalda erguida.",
-                  "SKIPPING",
-                  12);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: loading == false
+          ? Column(
               children: [
-                Container(
-                  width: 35.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Center(
-                    child: Image.asset(
-                      "Assets/images/C1.gif",
-                      fit: BoxFit.fill,
-                      width: 100.0.w,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 3.0.w,
-                ),
-                Container(
-                  width: 55.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CupertinoSwitch(
-                            activeColor: red,
-                            value: _switchValue1,
-                            onChanged: (value) {
-                              setState(() {
-                                _switchValue1 = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "SKIPPING",
-                            style: TextStyle(color: blue),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 1.5.h,
-          ),
-          InkWell(
-            onTap: () {
-              viewInfo(
-                  "Assets/images/C2.gif",
-                  10,
-                  "Contrae el abdomen. No encojas los hombros. Amortigua los pies con suavidad al momento de la caída.",
-                  "SKIPPING",
-                  12);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 35.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Center(
-                    child: Image.asset(
-                      "Assets/images/C2.gif",
-                      fit: BoxFit.fill,
-                      width: 100.0.w,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 3.0.w,
-                ),
-                Container(
-                  width: 55.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CupertinoSwitch(
-                            activeColor: red,
-                            value: _switchValue2,
-                            onChanged: (value) {
-                              setState(() {
-                                _switchValue2 = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "JUMPING JACKS",
-                            style: TextStyle(color: blue),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 1.5.h,
-          ),
-          InkWell(
-            onTap: () {
-              viewInfo(
-                  "Assets/images/C3.gif",
-                  10,
-                  "Mantén la espalda erguida. No te inclines hacia adelante. Contrae los glúteos cuando te levantes. Mantén tres puntos de apoyo del pie: el dedo gordo, el dedo pequeño y el talón. Evita llevar las rodillas hacia adentro. Mantén la zona abdominal apretada.",
-                  "SENTADILLAS",
-                  12);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 35.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Center(
-                    child: Image.asset(
-                      "Assets/images/C3.gif",
-                      fit: BoxFit.fill,
-                      width: 100.0.w,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 3.0.w,
-                ),
-                Container(
-                  width: 55.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CupertinoSwitch(
-                            activeColor: red,
-                            value: _switchValue3,
-                            onChanged: (value) {
-                              setState(() {
-                                _switchValue3 = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "SENTADILLAS",
-                            style: TextStyle(color: blue),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 1.5.h,
-          ),
-          InkWell(
-            onTap: () {
-              viewInfo(
-                  "Assets/images/C4.gif",
-                  10,
-                  "Aprieta los abdominales. Mantén la espalda plana. No gires la pelvis. Alinea los hombros encima de las muñecas. Mantén cabeza y pelvis alineados con la columna.",
-                  "ESCALADOR",
-                  12);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 35.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Center(
-                    child: Image.asset(
-                      "Assets/images/C4.gif",
-                      fit: BoxFit.fill,
-                      width: 100.0.w,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 3.0.w,
-                ),
-                Container(
-                  width: 55.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CupertinoSwitch(
-                            activeColor: red,
-                            value: _switchValue4,
-                            onChanged: (value) {
-                              setState(() {
-                                _switchValue4 = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "ESCALADOR",
-                            style: TextStyle(color: blue),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 1.5.h,
-          ),
-          InkWell(
-            onTap: () {
-              viewInfo(
-                  "Assets/images/C5.gif",
-                  10,
-                  "Levanta tu rodilla sobre la cintura y haz un aplauso por debajo de esta. Mantén la parte inferior de la espalda recta. Lleva el ritmo.",
-                  "ATRAPA MOSCAS",
-                  12);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 35.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Center(
-                    child: Image.asset(
-                      "Assets/images/C5.gif",
-                      fit: BoxFit.fill,
-                      width: 100.0.w,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 3.0.w,
-                ),
-                Container(
-                  width: 55.0.w,
-                  height: 10.0.h,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CupertinoSwitch(
-                            activeColor: red,
-                            value: _switchValue5,
-                            onChanged: (value) {
-                              setState(() {
-                                _switchValue5 = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "ATRAPA MOSCAS",
-                            style: TextStyle(color: blue),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget rowGif(String name, String asset, switchValue) {
-    return InkWell(
-      onTap: () {
-        viewInfo(asset, 10, "recomendation", name, 10);
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 35.0.w,
-            height: 10.0.h,
-            color: Colors.white,
-            child: Center(
-              child: Image.asset(
-                asset,
-                fit: BoxFit.fill,
-                width: 100.0.w,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 3.0.w,
-          ),
-          Container(
-            width: 55.0.w,
-            height: 10.0.h,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+                SizedBox(height: 3.0.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    CupertinoSwitch(
-                      activeColor: red,
-                      value: switchValue,
-                      onChanged: (value) {
-                        setState(() {
-                          switchValue = value;
-                        });
-                      },
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(50),
+                            bottomRight: Radius.circular(50)),
+                        border: Border.all(color: Colors.white, width: 3),
+                        color: red,
+                      ),
+                      width: 95.0.w,
+                      height: 8.0.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  getBools();
+                                },
+                                child: Text(
+                                  max == 0
+                                      ? "MÁXIMO ALCANZADO"
+                                      : "ESCOGE SÓLO $max EJERCICIOS",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 5.0.w),
+                                ),
+                              ),
+                            ],
+                          ),
+                          CircleAvatar(
+                            backgroundColor: red,
+                            radius: 7.0.w,
+                            child: CircleAvatar(
+                              radius: 6.0.w,
+                              backgroundColor: Colors.white,
+                              child: Center(
+                                child: Text(
+                                  "$max",
+                                  style: TextStyle(color: red, fontSize: 8.0.w),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      " $name",
-                      style: TextStyle(color: blue),
-                    ),
-                  ],
+                SizedBox(height: 3.0.h),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: response.length,
+                      itemBuilder: (context, index) {
+                        return item(
+                            response[index].idMongo,
+                            response[index].nameExcercise,
+                            response[index].recommendation,
+                            response[index].mets.toString(),
+                            bools[index]["status"],
+                            index,
+                            response[index].videoName);
+                      }),
                 )
               ],
+            )
+          : Center(
+              child: Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-        ],
+    );
+  }
+
+  item(String codeExercise, String nameExercise, String recomendation,
+      String mets, bool switchValue, int index, String videoName) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: InkWell(
+        onTap: () {
+          goToDetailsExcercises(
+              videoName, nameExercise, mets, recomendation, true);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 35.0.w,
+              height: 10.0.h,
+              color: Colors.white,
+              child: Center(
+                child: Image.asset(
+                  "Assets/thumbnails/$videoName.jpeg",
+                  fit: BoxFit.fill,
+                  width: 100.0.w,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 3.0.w,
+            ),
+            Container(
+              width: 55.0.w,
+              height: 10.0.h,
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CupertinoSwitch(
+                        value: switchValue,
+                        activeColor: red,
+                        onChanged: (value) async {
+                          var prefs = await SharedPreferences.getInstance();
+                          if (widget.stage == "CALENTAMIENTO") {
+                            var actualList = prefs
+                                .getStringList("exercisesCalentamiento" ?? []);
+                            setState(() {
+                              if (actualList.toString() != "[]" &&
+                                  actualList != null) {
+                                print(actualList.length.toString());
+                                print(maxStatic);
+                                if (maxStatic == actualList.length) {
+                                  toast(
+                                      context,
+                                      "Ya no puedes agregar más ejercicios.",
+                                      red);
+                                } else {
+                                  bools[index]["status"] = value;
+                                  if (bools[index]["status"]) {
+                                    listController
+                                        .addCalentamiento(codeExercise);
+                                  } else {
+                                    listController
+                                        .removeCalentamiento(codeExercise);
+                                  }
+                                }
+                              } else {
+                                bools[index]["status"] = value;
+                                if (bools[index]["status"]) {
+                                  listController.addCalentamiento(codeExercise);
+                                }
+                              }
+                              getMax();
+                            });
+                          } else if (widget.stage == "FLEXIBILIDAD") {
+                            var actualList = prefs
+                                .getStringList("exercisesFlexibilidad" ?? []);
+                            setState(() {
+                              if (actualList.toString() != "[]" &&
+                                  actualList != null) {
+                                print(actualList.length.toString());
+                                print(maxStatic);
+                                if (maxStatic == actualList.length) {
+                                  toast(
+                                      context,
+                                      "Ya no puedes agregar más ejercicios.",
+                                      red);
+                                } else {
+                                  bools[index]["status"] = value;
+                                  if (bools[index]["status"]) {
+                                    listController
+                                        .addFlexibilidad(codeExercise);
+                                  } else {
+                                    listController
+                                        .removeFlexibilidad(codeExercise);
+                                  }
+                                }
+                              } else {
+                                bools[index]["status"] = value;
+                                if (bools[index]["status"]) {
+                                  listController.addFlexibilidad(codeExercise);
+                                }
+                              }
+                              getMax();
+                            });
+                          } else if (widget.stage == "VUELTA A LA CALMA") {
+                            var actualList = prefs
+                                .getStringList("exercisesVueltaCalma" ?? []);
+                            setState(() {
+                              if (actualList.toString() != "[]" &&
+                                  actualList != null) {
+                                print(actualList.length.toString());
+                                print(maxStatic);
+                                if (maxStatic == actualList.length) {
+                                  toast(
+                                      context,
+                                      "Ya no puedes agregar más ejercicios.",
+                                      red);
+                                } else {
+                                  bools[index]["status"] = value;
+                                  if (bools[index]["status"]) {
+                                    listController.addVueltaCalma(codeExercise);
+                                  } else {
+                                    listController
+                                        .removeVueltaCalma(codeExercise);
+                                  }
+                                }
+                              } else {
+                                bools[index]["status"] = value;
+                                if (bools[index]["status"]) {
+                                  listController.addVueltaCalma(codeExercise);
+                                }
+                              }
+                              getMax();
+                            });
+                          } else if (widget.stage == "DESARROLLO") {
+                            var actualList = prefs
+                                .getStringList("exercisesDesarrollo" ?? []);
+                            setState(() {
+                              if (actualList.toString() != "[]" &&
+                                  actualList != null) {
+                                print(actualList.length.toString());
+                                print(maxStatic);
+                                if (maxStatic == actualList.length) {
+                                  toast(
+                                      context,
+                                      "Ya no puedes agregar más ejercicios.",
+                                      red);
+                                } else {
+                                  bools[index]["status"] = value;
+                                  if (bools[index]["status"]) {
+                                    listController.addDesarrollo(codeExercise);
+                                  } else {
+                                    listController
+                                        .removeDesarrollo(codeExercise);
+                                  }
+                                }
+                              } else {
+                                bools[index]["status"] = value;
+                                if (bools[index]["status"]) {
+                                  listController.addDesarrollo(codeExercise);
+                                }
+                              }
+                              getMax();
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          " ${index + 1}.- " + nameExercise,
+                          style: TextStyle(color: blue),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  viewInfo(String asset, int duration, String recomendation, String name,
-      int calories) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) {
-              return Scaffold(
-                bottomNavigationBar: Container(
-                  width: 100.0.w,
-                  height: 10.0.h,
-                  color: cyan,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buttonRounded(context, func: () {
-                        Navigator.pop(context);
-                      }, text: "   CERRAR")
-                    ],
-                  ),
-                ),
-                backgroundColor: blue,
-                appBar: AppBar(
-                  leading: SizedBox.shrink(),
-                  backgroundColor: cyan,
-                  elevation: 0,
-                  centerTitle: true,
-                  title: FittedBox(
-                      fit: BoxFit.fitWidth, child: Text('$name'.toUpperCase())),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            Icons.local_fire_department,
-                            color: cyan,
-                            size: 7.0.w,
-                          ),
-                          Text(
-                            " $calories Kcal",
-                            style: TextStyle(color: cyan, fontSize: 6.0.w),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.height * 0.03,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                            width: 100.0.w,
-                            fit: BoxFit.fill,
-                            image: AssetImage('$asset'),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.height * 0.03,
-                          ),
-                          Text(
-                            "$duration Seg",
-                            style: TextStyle(color: cyan, fontSize: 6.0.w),
-                          ),
-                          Icon(
-                            Icons.alarm,
-                            color: cyan,
-                            size: 7.0.w,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            child: Center(
-                                child: Text(
-                              "RECOMENDACIÓN",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 5.0.w,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            )),
-                            decoration: BoxDecoration(
-                                color: green,
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(50),
-                                    topLeft: Radius.circular(50))),
-                            width: 70.0.w,
-                            height: 6.0.h,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20),
-                        child: Text(
-                          "$recomendation",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 6.0.w),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }));
+  getBools() async {
+    var listCalentamiento = await listController.getExercisesCalentamiento();
+    var listFlexibilidad = await listController.getExercisesFlexibilidad();
+    var listDesarrollo = await listController.getExercisesDesarrollo();
+    var listVueltaCalma = await listController.getExercisesVueltaCalma();
+
+    if (widget.stage == "CALENTAMIENTO") {
+      for (var i = 0; i < bools.length; i++) {
+        if (listCalentamiento.isNotEmpty) {
+          for (var j = 0; j < listCalentamiento.length; j++) {
+            if (bools[i]["id"] == listCalentamiento[j]) {
+              print(bools[i]["id"]);
+              setState(() {
+                bools[i] = {"id": bools[i]["id"], "status": true};
+              });
+            }
+          }
+        }
+      }
+    } else if (widget.stage == "FLEXIBILIDAD") {
+      for (var i = 0; i < bools.length; i++) {
+        if (listFlexibilidad.isNotEmpty) {
+          for (var j = 0; j < listFlexibilidad.length; j++) {
+            if (bools[i]["id"] == listFlexibilidad[j]) {
+              print(bools[i]["id"]);
+              setState(() {
+                bools[i] = {"id": bools[i]["id"], "status": true};
+              });
+            }
+          }
+        }
+      }
+    } else if (widget.stage == "DESARROLLO") {
+      for (var i = 0; i < bools.length; i++) {
+        if (listDesarrollo.isNotEmpty) {
+          for (var j = 0; j < listDesarrollo.length; j++) {
+            if (bools[i]["id"] == listDesarrollo[j]) {
+              print(bools[i]["id"]);
+              setState(() {
+                bools[i] = {"id": bools[i]["id"], "status": true};
+              });
+            }
+          }
+        }
+      }
+    } else {
+      for (var i = 0; i < bools.length; i++) {
+        if (listVueltaCalma.isNotEmpty) {
+          for (var j = 0; j < listVueltaCalma.length; j++) {
+            if (bools[i]["id"] == listVueltaCalma[j]) {
+              print(bools[i]["id"]);
+              setState(() {
+                bools[i] = {"id": bools[i]["id"], "status": true};
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  getVideos(String level, String number, String category, String subCategory,
+      String stage) async {
+    setState(() {
+      loading = true;
+    });
+    ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
+    List<ExcerciseData> res;
+    if (widget.isPie) {
+      res = await excerciseDataRepository.getExercisesPie(
+        category,
+      );
+    } else {
+      res = await excerciseDataRepository.getExercisesByCategories(
+          stage == "FLEXIBILIDAD" ? "CALENTAMIENTO" : stage,
+          category,
+          subCategory,
+          level);
+    }
+
+    if (res.isNotEmpty) {
+      for (var i = 0; i < res.length; i++) {
+        setState(() {
+          response.add(res[i]);
+          bools.add({"id": res[i].idMongo, "status": false});
+        });
+      }
+    }
+
+    getBools();
+    setState(() {
+      loading = false;
+    });
   }
 }

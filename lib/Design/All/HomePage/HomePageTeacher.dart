@@ -10,7 +10,6 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 
 class HomePageTeacher extends StatefulWidget {
   final String classId;
@@ -40,7 +39,10 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
     _screens.add(Cycles(
       courseId: widget.classId,
     ));
-    _screens.add(SearchEvidences());
+    _screens.add(SearchEvidences(
+      idCollege: widget.classId,
+      isFull: false,
+    ));
     _screens.add(Support());
   }
 
@@ -147,7 +149,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
               children: [
                 Image.asset(
                   "Assets/images/buttonSessions.png",
-                  width: 20.0.w,
+                  width: 13.0.w,
                 ),
                 Text("CICLOS", style: TextStyle(color: blue, fontSize: 4.0.w))
               ],
@@ -164,7 +166,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
               children: [
                 Image.asset(
                   "Assets/images/buttonReports.png",
-                  width: 20.0.w,
+                  width: 13.0.w,
                 ),
                 Text("EVIDENCIAS",
                     style: TextStyle(color: blue, fontSize: 4.0.w))
@@ -182,7 +184,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
               children: [
                 Image.asset(
                   "Assets/images/buttonShop.png",
-                  width: 20.0.w,
+                  width: 13.0.w,
                 ),
                 Text("SOPORTE", style: TextStyle(color: blue, fontSize: 4.0.w))
               ],
@@ -216,8 +218,8 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             height: 5.0.h,
           ),
           buttonRounded(context,
-              icon: Image.asset("Assets/images/sessionIcon.png", width: 9.0.w),
-              circleRadius: 7.0.w, func: () {
+              icon: Image.asset("Assets/images/sessionIcon.png", width: 8.0.w),
+              circleRadius: 6.0.w, func: () {
             Navigator.pop(context);
             setState(() {
               _currentIndex = 0;
@@ -233,8 +235,8 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             height: 2.0.h,
           ),
           buttonRounded(context,
-              icon: Image.asset("Assets/images/reportIcon.png", width: 8.0.w),
-              circleRadius: 7.0.w,
+              icon: Image.asset("Assets/images/reportIcon.png", width: 7.0.w),
+              circleRadius: 6.0.w,
               func: () {},
               height: 8.0.h,
               width: 80.0.w,
@@ -247,9 +249,9 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
           ),
           buttonRounded(context,
               icon:
-                  Image.asset("Assets/images/evidenciaIcon.png", width: 9.0.w),
-              circleRadius: 7.0.w, func: () {
-            goToSearchEvidences(true);
+                  Image.asset("Assets/images/evidenciaIcon.png", width: 7.0.w),
+              circleRadius: 6.0.w, func: () {
+            goToSearchEvidences(true, widget.classId);
           },
               height: 8.0.h,
               width: 80.0.w,
@@ -261,8 +263,8 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             height: 2.0.h,
           ),
           buttonRounded(context,
-              icon: Image.asset("Assets/images/shopIcon.png", width: 9.0.w),
-              circleRadius: 7.0.w, func: () {
+              icon: Image.asset("Assets/images/shopIcon.png", width: 7.0.w),
+              circleRadius: 6.0.w, func: () {
             goToManuals(true);
           },
               height: 8.0.h,
@@ -275,8 +277,8 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             height: 2.0.h,
           ),
           buttonRounded(context,
-              icon: Image.asset("Assets/images/settingsIcon.png", width: 9.0.w),
-              circleRadius: 7.0.w, func: () {
+              icon: Image.asset("Assets/images/settingsIcon.png", width: 7.0.w),
+              circleRadius: 6.0.w, func: () {
             goToSupport(true);
           },
               height: 8.0.h,

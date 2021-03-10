@@ -56,7 +56,7 @@ class ExcerciseData {
     return ExcerciseData(
         id: id,
         exerciseID: map['exerciseID'],
-        videoName: map['name'],
+        videoName: map['videoName'],
         excerciseNameAudioId: map['excerciseNameAudioId'],
         recomendationAudioId: map['recomendationAudioId'],
         mets: map['mets'],

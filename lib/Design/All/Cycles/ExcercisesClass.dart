@@ -3,6 +3,8 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
+import 'package:get/get.dart';
+import './AddExcercises.dart';
 
 class ExcercisesClass extends StatefulWidget {
   @override
@@ -18,21 +20,17 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              size: 9.0.w,
-              color: Colors.white
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         elevation: 0,
         backgroundColor: cyan,
         title: Column(
           children: [
             SizedBox(
-                height: 2.0.h,
-              ),
-            FittedBox(fit: BoxFit.fitWidth, child:Text(title)),
+              height: 2.0.h,
+            ),
+            FittedBox(fit: BoxFit.fitWidth, child: Text(title["title"])),
           ],
         ),
         centerTitle: true,
@@ -63,127 +61,153 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("ABDOMINALES Y CORE");
+                goToFilterExcercises("ABDOMINAL CORE", title["title"],
+                    title["level"], title["number"], false);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
-                  "        ABDOMINALES Y CORE",
+                  7.0.w,
+                  "        ABDOMINAL CORE",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
               SizedBox(
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("CUERPO SUPERIOR");
+                goToFilterExcercises("CUERPO SUPERIOR", title["title"],
+                    title["level"], title["number"], false);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
+                  7.0.w,
                   "        CUERPO SUPERIOR",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
               SizedBox(
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("CUERPO INFERIOR");
+                goToFilterExcercises("CUERPO INFERIOR", title["title"],
+                    title["level"], title["number"], false);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
+                  7.0.w,
                   "        CUERPO INFERIOR",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
               SizedBox(
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("CARDIO");
+                goToFilterExcercises("CARDIO", title["title"], title["level"],
+                    title["number"], false);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
+                  7.0.w,
                   "        CARDIO",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
               SizedBox(
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("FLEXIBILIDAD");
+                goToFilterExcercises("FLEXIBILIDAD", title["title"],
+                    title["level"], title["number"], false);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
+                  7.0.w,
                   "        FLEXIBILIDAD",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
               SizedBox(
                 height: 2.0.h,
               ),
               button(() {
-                goToFilterExcercises("EJERCICIOS PIE");
+                Get.to(AddExcercises(
+                  level: title["level"],
+                  category: "ADAPTADOS NIÑOS PIE",
+                  subCategory: "ADAPTADOS NIÑOS PIE",
+                  stage: title["title"],
+                  number: title["number"],
+                  isPie: true,
+                ));
+                // goToFilterExcercises("ADAPTADOS NIÑOS PIE", title["title"],
+                //     title["level"], title["number"], true);
               },
                   90.0.w,
                   10.0.h,
-                  8.0.w,
-                  "        EJERCICIOS PIE",
+                  7.0.w,
+                  "        ADAPTADOS NIÑOS PIE",
                   Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 9.0.w,
                   ),
-                  title == "CALENTAMIENTO"
+                  title["title"] == "CALENTAMIENTO"
                       ? cyan
-                      : title == "DESARROLLO"
-                          ? green
-                          : yellow,
+                      : title["title"] == "FLEXIBILIDAD"
+                          ? red
+                          : title["title"] == "DESARROLLO"
+                              ? green
+                              : yellow,
                   TextStyle(color: blue, fontSize: 5.5.w)),
             ],
           )

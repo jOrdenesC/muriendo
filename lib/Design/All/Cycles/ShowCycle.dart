@@ -98,7 +98,7 @@ class _ShowCycleState extends State<ShowCycle> {
                   InkWell(
                     onTap: () {
                       goToShowPhases(args["cycle"], "POR DEFECTO", false, true,
-                          int.parse(args["nameCourse"]));
+                          args["nameCourse"]);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -146,8 +146,8 @@ class _ShowCycleState extends State<ShowCycle> {
                   ),
                   InkWell(
                     onTap: () {
-                      goToShowPhases(
-                          args["cycle"], "CREAR CLASES", false, false, null);
+                      goToShowPhases(args["cycle"], "CREAR CLASES", false,
+                          false, args["nameCourse"]);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,

@@ -33,6 +33,7 @@ class Mp4Controller extends GetxController {
   List<ExcerciseData> giflistdb =
       []; //Remove this and make 4 list for each step
   var step = 0.obs;
+  var percentage = 0.0.obs;
   List<dynamic> excerciseCalentamientoList = [];
   List<dynamic> excerciseFlexibilidadList = [];
   List<dynamic> excerciseDesarrolloList = [];
@@ -49,6 +50,10 @@ class Mp4Controller extends GetxController {
   List<dynamic> times = [];
   List<dynamic> microTime = [];
   List<dynamic> macroTime = [];
+
+  List exercisesCalentamiento = [].obs;
+  List exercisesDesarrollo = [].obs;
+  List exercisesVueltaCalma = [].obs;
 
   String classID;
 
@@ -420,7 +425,7 @@ class Mp4Controller extends GetxController {
     //TODO
   }
 
-  controllTimer(String idClass, List questionnaire, int number) {
+  controllTimer(String idClass, List questionnaire, int number, String phase) {
     if (step <= 3) {
       if (microPause.value != true) {
         microPause.value = true;
@@ -507,11 +512,13 @@ class Mp4Controller extends GetxController {
           } else {
             print("On Step macropause");
             Get.to(ShowCalories(
-                mets: metsList,
-                exercises: recordingList,
-                idClass: idClass,
-                questionnaire: questionnaire,
-                number: number));
+              mets: metsList,
+              exercises: recordingList,
+              idClass: idClass,
+              questionnaire: questionnaire,
+              number: number,
+              phase: phase,
+            ));
             index.value = 0;
           }
           print("On Step Updating Controller");

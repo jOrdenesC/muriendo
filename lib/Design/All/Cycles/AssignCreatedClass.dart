@@ -3,6 +3,12 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../Utils/UrlServer.dart';
+import 'dart:developer';
+import 'package:orientation_helper/orientation_helper.dart';
+import '../../Widgets/Loading.dart';
 
 class AssignCreatedClass extends StatefulWidget {
   @override
@@ -12,35 +18,170 @@ class AssignCreatedClass extends StatefulWidget {
 class _AssignCreatedClassState extends State<AssignCreatedClass> {
   List selected = [];
   List selectedUsers = [];
+  bool loaded = true;
 
-  List grade = [
-    {"id": 1, "name": "Primero A", "add": false},
-    {"id": 2, "name": "Primero B", "add": false},
-    {"id": 3, "name": "Primero C", "add": false},
-    {"id": 4, "name": "Primero D", "add": false},
-    {"id": 5, "name": "Primero E", "add": false},
-  ];
+  List grade = [];
 
-  List users = [
-    {"id": 1, "name": "Alumno 1", "add": false},
-    {"id": 2, "name": "Alumno 2", "add": false},
-    {"id": 3, "name": "Alumno 3", "add": false},
-    {"id": 4, "name": "Alumno 4", "add": false},
-    {"id": 5, "name": "Alumno 5", "add": false},
-    {"id": 6, "name": "Alumno 6", "add": false},
-    {"id": 7, "name": "Alumno 7", "add": false},
-    {"id": 8, "name": "Alumno 8", "add": false},
-    {"id": 9, "name": "Alumno 9", "add": false},
-    {"id": 10, "name": "Alumno 10", "add": false},
-    {"id": 11, "name": "Alumno 11", "add": false},
-    {"id": 12, "name": "Alumno 12", "add": false},
-    {"id": 13, "name": "Alumno 13", "add": false},
-  ];
+  List users = [];
+
+  List courses = [];
+
+  var args;
 
   @override
   void initState() {
     super.initState();
-    selected.clear();
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        args =
+            (ModalRoute.of(context).settings.arguments as RouteArguments).args;
+      });
+      log(args.toString());
+      selected.clear();
+      getDataUsers();
+    });
+  }
+
+  getDataUsers() async {
+    print("LEVELLLL ${args['level']}");
+    setState(() {
+      loaded = false;
+    });
+    var dio = Dio();
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    Response response =
+        await dio.get("$urlServer/api/mobile/user/course?token=$token");
+    for (var i = 0; i < response.data.length; i++) {
+      if (response.data[i]["number"] == args["level"]) {
+        setState(() {
+          courses.add(response.data[i]);
+          grade.add({
+            "name": response.data[i]["number"] + response.data[i]["letter"],
+            "id": response.data[i]["_id"],
+            "students": response.data[i]["students"],
+            "status": false
+          });
+        });
+      } else {
+        print("no sirve");
+      }
+    }
+
+    log(courses.length.toString());
+
+    for (var i = 0; i < courses.length; i++) {
+      for (var j = 0; j < courses[i]["students"].length; j++) {
+        print("entra a if");
+        setState(() {
+          users.add({
+            "add": false,
+            "_id": courses[i]["students"][j]["_id"],
+            "name": courses[i]["students"][j]["name"]
+          });
+        });
+      }
+    }
+    log(courses.toString());
+    log(users.toString());
+    setState(() {
+      loaded = true;
+    });
+  }
+
+  sendData() async {
+    List exercisesCalentamiento = [];
+    List exercisesFlexibilidad = [];
+    List exercisesDesarrollo = [];
+    List exercisesVueltaCalma = [];
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    var maxCal = prefs.getInt("maxTotalCalentamiento");
+    var maxFle = prefs.getInt("maxTotalFlexibilidad");
+    var maxDes = prefs.getInt("maxTotalDesarrollo");
+    var maxVue = prefs.getInt("maxTotalVueltaCalma");
+    var exercisesCal = prefs.getStringList("exercisesCalentamiento");
+    var exercisesFle = prefs.getStringList("exercisesFlexibilidad");
+    var exercisesDes = prefs.getStringList("exercisesDesarrollo");
+    var exercisesVue = prefs.getStringList("exercisesVueltaCalma");
+
+    for (var i = 0; i < maxCal; i++) {
+      if (exercisesCalentamiento.length != maxCal) {
+        for (var j = 0; j < exercisesCal.length; j++) {
+          setState(() {
+            exercisesCalentamiento.add(exercisesCal[j]);
+          });
+        }
+      }
+    }
+
+    for (var i = 0; i < maxFle; i++) {
+      if (exercisesFlexibilidad.length != maxFle) {
+        for (var j = 0; j < exercisesFle.length; j++) {
+          setState(() {
+            exercisesFlexibilidad.add(exercisesFle[j]);
+          });
+        }
+      }
+    }
+
+    for (var i = 0; i < maxDes; i++) {
+      if (exercisesDesarrollo.length != maxDes) {
+        for (var j = 0; j < exercisesDes.length; j++) {
+          setState(() {
+            exercisesDesarrollo.add(exercisesDes[j]);
+          });
+        }
+      }
+    }
+
+    for (var i = 0; i < maxVue; i++) {
+      if (exercisesVueltaCalma.length != maxVue) {
+        for (var j = 0; j < exercisesVue.length; j++) {
+          setState(() {
+            exercisesVueltaCalma.add(exercisesVue[j]);
+          });
+        }
+      }
+    }
+
+    loading(context,
+        content: Center(
+          child: Image.asset(
+            "Assets/videos/loading.gif",
+            width: 70.0.w,
+            height: 15.0.h,
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          "Enviando clase creada...",
+          textAlign: TextAlign.center,
+        ));
+
+    var dio = Dio();
+    try {
+      var data = {
+        "students": selectedUsers,
+        "originalClass": args["response"].data["_id"],
+        "number": args["number"],
+        "level": args["level"],
+        "exercisesCalentamiento": exercisesCalentamiento,
+        "exercisesFlexibilidad": exercisesFlexibilidad,
+        "exercisesDesarrollo": exercisesDesarrollo,
+        "exercisesVueltaCalma": exercisesVueltaCalma,
+        "times": args["response"].data["times"],
+        "questionnaire": args["response"].data["questionnaire"],
+        "tips": args["response"].data["tips"],
+        "pauses": args["response"].data["pauses"],
+        // "course":
+      };
+      Response response = await dio
+          .post("$urlServer/api/mobile/customClass?token=$token", data: data);
+      print(response.data);
+    } catch (e) {
+      log(e.response.toString());
+    }
   }
 
   Widget build(BuildContext context) {
@@ -53,7 +194,10 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () {
-              goToMessageUploadData();
+              // goToMessageUploadData();
+              sendData();
+              // log(args["response"].data["_id"].toString());
+              // log(args["response"].toString());
             }, text: "   ENVIAR")
           ],
         ),
@@ -75,173 +219,173 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         backgroundColor: cyan,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: selected.isEmpty ? 25.0.h : 10.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 80.0.w,
-                height: 5.0.h,
-                child: Center(
-                    child: Text(
-                  "CLASE CREADA",
-                  style: TextStyle(color: blue, fontSize: 6.0.w),
-                )),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    "ENVIAR AL CURSO",
-                    style: TextStyle(color: Colors.white, fontSize: 7.0.w),
-                  ),
-                  Text(""),
-                  InkWell(
-                    onTap: () {
-                      addGrade();
-                    },
-                    child: Container(
-                      width: 80.0.w,
-                      height: selected.isEmpty ? 5.0.h : 25.0.h,
-                      child: selected.isEmpty
-                          ? Center(
-                              child: Text(
-                              "Oprime aquí para agregar cursos",
-                              style: TextStyle(color: Colors.white),
-                            ))
-                          : ListView.builder(
-                              physics: ScrollPhysics(
-                                  parent: BouncingScrollPhysics()),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20.0, right: 20),
-                                  child: RaisedButton.icon(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                    color: green,
-                                    icon: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(width: 12.0.w),
-                                        Text(
-                                            selected[index]["name"]
-                                                .toString()
-                                                .toUpperCase(),
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
-                                    ),
-                                    onPressed: () {},
-                                    label: Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Icon(
-                                            Icons.close_sharp,
-                                            color: Colors.white,
-                                            size: 10.0.w,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                // return Container(
-                                //   width: 100,
-                                //   color: green,
-                                //   height: 4.0.h,
-                                //                                   child: Chip(
-                                //   materialTapTargetSize:
-                                //       MaterialTapTargetSize.shrinkWrap,
-                                //   deleteIcon: Icon(Icons.close),
-                                //   deleteIconColor: Colors.white,
-                                //   onDeleted: () {
-                                //     selected.removeAt(index);
-                                //     setState(() {});
-                                //   },
-                                //   backgroundColor: green,
-                                //   label: Text(
-                                //     selected[index]["name"],
-                                //     style: TextStyle(color: Colors.white),
-                                //   ),
-                                // ),
-                                // );
-                              },
-                              itemCount: selected.length,
-                            ),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: 6.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    "ENVIAR A ALUMNO",
-                    style: TextStyle(color: Colors.white, fontSize: 7.0.w),
-                  ),
-                  Text(""),
-                  InkWell(
-                    onTap: () {
-                      addUsers();
-                    },
-                    child: Container(
+      body: loaded
+          ? Column(
+              children: [
+                SizedBox(
+                  height: selected.isEmpty ? 25.0.h : 10.0.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
                       width: 80.0.w,
                       height: 5.0.h,
-                      child: selectedUsers.isEmpty
-                          ? Center(
-                              child: Text(
-                              "Oprime aquí para agregar alumnos",
-                              style: TextStyle(color: Colors.white),
-                            ))
-                          : Center(
-                              child: Text(
-                                "Seleccionaste ${selectedUsers.length} alumnos.",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                      child: Center(
+                          child: Text(
+                        "CLASE CREADA",
+                        style: TextStyle(color: blue, fontSize: 6.0.w),
+                      )),
                       decoration: BoxDecoration(
-                          color: selectedUsers.isEmpty
-                              ? Colors.transparent
-                              : green,
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
-                  )
-                ],
-              )
-            ],
-          )
-        ],
-      ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5.0.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "ENVIAR AL CURSO",
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 7.0.w),
+                        ),
+                        Text(""),
+                        InkWell(
+                          onTap: () {
+                            addGrade();
+                          },
+                          child: Container(
+                            width: 80.0.w,
+                            height: selected.isEmpty ? 5.0.h : 25.0.h,
+                            child: selected.isEmpty
+                                ? Center(
+                                    child: Text(
+                                    "Oprime aquí para agregar cursos",
+                                    style: TextStyle(color: Colors.white),
+                                  ))
+                                : ListView.builder(
+                                    physics: ScrollPhysics(
+                                        parent: BouncingScrollPhysics()),
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 20.0, right: 20),
+                                        child: RaisedButton.icon(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20))),
+                                          color: green,
+                                          icon: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(width: 12.0.w),
+                                              Text(
+                                                  selected[index]
+                                                      .toString()
+                                                      .toUpperCase(),
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ],
+                                          ),
+                                          onPressed: () {
+                                            print("remove");
+                                            selected.removeAt(index);
+                                            setState(() {
+                                              grade[index]["status"] = false;
+                                            });
+                                            print(grade.toString());
+                                          },
+                                          label: Expanded(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  Icons.close_sharp,
+                                                  color: Colors.white,
+                                                  size: 10.0.w,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    itemCount: selected.length,
+                                  ),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 6.0.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "ENVIAR A ALUMNO",
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 7.0.w),
+                        ),
+                        Text(""),
+                        InkWell(
+                          onTap: () {
+                            addUsers();
+                          },
+                          child: Container(
+                            width: 80.0.w,
+                            height: 5.0.h,
+                            child: selectedUsers.isEmpty
+                                ? Center(
+                                    child: Text(
+                                    "Oprime aquí para agregar alumnos",
+                                    style: TextStyle(color: Colors.white),
+                                  ))
+                                : Center(
+                                    child: Text(
+                                      "Seleccionaste ${selectedUsers.length} alumnos.",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                            decoration: BoxDecoration(
+                                color: selectedUsers.isEmpty
+                                    ? Colors.transparent
+                                    : green,
+                                border: Border.all(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                )
+              ],
+            )
+          : Center(
+              child: Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
+            ),
     );
   }
 
@@ -322,7 +466,9 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                           width: 15.0.w,
                                         ),
                                         Text(
-                                          grade[index]["name"],
+                                          grade[index]["name"]
+                                              .toString()
+                                              .toUpperCase(),
                                           style: TextStyle(
                                               color: blue, fontSize: 6.0.w),
                                         ),
@@ -331,16 +477,15 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                         ),
                                         InkWell(
                                             onTap: () {
-                                              print("A");
                                               setState(() {
-                                                grade[index]["add"] =
-                                                    !grade[index]["add"];
+                                                grade[index]["status"] =
+                                                    !grade[index]["status"];
                                               });
-                                              print(grade[index]["add"]);
+                                              print(grade.toString());
                                             },
                                             child: CircleAvatar(
                                               child: Center(
-                                                child: grade[index]["add"]
+                                                child: grade[index]["status"]
                                                     ? Icon(
                                                         Icons.check,
                                                         color: blue,
@@ -349,7 +494,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                                     : SizedBox.shrink(),
                                               ),
                                               backgroundColor: grade[index]
-                                                      ["add"]
+                                                      ["status"]
                                                   ? green
                                                   : blue,
                                               radius: 7.0.w,
@@ -364,26 +509,8 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                             Radius.circular(50))),
                                   ),
                                 );
-
-                                // CheckboxListTile(
-                                //   checkColor: Colors.white,
-                                //   activeColor: green,
-                                //   value: grade[index]["add"],
-                                //   onChanged: (value) {
-                                //     setState(() {
-                                //       grade[index]["add"] = value;
-                                //     });
-                                //   },
-                                //   title: Text(
-                                //     grade[index]["name"].toString().toUpperCase(),
-                                //     style: TextStyle(
-                                //         color: grade[index]["add"]
-                                //             ? green
-                                //             : Colors.white),
-                                //   ),
-                                // );
                               },
-                              itemCount: grade.length,
+                              itemCount: courses.length,
                             ),
                           ),
                           Expanded(
@@ -397,11 +524,33 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                   buttonRounded(context, text: "AGREGAR",
                                       func: () {
                                     selected.clear();
+                                    print(grade.toString());
                                     for (var i = 0; i < grade.length; i++) {
-                                      if (grade[i]["add"]) {
-                                        selected.add(grade[i]);
+                                      if (grade[i]["status"]) {
+                                        selected.add(grade[i]["name"]);
+                                        for (var k = 0;
+                                            k < grade[i]["students"].length;
+                                            k++) {
+                                          if (selectedUsers.contains(
+                                              grade[i]["students"][k]["_id"])) {
+                                            print("ya existe");
+                                          } else {
+                                            selectedUsers.add(
+                                                grade[i]["students"][k]["_id"]);
+                                          }
+                                        }
                                       } else {
                                         print("nada");
+                                      }
+                                    }
+                                    for (var i = 0; i < users.length; i++) {
+                                      for (var j = 0;
+                                          j < selectedUsers.length;
+                                          j++) {
+                                        if (users[i]["_id"] ==
+                                            selectedUsers[j]) {
+                                          users[i]["add"] = true;
+                                        }
                                       }
                                     }
                                     print(selected);
@@ -473,7 +622,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20, bottom: 10),
+                                    left: 20.0, right: 20, bottom: 10, top: 10),
                                 child: Container(
                                   child: Row(
                                     mainAxisAlignment:
@@ -496,11 +645,26 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                       InkWell(
                                           onTap: () {
                                             print("A");
-                                            setState(() {
-                                              users[index]["add"] =
-                                                  !users[index]["add"];
-                                            });
-                                            print(users[index]["add"]);
+                                            for (var i = 0;
+                                                i < users.length;
+                                                i++) {
+                                              for (var j = 0;
+                                                  j < selectedUsers.length;
+                                                  j++) {
+                                                if (users[i]["_id"] ==
+                                                    selectedUsers[j]) {
+                                                  setState(() {
+                                                    users[index]["add"] =
+                                                        !users[index]["add"];
+                                                    if (users[index]["add"] ==
+                                                        false) {
+                                                      selectedUsers
+                                                          .removeAt(index);
+                                                    }
+                                                  });
+                                                }
+                                              }
+                                            }
                                           },
                                           child: CircleAvatar(
                                             child: Center(
@@ -529,23 +693,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                           Radius.circular(50))),
                                 ),
                               );
-                              // return CheckboxListTile(
-                              //   checkColor: Colors.white,
-                              //   activeColor: green,
-                              //   value: users[index]["add"],
-                              //   onChanged: (value) {
-                              //     setState(() {
-                              //       users[index]["add"] = value;
-                              //     });
-                              //   },
-                              //   title: Text(
-                              //     users[index]["name"].toString().toUpperCase(),
-                              //     style: TextStyle(
-                              //         color: users[index]["add"]
-                              //             ? green
-                              //             : Colors.white),
-                              //   ),
-                              // );
                             },
                             itemCount: users.length,
                           ),
@@ -560,10 +707,14 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                               children: [
                                 buttonRounded(context, text: "AGREGAR",
                                     func: () {
-                                  selectedUsers.clear();
                                   for (var i = 0; i < users.length; i++) {
                                     if (users[i]["add"]) {
-                                      selectedUsers.add(users[i]);
+                                      if (selectedUsers
+                                          .contains(users[i]["_id"])) {
+                                        print("ya existe");
+                                      } else {
+                                        selectedUsers.add(users[i]["_id"]);
+                                      }
                                     } else {
                                       print("nada");
                                     }
