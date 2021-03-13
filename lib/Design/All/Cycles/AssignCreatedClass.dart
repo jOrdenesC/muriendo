@@ -9,6 +9,7 @@ import '../../../Utils/UrlServer.dart';
 import 'dart:developer';
 import 'package:orientation_helper/orientation_helper.dart';
 import '../../Widgets/Loading.dart';
+import '../../Widgets/Toast.dart';
 
 class AssignCreatedClass extends StatefulWidget {
   @override
@@ -179,6 +180,10 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
       Response response = await dio
           .post("$urlServer/api/mobile/customClass?token=$token", data: data);
       print(response.data);
+      if (response.statusCode == 200) {
+        toast(context, "Se ha enviado la clase creada.", green);
+        goToHomeTeacher();
+      }
     } catch (e) {
       log(e.response.toString());
     }
@@ -645,26 +650,10 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                       InkWell(
                                           onTap: () {
                                             print("A");
-                                            for (var i = 0;
-                                                i < users.length;
-                                                i++) {
-                                              for (var j = 0;
-                                                  j < selectedUsers.length;
-                                                  j++) {
-                                                if (users[i]["_id"] ==
-                                                    selectedUsers[j]) {
-                                                  setState(() {
-                                                    users[index]["add"] =
-                                                        !users[index]["add"];
-                                                    if (users[index]["add"] ==
-                                                        false) {
-                                                      selectedUsers
-                                                          .removeAt(index);
-                                                    }
-                                                  });
-                                                }
-                                              }
-                                            }
+                                            setState(() {
+                                              users[index]["add"] =
+                                                  !users[index]["add"];
+                                            });
                                           },
                                           child: CircleAvatar(
                                             child: Center(

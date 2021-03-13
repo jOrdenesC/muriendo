@@ -2,15 +2,17 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movitronia/Design/Widgets/Loading.dart';
 import 'package:movitronia/Functions/downloadTeacher.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Utils/UrlServer.dart';
 import '../../Widgets/Toast.dart';
 import 'dart:developer';
+import 'package:archive/archive.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class Cycles extends StatefulWidget {
   final String courseId;
@@ -21,15 +23,21 @@ class Cycles extends StatefulWidget {
 
 class _CyclesState extends State<Cycles> {
   bool downloaded = false;
+  bool downloading = false;
   List courses = [];
   bool loaded = false;
   List coursesNumber = [];
+  var progress = "0.0";
+  var maxTotal = 100.0;
 
   downloadAll() async {
+    ProgressDialog prInfo;
+    prInfo = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var down = prefs.getBool("downloaded" ?? false);
-    var downloadedVideo = prefs.getBool("downloadedVideos" ?? false);
+    var downloadedVideo = prefs.getBool("downloadedVideo" ?? false);
 
     setState(() {
       downloaded = down;
@@ -52,13 +60,14 @@ class _CyclesState extends State<Cycles> {
 
     if (downloaded == false || downloaded == null) {
       if (downloadedVideo == false || downloadedVideo == null) {
-        await DownloadTeacher().downloadFiles(
+        await downloadFiles(
             url: responseVideos.data,
             platform: platform,
             filename: "videos.zip",
             context: context,
             messageAlert: "Descargando vídeos...",
             route: "videos");
+
         // await downloadFiles(response.data, "videos.zip");
         // downloadFiles(url, filenames)
       } else {
@@ -67,20 +76,12 @@ class _CyclesState extends State<Cycles> {
     }
 
     if (downloaded == false || downloaded == null) {
-      loading(context,
-          content: Center(
-            child: Image.asset(
-              "Assets/videos/loading.gif",
-              width: 70.0.w,
-              height: 15.0.h,
-              fit: BoxFit.contain,
-            ),
-          ),
-          title: Text(
-            "Creando ejercicios",
-            textAlign: TextAlign.center,
-          ));
+      prInfo.show();
+      setState(() {
+        prInfo.update(message: "Descargando datos de ejercicios...");
+      });
       await DownloadTeacher().getExercises(context);
+      prInfo.hide();
     }
   }
 
@@ -88,7 +89,8 @@ class _CyclesState extends State<Cycles> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var dio = Dio();
-    log("TESTING " + "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
+    log("TESTING " +
+        "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
     try {
       Response responseCourses = await dio.get(
           "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
@@ -331,5 +333,88 @@ class _CyclesState extends State<Cycles> {
         )
       ],
     );
+  }
+
+  Future downloadFiles(
+      {String url,
+      String filename,
+      BuildContext context,
+      String messageAlert,
+      String route,
+      String platform}) async {
+    ProgressDialog pr;
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    var prefs = await SharedPreferences.getInstance();
+    var dir = await getApplicationDocumentsDirectory();
+    var dio = Dio();
+    await pr.show();
+    pr.style(message: "Comenzando descarga de vídeos...");
+    await dio.download(url, "${dir.path}/$route/$filename",
+        onReceiveProgress: (rec, total) {
+      setState(() {
+        progress = ((rec / total) * 100).floor().toString();
+        pr.update(
+            progressWidget: Image.asset(
+              "Assets/videos/loading.gif",
+              fit: BoxFit.contain,
+            ),
+            message: "Descargando vídeos...$progress%",);
+      });
+    });
+
+    setState(() {
+      prefs.setBool("downloadedVideo", true);
+      pr.update(message: "Extrayendo vídeos...");
+    });
+    if (route == "videos") {
+      await unarchiveAndSaveVideos(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    } else {
+      await unarchiveAndSave(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    }
+
+    setState(() {
+      pr.hide();
+    });
+    print("finish");
+    return null;
+  }
+
+  Future unarchiveAndSave(var zippedFile, BuildContext context, String route,
+      String platform) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = "${dir.path}/$route/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+    return null;
+  }
+
+  Future unarchiveAndSaveVideos(var zippedFile, BuildContext context,
+      String route, String platform) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = platform == "ios"
+          ? "${dir.path}/$route/${file.name}".replaceAll(" ", "")
+          : "${dir.path}/$route/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+    return null;
   }
 }

@@ -9,5 +9,7 @@ abstract class OfflineRepository{
 
   Future<List<OfflineData>> getAll();
 
+  Future<List<OfflineData>> getAllFalse();
+
   Future<List<OfflineData>> getForId(String uuid);
 }

@@ -13,15 +13,6 @@ class _MenuEvidencesState extends State<MenuEvidences> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: Container(
-      //   width: double.infinity,
-      //   height: 10.0.h,
-      //   color: cyan,
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [buttonRounded(context, func: () {}, text: "   CONTINUAR")],
-      //   ),
-      // ),
       appBar: AppBar(
         backgroundColor: cyan,
         centerTitle: true,

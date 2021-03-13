@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
+import '../../Widgets/Toast.dart';
 
 class Manuals extends StatefulWidget {
   @override
@@ -82,27 +83,32 @@ class _ManualsState extends State<Manuals> {
           SizedBox(
             height: 1.0.h,
           ),
-          button2(
-              MainAxisAlignment.end,
-              Text(
-                "  MANUAL EJERCICIOS",
-                style: TextStyle(color: Colors.white, fontSize: 7.0.w),
-              ),
-              Container(
-                child: Center(
-                    child: Image.asset(
-                  "Assets/images/docImage.png",
-                  color: red,
-                  width: 18.0.w,
+          InkWell(
+            onTap: () {
+              toast(context, "Por ahora no está disponible este manual.", red);
+            },
+            child: button2(
+                MainAxisAlignment.end,
+                Text(
+                  "  MANUAL EJERCICIOS",
+                  style: TextStyle(color: Colors.white, fontSize: 7.0.w),
+                ),
+                Container(
+                  child: Center(
+                      child: Image.asset(
+                    "Assets/images/docImage.png",
+                    color: red,
+                    width: 18.0.w,
+                  )),
+                  width: 50.0.w,
+                  height: 15.0.h,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(80),
+                          topLeft: Radius.circular(80))),
                 )),
-                width: 50.0.w,
-                height: 15.0.h,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(80),
-                        topLeft: Radius.circular(80))),
-              ))
+          )
         ],
       ),
     );

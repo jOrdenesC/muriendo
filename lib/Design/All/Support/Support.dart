@@ -4,6 +4,8 @@ import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 
 class Support extends StatefulWidget {
+  final bool isFull;
+  Support({this.isFull});
   @override
   _SupportState createState() => _SupportState();
 }
@@ -12,30 +14,32 @@ class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Column(
-          children: [
-            SizedBox(
-              height: 2.0.h,
-            ),
-            Column(
-              children: [
-                SizedBox(
-                  height: 2.0.h,
-                ),
-                FittedBox(fit: BoxFit.fitWidth, child: Text("SOPORTE")),
-              ],
-            ),
-          ],
-        ),
-        backgroundColor: cyan,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: widget.isFull
+          ? AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              title: Column(
+                children: [
+                  SizedBox(
+                    height: 2.0.h,
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 2.0.h,
+                      ),
+                      FittedBox(fit: BoxFit.fitWidth, child: Text("SOPORTE")),
+                    ],
+                  ),
+                ],
+              ),
+              backgroundColor: cyan,
+              centerTitle: true,
+              elevation: 0,
+            )
+          : null,
       body: Column(
         children: [
           SizedBox(
@@ -85,10 +89,8 @@ class _SupportState extends State<Support> {
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(50))),
           child: Center(
-              child: Text(
-            data,
-            style: TextStyle(color: blue, fontSize: 5.0.w)
-          )),
+              child:
+                  Text(data, style: TextStyle(color: blue, fontSize: 5.0.w))),
         )
       ],
     );

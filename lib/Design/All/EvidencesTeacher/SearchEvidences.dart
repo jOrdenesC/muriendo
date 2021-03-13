@@ -7,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Utils/UrlServer.dart';
 import 'package:dio/dio.dart';
 import 'dart:developer';
+import '../../Widgets/Toast.dart';
+import '../../Widgets/Loading.dart' as load;
+import '../../../Utils/ConnectionState.dart';
 
 class SearchEvidences extends StatefulWidget {
   final String idCollege;
@@ -51,6 +54,7 @@ class _SearchEvidencesState extends State<SearchEvidences> {
       courses.add({
         "_id": resProfessorData.data[i]["_id"],
         "name": resProfessorData.data[i]["number"] +
+            "° " +
             resProfessorData.data[i]["letter"],
         "students": resProfessorData.data[i]["students"]
       });
@@ -70,26 +74,64 @@ class _SearchEvidencesState extends State<SearchEvidences> {
   }
 
   searchData() async {
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
     String idStudent;
     var dio = Dio();
-    for (var i = 0; i < courses.length; i++) {
-      for (var j = 0; j < courses[i]["students"].length; j++) {
-        if (courses[i]["students"][j]["rut"] == rut.text) {
-          print(courses[i]["students"][j]["rut"].toString());
-          setState(() {
-            idStudent = courses[i]["students"][j]["_id"];
-          });
+    if (hasInternet) {
+      try {
+        load.loading(context,
+            content: Center(
+              child: Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
+            ),
+            title: Text(
+              "Buscando datos de alumno...",
+              textAlign: TextAlign.center,
+            ));
+        for (var i = 0; i < courses.length; i++) {
+          for (var j = 0; j < courses[i]["students"].length; j++) {
+            print(courses[i]["students"][j]["rut"]);
+            if (courses[i]["students"][j]["rut"] == rut.text &&
+                courses[i]["_id"] == grade["_id"]) {
+              print(courses[i]["students"][j]["rut"].toString());
+              setState(() {
+                idStudent = courses[i]["students"][j]["_id"];
+              });
+            }
+          }
         }
+        print(idStudent);
+        if (idStudent == null) {
+          toast(context, "El alumno buscado no corresponde al curso.", red);
+          Navigator.pop(context);
+        } else {
+          var data = {"student": idStudent, "course": grade["_id"]};
+          print(data.toString());
+          var prefs = await SharedPreferences.getInstance();
+          var token = prefs.getString("token");
+          var res = await dio.post(
+              "$urlServer/api/mobile/studentEvidences?token=$token",
+              data: data);
+          print(res.data.toString());
+          Navigator.pop(context);
+          if (res.data.length == 0) {
+            toast(context, "Este alumno aún no tiene evidencias creadas", red);
+          } else {
+            goToMenuEvidences(res.data);
+          }
+        }
+      } catch (e) {
+        Navigator.pop(context);
+        toast(context, "Ha ocurrido un error, inténtalo más tarde", red);
+        log(e.toString());
       }
+    } else {
+      toast(context, "Debes contar con conexión a internet.", red);
     }
-    var data = {"student": idStudent, "course": grade["_id"]};
-    print(data.toString());
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    var res = await dio.post(
-        "$urlServer/api/mobile/studentEvidences?token=$token",
-        data: data);
-    print(res.data.toString());
   }
 
   @override
@@ -279,8 +321,9 @@ class _SearchEvidencesState extends State<SearchEvidences> {
                                     color: Colors.white, fontSize: 6.0.w),
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Ingresa su rut",
-                                    hintStyle: TextStyle(color: Colors.white)),
+                                    hintText: "Rut sin puntos ni guión",
+                                    hintStyle: TextStyle(
+                                        color: Colors.white, fontSize: 5.5.w)),
                               ),
                             ),
                             width: 80.0.w,

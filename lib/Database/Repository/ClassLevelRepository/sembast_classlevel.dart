@@ -16,12 +16,18 @@ class SembastClassDataRepository extends ClassDataRepository {
   }
 
   @override
-  Future updateClass(ClassLevel classData) async {
-    await _store.record(classData.id).update(_database, classData.toMap());
+  Future updateClass(ClassLevel classData, int level, int number) async {
+    print("level: $level number: $number");
+    final finder = Finder(filter: Filter.equals("number", number));
+    // final snapshots = await _store.find(_database, finder: finder);
+    final res1 =
+        await _store.update(_database, classData.toMap(), finder: finder);
+    return res1;
+    // await _store.record(classData.id).update(_database, classData.toMap());
   }
 
   @override
-  Future deleteClass(int classDataId) async {
+  Future deleteClass(String classDataId) async {
     await _store.record(classDataId).delete(_database);
   }
 
@@ -50,7 +56,7 @@ class SembastClassDataRepository extends ClassDataRepository {
   }
 
   @override
-  Future<List<ClassLevel>> getClassByNumber(String number) async {
+  Future<List<ClassLevel>> getClassByNumber(int number) async {
     //final finder = Finder(filter: Filter.byKey(id));
     final finder = Finder(filter: Filter.equals('number', number));
     final snapshots = await _store.find(_database, finder: finder);

@@ -564,7 +564,7 @@ class _LoginState extends State<Login> {
           prefs.setInt("phase", int.parse(response.data));
           print("Se ha actualizado la phase");
         } else if (response.statusCode == 404) {
-          print("ERROR 404 $response");
+          print("Error del servidor $response");
         }
       } catch (e) {
         print(e);

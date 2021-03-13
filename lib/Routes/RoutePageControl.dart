@@ -10,6 +10,7 @@ import '../Database/Repository/CourseRepository.dart';
 import '../Design/All/EvidencesTeacher/SearchEvidences.dart';
 import '../Design/All/HomePage/HomePageTeacher.dart';
 import '../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
+import '../Design/All/Support/Support.dart';
 
 goToLogin() {
   Get.toNamed(AppRoutes.login.name);
@@ -164,7 +165,13 @@ goToEvidencesQuestionary() {
 }
 
 goToHomeReplacement() {
-  Get.offAndToNamed(AppRoutes.homeUser.name, arguments: "user");
+  // Get.offAndToNamed(AppRoutes.homeUser.name, arguments: "user");
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
 }
 
 goToshowCycle(String nameCourse, int cycle) {
@@ -237,12 +244,12 @@ goToSearchEvidences(bool isFull, String idCollege) {
   ));
 }
 
-goToMenuEvidences() {
+goToMenuEvidences(List data) {
   Get.toNamed(AppRoutes.menuEvidences.name);
 }
 
 goToSupport(bool isFull) {
-  Get.toNamed(AppRoutes.support.name, arguments: isFull);
+  Get.to(Support(isFull: isFull,));
 }
 
 goToManuals(bool isFull) {
@@ -283,7 +290,13 @@ goToDetailsExcercises(
 }
 
 goToHomeTeacher() {
-  Get.offAllNamed(AppRoutes.homeTeacher.name);
+  // Get.offAllNamed(AppRoutes.homeTeacher.name);
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
+  Get.back();
 }
 
 goToRecoverPass() {

@@ -7,6 +7,7 @@ class OfflineData {
   final String idClass;
   final String videoName;
   final List exercices;
+  final bool uploaded;
 
   OfflineData(
       {this.uuid,
@@ -16,7 +17,9 @@ class OfflineData {
       this.videoName,
       this.cloudflareId,
       this.exercices,
-      this.totalKilocalories});
+      this.totalKilocalories,
+      this.uploaded
+      });
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,7 +30,8 @@ class OfflineData {
       'uriVideo': this.uriVideo,
       'questionary': this.questionary,
       'idClass': this.idClass,
-      'videoName': this.videoName
+      'videoName': this.videoName,
+      'uploaded': this.uploaded
     };
   }
 
@@ -40,6 +44,8 @@ class OfflineData {
         uriVideo: map['uriVideo'],
         questionary: map['questionary'],
         idClass: map['idClass'],
-        videoName: map['date']);
+        videoName: map['date'],
+        uploaded: map['uploaded']
+        );
   }
 }

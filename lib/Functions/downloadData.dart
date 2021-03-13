@@ -451,8 +451,7 @@ class DownloadData {
             categories: responseobject[i]['categories'],
             level: responseobject[i]['levels'],
             stages: responseobject[i]['stages'],
-            idMongo: responseobject[i]["_id"]
-            );
+            idMongo: responseobject[i]["_id"]);
         videos.add(excercisedata.videoName);
         if (excercisedata.excerciseNameAudioId.isNotEmpty) {
           audios.add(excercisedata.excerciseNameAudioId);
@@ -756,38 +755,110 @@ class DownloadData {
     return null;
   }
 
+  Future downloadCustomClasses(BuildContext context) async {
+    List<int> pauses = [];
+    List<dynamic> tips = [];
+    List<dynamic> exerciseCalentamiento = [];
+    List<dynamic> exerciseFlexibilidad = [];
+    List<dynamic> exerciseDesarrollo = [];
+    List<dynamic> exerciseVCalma = [];
+    List classIds = [];
+    print("entra download");
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    var dio = Dio();
+    Response responseObject =
+        await dio.get("$urlServer/api/mobile/user/customClasses?token=$token");
+    for (var i = 0; i < responseObject.data.length; i++) {
+      classIds.add(responseObject.data[i]["originalClass"]);
+    }
+    //First Loop through each object
+    for (int i = 0; i < responseObject.data.length; i++) {
+      //print("Response Data: ${response.data[i]['pauses']}\n\n\n");
+      var responseobject = responseObject.data[i];
+      try {
+        //print("Total Objects: " + responseobject['pauses'].length.toString());
+        /**Getting Calentamiento List */
+        for (int i = 0;
+            i < responseobject['exercisesCalentamiento'].length;
+            i++) {
+          exerciseCalentamiento
+              .add(responseobject['exercisesCalentamiento'][i]['videoName']);
+        }
+        /**Getting Flexibilidad List */
+        for (int i = 0;
+            i < responseobject['exercisesFlexibilidad'].length;
+            i++) {
+          exerciseFlexibilidad
+              .add(responseobject['exercisesFlexibilidad'][i]['videoName']);
+        }
+        /**Getting Desarrollo List */
+        for (int i = 0; i < responseobject['exercisesDesarrollo'].length; i++) {
+          exerciseDesarrollo
+              .add(responseobject['exercisesDesarrollo'][i]['videoName']);
+        }
+        /**Getting Vuelta Calma List */
+        for (int i = 0;
+            i < responseobject['exercisesVueltaCalma'].length;
+            i++) {
+          exerciseVCalma
+              .add(responseobject['exercisesVueltaCalma'][i]['videoName']);
+        }
+        for (int i = 0; i < responseobject['pauses'].length; i++) {
+          //print(responseobject['pauses'][i]['tips']);
+          tips.add(responseobject['pauses'][i]['tips']);
+          if (responseobject['pauses'][i]['micro'] != null) {
+            var object = responseobject['pauses'][i]['micro'].toString();
+            pauses.add(int.parse(object));
+          }
+          if (responseobject['pauses'][i]['macro'] != null) {
+            pauses.add(
+                int.parse(responseobject['pauses'][i]['macro'].toString()));
+          }
+        }
+
+        ClassDataRepository _classDataRepository = GetIt.I.get();
+
+        ClassLevel classLevel = ClassLevel(
+            classID: responseobject['_id'],
+            number: responseobject['number'],
+            level: responseobject['level'],
+            questionnaire: responseobject["questionnaire"],
+            macropause: responseobject['macropause'],
+            pauses: pauses,
+            excerciseCalentamiento: exerciseCalentamiento,
+            excerciseFlexibilidad: exerciseFlexibilidad,
+            excerciseDesarrollo: exerciseDesarrollo,
+            excerciseVueltaCalma: exerciseVCalma,
+            timeCalentamiento: responseobject['times']['calentamiento'],
+            timeFlexibilidad: responseobject['times']['flexibilidad'],
+            timeDesarrollo: responseobject['times']['desarrollo'],
+            timeVcalma: responseobject['times']['vcalma'],
+            tips: tips);
+        for (var i = 0; i < classIds.length; i++) {
+          log(classLevel.toMap().toString());
+          var res = await _classDataRepository.updateClass(
+              classLevel, responseobject['level'], responseobject['number']);
+          // var res = await _classDataRepository.getClassByNumber(responseobject['number']);
+          log("RES " + res.toString());
+        }
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    return null;
+  }
+
   Future<bool> downloadAll(
       {BuildContext context,
-      String level,
-      String url1,
-      String filename1,
-      String url2,
-      String filename2,
-      String url3,
-      String filename3,
-      String platform}) async {
+      String level}) async {
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
-      if (prefs.getBool("downloadedVideos") == false ||
-          prefs.getBool("downloadedVideos") == null) {
-        await downloadFiles(
-            url1, filename1, context, "Descargando vídeos", "videos", platform);
-        prefs.setBool("downloadedVideos", true);
-      }
-      if (prefs.getBool("downloadedAudioExercises") == null ||
-          prefs.getBool("downloadedAudioExercises") == false) {
-        await downloadFiles(url2, filename2, context,
-            "Descargando audios de ejercicios", "audios", platform);
-        prefs.setBool("downloadedAudioExercises", true);
-      }
-
-      await downloadFiles(url3, filename3, context,
-          "Descargando audios de tips", "audios", platform);
-
       await getExercises(context);
       await getHttp(context, level);
       await downloadEvidencesData(context);
+      await downloadCustomClasses(context);
       print("Fin de descarga");
       prefs.setBool("downloaded", true);
       return true;
@@ -798,9 +869,4 @@ class DownloadData {
       return false;
     }
   }
-
-  List<String> excerciseCalentamientoList = [];
-  List<String> excerciseFlexibilidadList = [];
-  List<String> excerciseDesarrolloList = [];
-  List<String> excerciseVcalmaList = [];
 }

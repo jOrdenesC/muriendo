@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-loading(BuildContext context, {Widget title, Widget content, Widget buttons, String percentage}) {
+loading(BuildContext context,
+    {Widget title, Widget content, Widget buttons}) {
   return showDialog(
       barrierDismissible: false,
       context: context,

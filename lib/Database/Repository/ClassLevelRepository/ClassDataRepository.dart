@@ -6,9 +6,9 @@ abstract class ClassDataRepository {
 
   Future<int> insertClassJSON(ResultModel resultModel);
 
-  Future updateClass(ClassLevel classLevel);
+  Future updateClass(ClassLevel classLevel, int level, int number);
 
-  Future deleteClass(int classlevelid);
+  Future deleteClass(String classlevelid);
 
   Future deleteAll();
 
@@ -16,5 +16,5 @@ abstract class ClassDataRepository {
 
   Future<List<ClassLevel>> getClassID(String id);
 
-  Future<List<ClassLevel>> getClassByNumber(String number);
+  Future<List<ClassLevel>> getClassByNumber(int number);
 }

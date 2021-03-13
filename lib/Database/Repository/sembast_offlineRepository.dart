@@ -36,4 +36,12 @@ class SembastOfflineRepository extends OfflineRepository {
         .map((snapshot) => OfflineData.fromMap(snapshot.value))
         .toList(growable: false);
   }
+
+  Future<List<OfflineData>> getAllFalse() async {
+    final finder = Finder(filter: Filter.equals("upload", false));
+    final snapshots = await _store.find(_database, finder: finder);
+    return snapshots
+        .map((snapshot) => OfflineData.fromMap(snapshot.value))
+        .toList(growable: false);
+  }
 }

@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:movitronia/Database/Models/OfflineData.dart';
+import 'package:movitronia/Database/Models/QuestionaryData.dart';
+import 'package:movitronia/Database/Repository/OfflineRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import '../HomePage/HomepageUser.dart';
 import 'package:get/get.dart' as GET;
@@ -114,7 +117,6 @@ class _UploadDataState extends State<UploadData> {
     var res = await offlineRepository.getForId(args["uuid"]);
     String token = prefs.getString("token");
     var phase = prefs.get("phase");
-    print(res[0].questionary);
     if (hasInternet) {
       var dio = Dio();
       try {
@@ -127,7 +129,7 @@ class _UploadDataState extends State<UploadData> {
           "videoData": videoData,
           "course": course[0].courseId
         };
-        log(data.toString());
+        // saveOffline(Uuid().v4().toString(), res[0].questionary, );
         Navigator.pop(context);
         loading(context,
             content: Center(
@@ -172,16 +174,22 @@ class _UploadDataState extends State<UploadData> {
               }
             }
           }
-
           toast(
               context,
               "Se han subido los datos correctamente.\n\nTuviste ${corrects.length} correctas de $total en este cuestionario.",
               green);
-
           await DownloadData().downloadEvidencesData(context);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePageUser()));
-          // GET.Get.offAll(HomePageUser());
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          GET.Get.offAll(HomePageUser());
         }
       } catch (e) {
         if (e is DioError) {
@@ -196,6 +204,29 @@ class _UploadDataState extends State<UploadData> {
           "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
           red);
     }
+  }
+
+  Future saveOffline(
+      var uuid,
+      var questionnaire,
+      var uriVideo,
+      var idClass,
+      var videoName,
+      var cloudFlareId,
+      var exercises,
+      var totalKilocalories) async {
+    OfflineRepository offlineRepository = GetIt.I.get();
+    OfflineData questionaryData = OfflineData(
+        uuid: uuid,
+        questionary: questionnaire,
+        uriVideo: uriVideo,
+        idClass: idClass,
+        videoName: videoName,
+        cloudflareId: cloudFlareId,
+        exercices: exercises,
+        totalKilocalories: totalKilocalories);
+    await offlineRepository.insert(questionaryData);
+    return true;
   }
 
   uploadVideo(args) async {

@@ -16,92 +16,7 @@ import 'package:sizer/sizer.dart';
 import '../Functions/Controllers/mp4Controller.dart';
 
 class DownloadTeacher {
-  Future downloadFiles(
-      {String url,
-      String filename,
-      BuildContext context,
-      String messageAlert,
-      String route,
-      String platform}) async {
-    var prefs = await SharedPreferences.getInstance();
-    var dir = await getApplicationDocumentsDirectory();
-    var progress = 0.0;
-    var mp4Progress = Mp4Controller().percentage;
-    loading(context,
-        content: Center(
-          child: Column(
-            children: [
-              Image.asset(
-                "Assets/videos/loading.gif",
-                width: 70.0.w,
-                height: 15.0.h,
-                fit: BoxFit.contain,
-              ),
-            ],
-          ),
-        ),
-        title: Text(
-          """$messageAlert""",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 6.0.w),
-        ),
-        percentage: progress.toString());
-    var dio = Dio();
-
-    await dio.download(url, "${dir.path}/$route/$filename",
-        onReceiveProgress: (rec, total) {
-      print("${rec/total}");
-    });
-    if (route == "videos") {
-      await unarchiveAndSaveVideos(
-          File("${dir.path}/$route/$filename"), context, route, platform);
-    } else {
-      await unarchiveAndSave(
-          File("${dir.path}/$route/$filename"), context, route, platform);
-    }
-    prefs.setBool("downloadedVideo", true);
-    print("finish");
-    return null;
-  }
-
-  Future unarchiveAndSave(var zippedFile, BuildContext context, String route,
-      String platform) async {
-    var dir = await getApplicationDocumentsDirectory();
-    var bytes = zippedFile.readAsBytesSync();
-    var archive = ZipDecoder().decodeBytes(bytes);
-    for (var file in archive) {
-      var fileName = "${dir.path}/$route/${file.name}";
-      if (file.isFile) {
-        var outFile = File(fileName);
-        print('file: ' + outFile.path);
-        outFile = await outFile.create(recursive: true);
-        await outFile.writeAsBytes(file.content);
-      }
-    }
-    Navigator.pop(context);
-    return null;
-  }
-
-  Future unarchiveAndSaveVideos(var zippedFile, BuildContext context,
-      String route, String platform) async {
-    var dir = await getApplicationDocumentsDirectory();
-    var bytes = zippedFile.readAsBytesSync();
-    var archive = ZipDecoder().decodeBytes(bytes);
-    for (var file in archive) {
-      var fileName = platform == "ios"
-          ? "${dir.path}/$route/${file.name}".replaceAll(" ", "")
-          : "${dir.path}/$route/${file.name}";
-      if (file.isFile) {
-        var outFile = File(fileName);
-        print('file: ' + outFile.path);
-        outFile = await outFile.create(recursive: true);
-        await outFile.writeAsBytes(file.content);
-      }
-    }
-
-    Navigator.pop(context);
-    return null;
-  }
+  
 
   getExercises(BuildContext context) async {
     var dio = Dio();
@@ -154,6 +69,5 @@ class DownloadTeacher {
       toast(context,
           "Necesitas estar conectado a internet. Verifica tu conexión", red);
     }
-    Navigator.pop(context);
   }
 }

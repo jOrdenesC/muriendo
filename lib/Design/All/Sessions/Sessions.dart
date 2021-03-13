@@ -15,6 +15,9 @@ import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
 import 'dart:developer';
+import 'package:path_provider/path_provider.dart';
+import 'package:archive/archive.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class Sessions extends StatefulWidget {
   @override
@@ -30,6 +33,10 @@ class _SessionsState extends State<Sessions> {
   int phasePhone;
   List<bool> evidences = [];
   bool downloaded = false;
+  var progressVideos = "0.0";
+  var progressAudios = "0.0";
+  var progressTips = "0.0";
+  var totalMax = "100.0";
 
   Future getEvidence() async {
     var all = await evidencesRepository.getAllEvidences();
@@ -51,10 +58,20 @@ class _SessionsState extends State<Sessions> {
   Future getClasses() async {
     print("get Classes");
     var res = await classDataRepository.getAllClassLevel();
+
     if (res.isNotEmpty) {
       for (var i = 0; i < res.length; i++) {
         dataClasses.add(res[i]);
       }
+
+      for (var i = 0; i < res.length; i++) {
+        if (dataClasses[i] == res[i]) {
+          print("ya está");
+        } else {
+          dataClasses.add(res[i]);
+        }
+      }
+
       setState(() {
         loaded = true;
       });
@@ -76,7 +93,15 @@ class _SessionsState extends State<Sessions> {
   }
 
   Future getData() async {
-    print("Init get data");
+    ProgressDialog prVideos;
+    prVideos = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    ProgressDialog prAudios;
+    prAudios = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    ProgressDialog prTips;
+    prTips = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
     await DownloadData().getUserData(context);
     var prefs = await SharedPreferences.getInstance();
     var down = prefs.getBool("downloaded" ?? false);
@@ -117,21 +142,169 @@ class _SessionsState extends State<Sessions> {
     print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
 
     if (downloaded == false || downloaded == null) {
-      await DownloadData().downloadAll(
-          context: context,
-          level: level,
-          url1: responseVideos.data,
-          platform: platform,
-          filename1: "videos.zip",
-          url2: responseAudiosExercise.data,
-          filename2: "audiosExercise.zip",
-          url3: responseAudiosLevel.data,
-          filename3: "audiosLevel.zip");
-      // await downloadFiles(response.data, "videos.zip");
-      // downloadFiles(url, filenames)
+      prVideos.style(message: "Iniciando descarga de videos...");
+      if (prefs.getBool("downloadedVideos") == false ||
+          prefs.getBool("downloadedVideos") == null) {
+        await prVideos.show();
+        await downloadVideos(responseVideos.data, "videos.zip", context, "",
+            "videos", platform, prVideos);
+      }
+      if (prefs.getBool("downloadedAudioExercises") == null ||
+          prefs.getBool("downloadedAudioExercises") == false) {
+        await prAudios.show();
+        await downloadAudios(responseAudiosExercise.data, "audiosExercise.zip",
+            context, "", "audios", platform, prAudios);
+      }
+      await prTips.show();
+      await downloadTips(responseAudiosLevel.data, "audiosLevel.zip", context,
+          "", "audios", platform, prTips);
     }
-    print("fin getData");
+    await DownloadData().downloadAll(context: context, level: level);
     return true;
+  }
+
+  Future downloadVideos(
+      String url,
+      String filename,
+      BuildContext context,
+      String messageAlert,
+      String route,
+      String platform,
+      ProgressDialog pr) async {
+    var prefs = await SharedPreferences.getInstance();
+    var dir = await getApplicationDocumentsDirectory();
+    var dio = Dio();
+    await dio.download(url, "${dir.path}/$route/$filename",
+        onReceiveProgress: (rec, total) {
+      setState(() {
+        progressVideos = ((rec / total) * 100).floor().toString();
+        pr.update(
+            progressWidget: Image.asset(
+              "Assets/videos/loading.gif",
+              fit: BoxFit.contain,
+            ),
+            message: "Descargando vídeos... $progressVideos%");
+      });
+    });
+    await pr.hide();
+    if (route == "videos") {
+      await unarchiveAndSaveVideos(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    } else {
+      await unarchiveAndSave(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    }
+    prefs.setBool("downloadedVideos", true);
+    print("finish");
+    return null;
+  }
+
+  Future downloadAudios(
+      String url,
+      String filename,
+      BuildContext context,
+      String messageAlert,
+      String route,
+      String platform,
+      ProgressDialog pr) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var prefs = await SharedPreferences.getInstance();
+    var dio = Dio();
+    await dio.download(url, "${dir.path}/$route/$filename",
+        onReceiveProgress: (rec, total) {
+      setState(() {
+        progressAudios = ((rec / total) * 100).floor().toString();
+        pr.update(
+            progressWidget: Image.asset(
+              "Assets/videos/loading.gif",
+              fit: BoxFit.contain,
+            ),
+            message: "Descargando audios de ejercicios... $progressAudios%");
+      });
+    });
+    await pr.hide();
+    if (route == "videos") {
+      await unarchiveAndSaveVideos(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    } else {
+      await unarchiveAndSave(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    }
+    print("finish");
+    prefs.setBool("downloadedAudioExercises", true);
+    return null;
+  }
+
+  Future downloadTips(
+      String url,
+      String filename,
+      BuildContext context,
+      String messageAlert,
+      String route,
+      String platform,
+      ProgressDialog pr) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var dio = Dio();
+    await dio.download(url, "${dir.path}/$route/$filename",
+        onReceiveProgress: (rec, total) {
+      setState(() {
+        progressTips = ((rec / total) * 100).floor().toString();
+        pr.update(
+            progressWidget: Image.asset(
+              "Assets/videos/loading.gif",
+              fit: BoxFit.contain,
+            ),
+            message: "Descargando audios de tips... $progressTips%");
+      });
+    });
+
+    await pr.hide();
+    if (route == "videos") {
+      await unarchiveAndSaveVideos(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    } else {
+      await unarchiveAndSave(
+          File("${dir.path}/$route/$filename"), context, route, platform);
+    }
+
+    print("finish");
+    return null;
+  }
+
+  Future unarchiveAndSave(var zippedFile, BuildContext context, String route,
+      String platform) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = "${dir.path}/$route/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+    return null;
+  }
+
+  Future unarchiveAndSaveVideos(var zippedFile, BuildContext context,
+      String route, String platform) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+    for (var file in archive) {
+      var fileName = platform == "ios"
+          ? "${dir.path}/$route/${file.name}".replaceAll(" ", "")
+          : "${dir.path}/$route/${file.name}";
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('file: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      }
+    }
+    return null;
   }
 
   void _restartApp() async {
@@ -140,6 +313,9 @@ class _SessionsState extends State<Sessions> {
 
   @override
   void initState() {
+    setState(() {
+      loaded = false;
+    });
     getAll();
     // getData();
     super.initState();
@@ -150,17 +326,15 @@ class _SessionsState extends State<Sessions> {
     var downloaded = prefs.getBool("downloaded" ?? false);
     if (downloaded == null || downloaded == false) {
       try {
+        log("get evidence");
+        await getEvidence();
         log("Get data");
         await getData();
         log("Get classes");
         await getClasses();
         log("get phase");
         await getPhase();
-        setState(() {
-          loaded = false;
-        });
-        log("get evidence");
-        await getEvidence();
+
         setState(() {
           loaded = true;
         });
@@ -171,15 +345,13 @@ class _SessionsState extends State<Sessions> {
       }
     } else {
       try {
+        log("get evidence");
+        await getEvidence();
         log("get classes");
         await getClasses();
         log("get phase");
         await getPhase();
-        setState(() {
-          loaded = false;
-        });
-        log("get evidence");
-        await getEvidence();
+        await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;
         });
@@ -237,7 +409,13 @@ class _SessionsState extends State<Sessions> {
                     SizedBox(
                       height: 2.0.h,
                     ),
-                    divider(yellow, "FASE 1"),
+                    InkWell(
+                        onTap: () async {
+                          // await DownloadData().downloadCustomClasses(context);
+                          // setState(() {});
+                          // getClasses();
+                        },
+                        child: divider(yellow, "FASE 1")),
                     createPhase([
                       //first
                       item(
