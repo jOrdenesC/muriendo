@@ -35,6 +35,7 @@ class _CreateClassState extends State<CreateClass>
       });
       print(args);
       getClass();
+      modifyClass(args);
     });
   }
 
@@ -59,8 +60,6 @@ class _CreateClassState extends State<CreateClass>
       if (hasInternet) {
         response = await dio.get(
             "$urlServer/api/mobile/class/${args["level"]}/${args["number"]}?token=$token");
-        log(response.data.toString());
-
         for (var i = 0;
             i < response.data["exercisesCalentamiento"].length;
             i++) {
@@ -89,11 +88,6 @@ class _CreateClassState extends State<CreateClass>
           });
         }
 
-        print(calentamiento.length);
-        print(flexibilidad.length);
-        print(desarrollo.length);
-        print(vueltaCalma.length);
-
         for (var i = 0; i < calentamiento.length; i++) {
           if (totalCalentamiento.contains(calentamiento[i].toString())) {
             print("ya existe");
@@ -103,8 +97,6 @@ class _CreateClassState extends State<CreateClass>
             });
           }
         }
-
-        log("total cal = ${totalCalentamiento.length}");
 
         for (var i = 0; i < flexibilidad.length; i++) {
           if (totalFlexibilidad.contains(flexibilidad[i].toString())) {
@@ -116,8 +108,6 @@ class _CreateClassState extends State<CreateClass>
           }
         }
 
-        log("total flex = ${totalFlexibilidad.length}");
-
         for (var i = 0; i < desarrollo.length; i++) {
           if (totalDesarrollo.contains(desarrollo[i].toString())) {
             print("ya existe");
@@ -128,8 +118,6 @@ class _CreateClassState extends State<CreateClass>
           }
         }
 
-        log("total des = ${totalDesarrollo.length}");
-
         for (var i = 0; i < vueltaCalma.length; i++) {
           if (totalVueltaCalma.contains(vueltaCalma[i].toString())) {
             print("ya existe");
@@ -139,8 +127,6 @@ class _CreateClassState extends State<CreateClass>
             });
           }
         }
-
-        log("total vue = ${totalVueltaCalma.length}");
 
         await ListController().setMaxCalentamiento(
             totalCalentamiento.length, calentamiento.length);
@@ -173,6 +159,210 @@ class _CreateClassState extends State<CreateClass>
     }
   }
 
+  modifyClass(var args) async {
+    List calentamiento = [];
+    List flexibilidad = [];
+    List desarrollo = [];
+    List vueltaCalma = [];
+    List totalCalentamiento = [];
+    List totalFlexibilidad = [];
+    List totalDesarrollo = [];
+    List totalVueltaCalma = [];
+    var prefs = await SharedPreferences.getInstance();
+    var dio = Dio();
+    var token = prefs.getString("token");
+    List classActual = [];
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+    if (args["isNew"] == false) {
+      print("INIT MODIFY");
+      if (hasInternet) {
+        try {
+          Response response = await dio.post(
+              "$urlServer/api/mobile/professor/customClasses?token=$token",
+              data: [args["idCourse"]]);
+          log("CLASS CREATED " + response.data.toString());
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i]["number"].toString() ==
+                args["number"].toString()) {
+              classActual.add(response.data[i]);
+            }
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesCalentamiento"].length;
+              i++) {
+            setState(() {
+              calentamiento.add(classActual[0]["exercisesCalentamiento"][i]);
+            });
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesFlexibilidad"].length;
+              i++) {
+            setState(() {
+              flexibilidad.add(classActual[0]["exercisesFlexibilidad"][i]);
+            });
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesDesarrollo"].length;
+              i++) {
+            setState(() {
+              desarrollo.add(classActual[0]["exercisesDesarrollo"][i]);
+            });
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesVueltaCalma"].length;
+              i++) {
+            setState(() {
+              vueltaCalma.add(classActual[0]["exercisesVueltaCalma"][i]);
+            });
+          }
+
+          print(calentamiento.length);
+          print(flexibilidad.length);
+          print(desarrollo.length);
+          print(vueltaCalma.length);
+
+          for (var i = 0; i < calentamiento.length; i++) {
+            if (totalCalentamiento.contains(calentamiento[i].toString())) {
+              print("ya existe");
+            } else {
+              setState(() {
+                totalCalentamiento.add(calentamiento[i].toString());
+              });
+            }
+          }
+
+          log("total cal = ${totalCalentamiento.length}");
+
+          for (var i = 0; i < flexibilidad.length; i++) {
+            if (totalFlexibilidad.contains(flexibilidad[i].toString())) {
+              print("ya existe");
+            } else {
+              setState(() {
+                totalFlexibilidad.add(flexibilidad[i].toString());
+              });
+            }
+          }
+
+          log("total flex = ${totalFlexibilidad.length}");
+
+          for (var i = 0; i < desarrollo.length; i++) {
+            if (totalDesarrollo.contains(desarrollo[i].toString())) {
+              print("ya existe");
+            } else {
+              setState(() {
+                totalDesarrollo.add(desarrollo[i].toString());
+              });
+            }
+          }
+
+          log("total des = ${totalDesarrollo.length}");
+
+          for (var i = 0; i < vueltaCalma.length; i++) {
+            if (totalVueltaCalma.contains(vueltaCalma[i].toString())) {
+              print("ya existe");
+            } else {
+              setState(() {
+                totalVueltaCalma.add(vueltaCalma[i].toString());
+              });
+            }
+          }
+
+          log("total vue = ${totalVueltaCalma.length}");
+
+          await ListController().setMaxCalentamiento(
+              totalCalentamiento.length, calentamiento.length);
+
+          await ListController().setMaxFlexibilidad(
+              totalFlexibilidad.length, flexibilidad.length);
+
+          await ListController()
+              .setMaxDesarrollo(totalDesarrollo.length, desarrollo.length);
+
+          await ListController()
+              .setMaxVueltaCalma(totalVueltaCalma.length, vueltaCalma.length);
+          log(classActual.toString());
+
+          List<String> downloadedExercisesCalentamiento = [];
+          List<String> downloadedExercisesFlexibilidad = [];
+          List<String> downloadedExercisesDesarrollo = [];
+          List<String> downloadedExercisesVueltaCalma = [];
+
+          for (var i = 0;
+              i < classActual[0]["exercisesCalentamiento"].length;
+              i++) {
+            if (downloadedExercisesCalentamiento
+                .contains(classActual[0]["exercisesCalentamiento"][i])) {
+            } else {
+              downloadedExercisesCalentamiento
+                  .add(classActual[0]["exercisesCalentamiento"][i]);
+            }
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesFlexibilidad"].length;
+              i++) {
+            if (downloadedExercisesFlexibilidad
+                .contains(classActual[0]["exercisesFlexibilidad"][i])) {
+            } else {
+              downloadedExercisesFlexibilidad
+                  .add(classActual[0]["exercisesFlexibilidad"][i]);
+            }
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesDesarrollo"].length;
+              i++) {
+            if (downloadedExercisesDesarrollo
+                .contains(classActual[0]["exercisesDesarrollo"][i])) {
+            } else {
+              downloadedExercisesDesarrollo
+                  .add(classActual[0]["exercisesDesarrollo"][i]);
+            }
+          }
+
+          for (var i = 0;
+              i < classActual[0]["exercisesVueltaCalma"].length;
+              i++) {
+            if (downloadedExercisesVueltaCalma
+                .contains(classActual[0]["exercisesVueltaCalma"][i])) {
+            } else {
+              downloadedExercisesVueltaCalma
+                  .add(classActual[0]["exercisesVueltaCalma"][i]);
+            }
+          }
+
+          prefs.setStringList(
+              "exercisesCalentamiento", downloadedExercisesCalentamiento);
+          prefs.setStringList(
+              "exercisesFlexibilidad", downloadedExercisesFlexibilidad);
+          prefs.setStringList(
+              "exercisesDesarrollo", downloadedExercisesDesarrollo);
+          prefs.setStringList(
+              "exercisesVueltaCalma", downloadedExercisesVueltaCalma);
+          prefs.setInt("maxcalentamiento", 0);
+          prefs.setInt("maxflexibilidad", 0);
+          prefs.setInt("maxdesarrollo", 0);
+          prefs.setInt("maxvueltacalma", 0);
+        } catch (e) {
+          print(e);
+          toast(context, "Ha ocurrido un error. Inténtalo más tarde.", red);
+        }
+      } else {
+        if (args["fromCourses"]) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        } else {
+          Navigator.pop(context);
+        }
+        toast(context, "Debes estar conectado a internet.", red);
+      }
+    }
+  }
+
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: pop,
@@ -190,28 +380,52 @@ class _CreateClassState extends State<CreateClass>
                 var maxFle = prefs.getInt("maxStaticFlexibilidad");
                 var maxDes = prefs.getInt("maxStaticDesarrollo");
                 var maxVue = prefs.getInt("maxStaticVueltaCalma");
-                var listCal = prefs.getStringList("exercisesCalentamiento");
-                var listFle = prefs.getStringList("exercisesFlexibilidad");
-                var listDes = prefs.getStringList("exercisesDesarrollo");
-                var listVue = prefs.getStringList("exercisesVueltaCalma");
+                var listCal =
+                    prefs.getStringList("exercisesCalentamiento" ?? null);
+                var listFle =
+                    prefs.getStringList("exercisesFlexibilidad" ?? null);
+                var listDes =
+                    prefs.getStringList("exercisesDesarrollo" ?? null);
+                var listVue =
+                    prefs.getStringList("exercisesVueltaCalma" ?? null);
 
-                if (maxCal != listCal.length) {
+                if (listCal == null) {
+                  toast(
+                      context,
+                      "No puedes dejar la etapa de calentamiento sin ejercicios.",
+                      red);
+                } else if (maxCal != listCal.length) {
                   toast(context,
                       "Debes agregar más ejercicios en calentamiento.", red);
+                } else if (listDes == null) {
+                  toast(
+                      context,
+                      "No puedes dejar la etapa de desarrollo sin ejercicios.",
+                      red);
                 } else if (maxDes != listDes.length) {
                   toast(context, "Debes agregar más ejercicios en desarrollo.",
+                      red);
+                } else if (listVue == null) {
+                  toast(
+                      context,
+                      "No puedes dejar la etapa de vuelta a la calma sin ejercicios.",
                       red);
                 } else if (maxVue != listVue.length) {
                   toast(
                       context,
                       "Debes agregar más ejercicios en vuelta a la calma.",
                       red);
+                } else if (listFle == null) {
+                  toast(
+                      context,
+                      "No puedes dejar la etapa de flexibilidad sin ejercicios.",
+                      red);
                 } else if (maxFle != listFle.length) {
                   toast(context,
                       "Debes agregar más ejercicios en flexibilidad.", red);
                 } else {
-                  goToFinishCreateClass(
-                      args["level"], args["number"], response);
+                  goToFinishCreateClass(args["level"], args["number"], response,
+                      args["isNew"], args["idCourse"]);
                 }
               }, text: "   ENVIAR")
             ],
@@ -220,7 +434,14 @@ class _CreateClassState extends State<CreateClass>
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (args["fromCourses"]) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              } else {
+                Navigator.pop(context);
+              }
+            },
           ),
           backgroundColor: cyan,
           centerTitle: true,
@@ -232,7 +453,9 @@ class _CreateClassState extends State<CreateClass>
               ),
               FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: Text("Crear clase".toUpperCase())),
+                  child: Text(args["isNew"]
+                      ? "Crear clase ${args["number"]}".toUpperCase()
+                      : "MODIFICAR CLASE ${args["number"]}")),
             ],
           ),
         ),
@@ -260,7 +483,6 @@ class _CreateClassState extends State<CreateClass>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 buttonRounded(context, func: () {
-                  
                   goToExcercisesClass(
                       "CALENTAMIENTO", args["level"], args["number"]);
                 },
@@ -350,7 +572,12 @@ class _CreateClassState extends State<CreateClass>
     });
     if (count == 2) {
       listController.finishCreateClass();
-      Navigator.pop(context);
+      if (args["fromCourses"]) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      } else {
+        Navigator.pop(context);
+      }
     } else if (count <= 1) {
       toast(
           context,

@@ -114,6 +114,7 @@ class _SessionsState extends State<Sessions> {
       setState(() {
         level = course[0].number;
       });
+      print(course[0].courseId);
     }
     setState(() {
       downloaded = down;
@@ -141,16 +142,16 @@ class _SessionsState extends State<Sessions> {
         "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
     print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
 
+    var downloadedVideo = prefs.getBool("downloadedVideo" ?? false);
+    var downloadAudio = prefs.getBool("downloadedAudioExercises" ?? false);
     if (downloaded == false || downloaded == null) {
       prVideos.style(message: "Iniciando descarga de videos...");
-      if (prefs.getBool("downloadedVideos") == false ||
-          prefs.getBool("downloadedVideos") == null) {
+      if (downloadedVideo == false || downloadedVideo == null) {
         await prVideos.show();
         await downloadVideos(responseVideos.data, "videos.zip", context, "",
             "videos", platform, prVideos);
       }
-      if (prefs.getBool("downloadedAudioExercises") == null ||
-          prefs.getBool("downloadedAudioExercises") == false) {
+      if (downloadAudio == null || downloadAudio == false) {
         await prAudios.show();
         await downloadAudios(responseAudiosExercise.data, "audiosExercise.zip",
             context, "", "audios", platform, prAudios);
@@ -194,7 +195,7 @@ class _SessionsState extends State<Sessions> {
       await unarchiveAndSave(
           File("${dir.path}/$route/$filename"), context, route, platform);
     }
-    prefs.setBool("downloadedVideos", true);
+    prefs.setBool("downloadedVideo", true);
     print("finish");
     return null;
   }
@@ -334,7 +335,8 @@ class _SessionsState extends State<Sessions> {
         await getClasses();
         log("get phase");
         await getPhase();
-
+        print("Init clases custom");
+        await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;
         });
@@ -345,12 +347,17 @@ class _SessionsState extends State<Sessions> {
       }
     } else {
       try {
+        CourseDataRepository courseDataRepository = GetIt.I.get();
+
+        var course = await courseDataRepository.getAllCourse();
+        print(course[0].courseId);
         log("get evidence");
         await getEvidence();
         log("get classes");
         await getClasses();
         log("get phase");
         await getPhase();
+        print("Init clases custom");
         await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;

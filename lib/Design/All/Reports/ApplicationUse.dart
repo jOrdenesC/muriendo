@@ -10,6 +10,9 @@ import '../../../Utils/UrlServer.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 
 class ApplicationUse extends StatefulWidget {
+  final bool isTeacher;
+  final List data;
+  ApplicationUse({this.isTeacher, this.data});
   @override
   _ApplicationUseState createState() => _ApplicationUseState();
 }
@@ -122,56 +125,97 @@ class _ApplicationUseState extends State<ApplicationUse> {
     List<dynamic> phase10 = [];
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
-      var prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString("token");
-      var dio = Dio();
-
-      try {
-        Response res =
-            await dio.get("$urlServer/api/mobile/evidences?token=$token");
-        print(res.data);
-        if (res.statusCode == 200) {
-          for (var i = 0; i < res.data.length; i++) {
-            if (res.data[i]["phase"] == "1") {
-              phase1.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "2") {
-              phase2.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "3") {
-              phase3.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "4") {
-              phase4.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "5") {
-              phase5.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "6") {
-              phase6.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "7") {
-              phase7.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "8") {
-              phase8.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "9") {
-              phase9.add(res.data[i]);
-            } else if (res.data[i]["phase"] == "10") {
-              phase10.add(res.data[i]);
-            } else {
-              print("sin fase");
-            }
+      if (widget.isTeacher) {
+        for (var i = 0; i < widget.data.length; i++) {
+          if (widget.data[i]["phase"] == "1") {
+            phase1.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "2") {
+            phase2.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "3") {
+            phase3.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "4") {
+            phase4.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "5") {
+            phase5.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "6") {
+            phase6.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "7") {
+            phase7.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "8") {
+            phase8.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "9") {
+            phase9.add(widget.data[i]);
+          } else if (widget.data[i]["phase"] == "10") {
+            phase10.add(widget.data[i]);
+          } else {
+            print("sin fase");
           }
-          setState(() {
-            phase1Value = double.parse("${phase1.length * 25}");
-            phase2Value = double.parse("${phase2.length * 25}");
-            phase3Value = double.parse("${phase3.length * 25}");
-            phase4Value = double.parse("${phase4.length * 25}");
-            phase5Value = double.parse("${phase5.length * 25}");
-            phase6Value = double.parse("${phase6.length * 25}");
-            phase7Value = double.parse("${phase7.length * 25}");
-            phase8Value = double.parse("${phase8.length * 25}");
-            phase9Value = double.parse("${phase9.length * 25}");
-            phase10Value = double.parse("${phase10.length * 25}");
-            loaded = true;
-          });
         }
-      } catch (e) {
-        print(e);
+        setState(() {
+          phase1Value = double.parse("${phase1.length * 25}");
+          phase2Value = double.parse("${phase2.length * 25}");
+          phase3Value = double.parse("${phase3.length * 25}");
+          phase4Value = double.parse("${phase4.length * 25}");
+          phase5Value = double.parse("${phase5.length * 25}");
+          phase6Value = double.parse("${phase6.length * 25}");
+          phase7Value = double.parse("${phase7.length * 25}");
+          phase8Value = double.parse("${phase8.length * 25}");
+          phase9Value = double.parse("${phase9.length * 25}");
+          phase10Value = double.parse("${phase10.length * 25}");
+          loaded = true;
+        });
+      } else {
+        var prefs = await SharedPreferences.getInstance();
+        String token = prefs.getString("token");
+        var dio = Dio();
+
+        try {
+          Response res =
+              await dio.get("$urlServer/api/mobile/evidences?token=$token");
+          print(res.data);
+          if (res.statusCode == 200) {
+            for (var i = 0; i < res.data.length; i++) {
+              if (res.data[i]["phase"] == "1") {
+                phase1.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "2") {
+                phase2.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "3") {
+                phase3.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "4") {
+                phase4.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "5") {
+                phase5.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "6") {
+                phase6.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "7") {
+                phase7.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "8") {
+                phase8.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "9") {
+                phase9.add(res.data[i]);
+              } else if (res.data[i]["phase"] == "10") {
+                phase10.add(res.data[i]);
+              } else {
+                print("sin fase");
+              }
+            }
+            setState(() {
+              phase1Value = double.parse("${phase1.length * 25}");
+              phase2Value = double.parse("${phase2.length * 25}");
+              phase3Value = double.parse("${phase3.length * 25}");
+              phase4Value = double.parse("${phase4.length * 25}");
+              phase5Value = double.parse("${phase5.length * 25}");
+              phase6Value = double.parse("${phase6.length * 25}");
+              phase7Value = double.parse("${phase7.length * 25}");
+              phase8Value = double.parse("${phase8.length * 25}");
+              phase9Value = double.parse("${phase9.length * 25}");
+              phase10Value = double.parse("${phase10.length * 25}");
+              loaded = true;
+            });
+          }
+        } catch (e) {
+          print(e);
+        }
       }
     } else {
       EvidencesRepository evidencesRepository = GetIt.I.get();

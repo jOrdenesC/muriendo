@@ -10,28 +10,34 @@ class ListController {
   //CALENTAMIENTO-------------------------------------------------------------------->>>>
 
   addCalentamiento(String item) async {
-    print("Entra a add calentamiento");
+    log("item for add $item");
     var prefs = await SharedPreferences.getInstance();
     var listCalentamiento = prefs.getStringList("exercisesCalentamiento");
+    log("antes de add $listCalentamiento");
+    log("exercises cal $exercisesCalentamiento");
     if (listCalentamiento.toString() == "[]" || listCalentamiento == null) {
+      log("list vacía, add exercisesCalentamiento");
       exercisesCalentamiento.add(item);
       prefs.setStringList("exercisesCalentamiento", exercisesCalentamiento);
       var max = prefs.getInt("maxcalentamiento");
       prefs.setInt("maxcalentamiento", max - 1);
     } else {
+      log("list no vacía");
+      exercisesCalentamiento.clear();
       listCalentamiento.add(item);
       prefs.setStringList("exercisesCalentamiento", listCalentamiento);
       var max = prefs.getInt("maxcalentamiento");
       prefs.setInt("maxcalentamiento", max - 1);
     }
-
-    print(listCalentamiento);
+    var act = prefs.getStringList("exercisesCalentamiento");
+    log("actual " + act.toString());
   }
 
   removeCalentamiento(var item) async {
     print("Entra a remove calentamiento");
     var prefs = await SharedPreferences.getInstance();
     var listCalentamiento = prefs.getStringList("exercisesCalentamiento");
+    log("antes de remove $listCalentamiento");
     if (listCalentamiento.toString() == "[]" || listCalentamiento == null) {
       exercisesCalentamiento.remove(item);
       prefs.setStringList("exercisesCalentamiento", exercisesCalentamiento);
@@ -44,7 +50,7 @@ class ListController {
       prefs.setInt("maxcalentamiento", max + 1);
     }
     var listCalentamiento1 = prefs.getStringList("exercisesCalentamiento");
-    print(listCalentamiento1);
+    log("actual remove " + listCalentamiento1.toString());
   }
 
   Future<List<dynamic>> getExercisesCalentamiento() async {
@@ -88,6 +94,7 @@ class ListController {
       var max = prefs.getInt("maxflexibilidad");
       prefs.setInt("maxflexibilidad", max - 1);
     } else {
+      exercisesFlexibilidad.clear();
       listFlexibilidad.add(item);
       prefs.setStringList("exercisesFlexibilidad", listFlexibilidad);
       var max = prefs.getInt("maxflexibilidad");
@@ -157,6 +164,7 @@ class ListController {
       var max = prefs.getInt("maxdesarrollo");
       prefs.setInt("maxdesarrollo", max - 1);
     } else {
+      exercisesDesarrollo.clear();
       listDesarrollo.add(item);
       prefs.setStringList("exercisesDesarrollo", listDesarrollo);
       var max = prefs.getInt("maxdesarrollo");
@@ -230,6 +238,7 @@ class ListController {
       var max = prefs.getInt("maxvueltacalma");
       prefs.setInt("maxvueltacalma", max - 1);
     } else {
+      exercisesVueltaCalma.clear();
       listVueltaCalma.add(item);
       prefs.setStringList("exercisesVueltaCalma", listVueltaCalma);
       var max = prefs.getInt("maxvueltacalma");

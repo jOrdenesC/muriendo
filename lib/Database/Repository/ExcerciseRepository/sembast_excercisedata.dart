@@ -59,8 +59,20 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
         .toList(growable: false);
   }
 
+  // @override
+  // Future<List<ExcerciseData>> getNameExercise(String name) async {
+  //   print("name buscado $name");
+  //   final finder = Finder(filter: Filter.equals('nameExcercise', name));
+
+  //   final snapshots = await _store.find(_database, finder: finder);
+  //   return snapshots
+  //       .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
+  //       .toList(growable: false);
+  // }
+
   @override
   Future<List<ExcerciseData>> getExcerciseName(String name) async {
+    print("name buscado $name");
     final finder = Finder(filter: Filter.equals('videoName', name));
 
     final snapshots = await _store.find(_database, finder: finder);

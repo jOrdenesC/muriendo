@@ -16,10 +16,28 @@ class ExcercisesPage extends StatefulWidget {
 class _ExcercisesPageState extends State<ExcercisesPage>
     with TickerProviderStateMixin {
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
+  var name;
+  var thumbnails = [];
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        name =
+            (ModalRoute.of(context).settings.arguments as RouteArguments).args;
+      });
+      getThumbnails(name);
+    });
     super.initState();
+  }
+
+  getThumbnails(var name) async {
+    for (var i = 0; i < name["data"].length; i++) {
+      var res = await excerciseDataRepository.getExcerciseName(name["data"][i]);
+      setState(() {
+        thumbnails.add(res[0].videoName);
+      });
+    }
   }
 
   @override
@@ -30,8 +48,6 @@ class _ExcercisesPageState extends State<ExcercisesPage>
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
-    final dynamic name =
-        (ModalRoute.of(context).settings.arguments as RouteArguments).args;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cyan,
@@ -119,7 +135,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                             color: Colors.white,
                             width: w,
                             child: Image.asset(
-                                "Assets/thumbnails/${name["data"][index]}.jpeg"),
+                                "Assets/thumbnails/${thumbnails[index]}.jpeg"),
                           ),
                         ),
                         Text(""),
@@ -163,7 +179,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 color: Colors.white,
                                 width: w,
                                 child: Image.asset(
-                                    "Assets/thumbnails/${name["data"][index]}.jpeg"),
+                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
                               ),
                             ),
                             Text(""),
@@ -207,7 +223,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                 color: Colors.white,
                                 width: w,
                                 child: Image.asset(
-                                    "Assets/thumbnails/${name["data"][index]}.jpeg"),
+                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
                               ),
                             ),
                             Text(""),

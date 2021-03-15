@@ -37,7 +37,7 @@ class _HomePageUserState extends State<HomePageUser> {
   void initState() {
     super.initState();
     _screens.add(Sessions());
-    _screens.add(Reports(drawerMenu: false));
+    _screens.add(Reports(drawerMenu: false, isTeacher: false, data: null));
     _screens.add(ProfilePage(isMenu: true));
   }
 
@@ -237,7 +237,6 @@ class _HomePageUserState extends State<HomePageUser> {
                 var prefs = await SharedPreferences.getInstance();
                 var res1 = prefs.getString("token");
                 print(res1);
-                dev.log("CLASES " + res[0].toMap().toString());
                 print(resCourse[0].toMap().toString());
                 _currentIndex = 0;
               });
@@ -371,32 +370,34 @@ class _HomePageUserState extends State<HomePageUser> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // InkWell(
+                //   onTap: () async {
+                //     var dio = Dio();
+                //     OfflineRepository offlineRepository = GetIt.I.get();
+                //     print("Download Data");
+                //   },
+                //   child: CircleAvatar(
+                //     backgroundColor: Colors.white,
+                //     radius: 9.0.w,
+                //     child: CircleAvatar(
+                //       radius: 8.0.w,
+                //       backgroundColor: blue,
+                //       child: Center(
+                //         child: Icon(
+                //           Icons.file_download,
+                //           color: Colors.white,
+                //           size: 15.0.w,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 InkWell(
                   onTap: () async {
                     var dio = Dio();
                     OfflineRepository offlineRepository = GetIt.I.get();
-                    print("Download Data");
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 9.0.w,
-                    child: CircleAvatar(
-                      radius: 8.0.w,
-                      backgroundColor: blue,
-                      child: Center(
-                        child: Icon(
-                          Icons.file_download,
-                          color: Colors.white,
-                          size: 15.0.w,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    var dio = Dio();
-                    OfflineRepository offlineRepository = GetIt.I.get();
+                    var res = await offlineRepository.getAll();
+                    dev.log(res.toString());
                     print("UploadData");
                   },
                   child: CircleAvatar(

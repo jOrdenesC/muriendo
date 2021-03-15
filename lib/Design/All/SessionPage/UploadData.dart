@@ -129,7 +129,7 @@ class _UploadDataState extends State<UploadData> {
           "videoData": videoData,
           "course": course[0].courseId
         };
-        // saveOffline(Uuid().v4().toString(), res[0].questionary, );
+
         Navigator.pop(context);
         loading(context,
             content: Center(
@@ -199,30 +199,42 @@ class _UploadDataState extends State<UploadData> {
         toast(context, "Ha ocurrido un error, inténtalo más tarde.", red);
       }
     } else {
+      var actualVideo = prefs.getString("actualVideo");
+      saveOffline(
+          Uuid().v4().toString(),
+          phase.toString(),
+          args["idClass"].toString(),
+          args["mets"],
+          course[0].courseId,
+          res[0].questionary,
+          actualVideo,
+          args["exercises"]);
       toast(
           context,
           "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
-          red);
+          green);
+      GET.Get.offAll(HomePageUser());
     }
   }
 
   Future saveOffline(
-      var uuid,
-      var questionnaire,
-      var uriVideo,
-      var idClass,
-      var videoName,
-      var cloudFlareId,
-      var exercises,
-      var totalKilocalories) async {
+    var uuid,
+    var phase,
+    var classId,
+    var totalKilocalories,
+    var course,
+    var questionnaire,
+    var uriVideo,
+    var exercises,
+  ) async {
     OfflineRepository offlineRepository = GetIt.I.get();
     OfflineData questionaryData = OfflineData(
         uuid: uuid,
+        phase: phase,
+        course: course,
         questionary: questionnaire,
         uriVideo: uriVideo,
-        idClass: idClass,
-        videoName: videoName,
-        cloudflareId: cloudFlareId,
+        idClass: classId,
         exercices: exercises,
         totalKilocalories: totalKilocalories);
     await offlineRepository.insert(questionaryData);
@@ -305,7 +317,7 @@ class _UploadDataState extends State<UploadData> {
         print("EO " + e.toString());
       }
     } else {
-      toast(context, "No cuentas con conexión a internet.", red);
+      toast(context, "Debes estar conectado a internet para subir datos.", red);
     }
   }
 }

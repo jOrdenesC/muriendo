@@ -1,37 +1,34 @@
 class OfflineData {
   final int uuid;
-  final String cloudflareId;
   final double totalKilocalories;
   final String uriVideo;
   final List questionary;
   final String idClass;
-  final String videoName;
   final List exercices;
-  final bool uploaded;
+  final String phase;
+  final String course;
 
-  OfflineData(
-      {this.uuid,
-      this.uriVideo,
-      this.questionary,
-      this.idClass,
-      this.videoName,
-      this.cloudflareId,
-      this.exercices,
-      this.totalKilocalories,
-      this.uploaded
-      });
+  OfflineData({
+    this.uuid,
+    this.uriVideo,
+    this.questionary,
+    this.idClass,
+    this.course,
+    this.phase,
+    this.exercices,
+    this.totalKilocalories,
+  });
 
   Map<String, dynamic> toMap() {
     return {
       'uuid': this.uuid,
       'totalKilocalories': this.totalKilocalories,
-      'cloudflareId': this.cloudflareId,
+      'course': this.course,
       'exercises': this.exercices,
       'uriVideo': this.uriVideo,
       'questionary': this.questionary,
       'idClass': this.idClass,
-      'videoName': this.videoName,
-      'uploaded': this.uploaded
+      'phase': this.phase
     };
   }
 
@@ -39,13 +36,11 @@ class OfflineData {
     return OfflineData(
         uuid: map['uuid'],
         totalKilocalories: map['totalKilocalories'],
-        cloudflareId: map['cloudflareId'],
+        course: map['course'],
         exercices: map['exercices'],
         uriVideo: map['uriVideo'],
         questionary: map['questionary'],
         idClass: map['idClass'],
-        videoName: map['date'],
-        uploaded: map['uploaded']
-        );
+        phase: map['phase']);
   }
 }

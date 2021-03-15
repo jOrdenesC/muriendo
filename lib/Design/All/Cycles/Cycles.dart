@@ -242,7 +242,7 @@ class _CyclesState extends State<Cycles> {
       onTap: () {
         // print(courses.toString());
         if (check) {
-          goToshowCycle(nameCycle, cycle);
+          goToshowCycle(nameCycle, cycle, courses);
         } else {
           toast(context, "No tienes este curso asignado.".toUpperCase(), red);
         }
@@ -355,11 +355,12 @@ class _CyclesState extends State<Cycles> {
       setState(() {
         progress = ((rec / total) * 100).floor().toString();
         pr.update(
-            progressWidget: Image.asset(
-              "Assets/videos/loading.gif",
-              fit: BoxFit.contain,
-            ),
-            message: "Descargando vídeos...$progress%",);
+          progressWidget: Image.asset(
+            "Assets/videos/loading.gif",
+            fit: BoxFit.contain,
+          ),
+          message: "Descargando vídeos...$progress%",
+        );
       });
     });
 

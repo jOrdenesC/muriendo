@@ -49,28 +49,24 @@ class _AddExcercisesState extends State<AddExcercises> {
 
   getMax() async {
     if (widget.stage == "CALENTAMIENTO") {
-      print("Entra a if");
       var res = await ListController().getMaxCalentamiento();
       print(res);
       setState(() {
         max = res;
       });
     } else if (widget.stage == "FLEXIBILIDAD") {
-      print("Entra a if");
       var res = await ListController().getMaxFlexibilidad();
       print(res);
       setState(() {
         max = res;
       });
     } else if (widget.stage == "DESARROLLO") {
-      print("Entra a if");
       var res = await ListController().getMaxDesarrollo();
       print(res);
       setState(() {
         max = res;
       });
     } else if (widget.stage == "VUELTA A LA CALMA") {
-      print("Entra a if");
       var res = await ListController().getMaxVueltaCalma();
       print(res);
       setState(() {
@@ -262,32 +258,58 @@ class _AddExcercisesState extends State<AddExcercises> {
                           if (widget.stage == "CALENTAMIENTO") {
                             var actualList = prefs
                                 .getStringList("exercisesCalentamiento" ?? []);
-                            setState(() {
-                              if (actualList.toString() != "[]" &&
-                                  actualList != null) {
-                                print(actualList.length.toString());
-                                print(maxStatic);
-                                if (maxStatic == actualList.length) {
+
+                            if (actualList.toString() != "[]" &&
+                                actualList != null) {
+                              print("Lista de calentamiento no vacía");
+                              if (maxStatic == actualList.length) {
+                                log(actualList.toString());
+                                print("max static = list");
+                                if (value) {
+                                  print("value true");
                                   toast(
                                       context,
                                       "Ya no puedes agregar más ejercicios.",
                                       red);
                                 } else {
-                                  bools[index]["status"] = value;
-                                  if (bools[index]["status"]) {
-                                    listController
-                                        .addCalentamiento(codeExercise);
-                                  } else {
+                                  setState(() {
+                                    bools[index]["status"] = value;
+                                    print("value false");
                                     listController
                                         .removeCalentamiento(codeExercise);
-                                  }
+                                  });
                                 }
                               } else {
                                 bools[index]["status"] = value;
                                 if (bools[index]["status"]) {
-                                  listController.addCalentamiento(codeExercise);
+                                  print("add 1");
+                                  setState(() {
+                                    listController
+                                        .addCalentamiento(codeExercise);
+                                  });
+                                } else {
+                                  setState(() {
+                                    listController
+                                        .removeCalentamiento(codeExercise);
+                                  });
                                 }
                               }
+                            } else {
+                              print("list vacía");
+                              bools[index]["status"] = value;
+                              if (bools[index]["status"]) {
+                                print("add 2");
+                                setState(() {
+                                  listController.addCalentamiento(codeExercise);
+                                });
+                              } else {
+                                setState(() {
+                                  listController
+                                      .removeCalentamiento(codeExercise);
+                                });
+                              }
+                            }
+                            setState(() {
                               getMax();
                             });
                           } else if (widget.stage == "FLEXIBILIDAD") {
@@ -299,10 +321,20 @@ class _AddExcercisesState extends State<AddExcercises> {
                                 print(actualList.length.toString());
                                 print(maxStatic);
                                 if (maxStatic == actualList.length) {
-                                  toast(
-                                      context,
-                                      "Ya no puedes agregar más ejercicios.",
-                                      red);
+                                  if (value) {
+                                    print("value true");
+                                    toast(
+                                        context,
+                                        "Ya no puedes agregar más ejercicios.",
+                                        red);
+                                  } else {
+                                    setState(() {
+                                      bools[index]["status"] = value;
+                                      print("value false");
+                                      listController
+                                          .removeFlexibilidad(codeExercise);
+                                    });
+                                  }
                                 } else {
                                   bools[index]["status"] = value;
                                   if (bools[index]["status"]) {
@@ -330,10 +362,20 @@ class _AddExcercisesState extends State<AddExcercises> {
                                 print(actualList.length.toString());
                                 print(maxStatic);
                                 if (maxStatic == actualList.length) {
-                                  toast(
-                                      context,
-                                      "Ya no puedes agregar más ejercicios.",
-                                      red);
+                                  if (value) {
+                                    print("value true");
+                                    toast(
+                                        context,
+                                        "Ya no puedes agregar más ejercicios.",
+                                        red);
+                                  } else {
+                                    setState(() {
+                                      bools[index]["status"] = value;
+                                      print("value false");
+                                      listController
+                                          .removeVueltaCalma(codeExercise);
+                                    });
+                                  }
                                 } else {
                                   bools[index]["status"] = value;
                                   if (bools[index]["status"]) {
@@ -360,10 +402,20 @@ class _AddExcercisesState extends State<AddExcercises> {
                                 print(actualList.length.toString());
                                 print(maxStatic);
                                 if (maxStatic == actualList.length) {
-                                  toast(
-                                      context,
-                                      "Ya no puedes agregar más ejercicios.",
-                                      red);
+                                  if (value) {
+                                    print("value true");
+                                    toast(
+                                        context,
+                                        "Ya no puedes agregar más ejercicios.",
+                                        red);
+                                  } else {
+                                    setState(() {
+                                      bools[index]["status"] = value;
+                                      print("value false");
+                                      listController
+                                          .removeDesarrollo(codeExercise);
+                                    });
+                                  }
                                 } else {
                                   bools[index]["status"] = value;
                                   if (bools[index]["status"]) {

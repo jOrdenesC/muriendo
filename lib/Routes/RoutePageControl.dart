@@ -11,6 +11,11 @@ import '../Design/All/EvidencesTeacher/SearchEvidences.dart';
 import '../Design/All/HomePage/HomePageTeacher.dart';
 import '../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import '../Design/All/Support/Support.dart';
+import '../Design/All/EvidencesTeacher/MenuEvidences.dart';
+import '../Design/All/Reports/CaloricExpenditure.dart';
+import '../Design/All/Reports/reports.dart';
+import 'dart:developer';
+import '../Design/All/Reports/ApplicationUse.dart';
 
 goToLogin() {
   Get.toNamed(AppRoutes.login.name);
@@ -140,20 +145,35 @@ goToFinalPage() {
   Get.toNamed(AppRoutes.finalPage.name);
 }
 
-goToCaloricExpenditure() {
-  Get.toNamed(AppRoutes.caloricExpenditure.name);
+goToCaloricExpenditure(bool isTeacher, List data) {
+  // Get.toNamed(AppRoutes.caloricExpenditure.name);
+  Get.to(CaloricExpenditure(
+    isTeacher: isTeacher,
+    data: data,
+  ));
 }
 
-goToApplicationUse() {
-  Get.toNamed(AppRoutes.applicationUse.name);
+goToApplicationUse(bool isTeacher, List data) {
+  // Get.toNamed(AppRoutes.applicationUse.name);
+  Get.to(ApplicationUse(
+    isTeacher: isTeacher,
+    data: data,
+  ));
 }
 
 goToAllEvidences() {
   Get.toNamed(AppRoutes.allEvidences.name);
 }
 
-goToReports(bool drawer) {
-  Get.toNamed(AppRoutes.reports.name, arguments: drawer);
+goToReports(bool drawer, bool isTeacher, List data) {
+  // Get.toNamed(AppRoutes.reports.name,
+  //     arguments: {"drawer": drawer, "isTeacher": isTeacher, "data": data});
+  log(data.toString());
+  Get.to(Reports(
+    isTeacher: isTeacher,
+    drawerMenu: drawer,
+    data: data,
+  ));
 }
 
 goToEvidencesVideos() {
@@ -174,26 +194,36 @@ goToHomeReplacement() {
   Get.back();
 }
 
-goToshowCycle(String nameCourse, int cycle) {
-  Get.toNamed(AppRoutes.showCycle.name,
-      arguments: {"nameCourse": nameCourse, "cycle": cycle});
+goToshowCycle(String nameCourse, int cycle, List courses) {
+  Get.toNamed(AppRoutes.showCycle.name, arguments: {
+    "nameCourse": nameCourse,
+    "cycle": cycle,
+    "courses": courses
+  });
 }
 
-goToShowPhases(
-    int cycle, String title, bool isEvidence, bool isDefault, String level) {
+goToShowPhases(int cycle, String title, bool isEvidence, bool isDefault,
+    String level, List courses) {
   Get.toNamed(AppRoutes.showPhases.name, arguments: {
     "cycle": cycle,
     "title": title,
     "isEvidence": isEvidence,
     "isDefault": isDefault,
-    "level": level
+    "level": level,
+    "courses": courses
   });
 }
 
-goToCreateClass(String level, String number) {
+goToCreateClass(String level, String number, bool isNew, bool fromCourses,
+    String idCourse) {
   ListController().finishCreateClass();
-  Get.toNamed(AppRoutes.createClass.name,
-      arguments: {"level": level, "number": number});
+  Get.toNamed(AppRoutes.createClass.name, arguments: {
+    "level": level,
+    "number": number,
+    "isNew": isNew,
+    "fromCourses": fromCourses,
+    "idCourse": idCourse
+  });
 }
 
 goToExcercisesClass(String title, String level, String number) {
@@ -223,14 +253,26 @@ goToAddExcercises(String subCategory, String stage, String category,
   });
 }
 
-goToFinishCreateClass(String level, String number, var response) {
-  Get.toNamed(AppRoutes.finishCreateClass.name,
-      arguments: {"level": level, "number": number, "response": response});
+goToFinishCreateClass(
+    String level, String number, var response, bool isNew, String courseId) {
+  Get.toNamed(AppRoutes.finishCreateClass.name, arguments: {
+    "level": level,
+    "number": number,
+    "response": response,
+    "isNew": isNew,
+    "courseId": courseId
+  });
 }
 
-goToAssignCreatedClass(String level, String number, var response) {
-  Get.toNamed(AppRoutes.assignCreatedClass.name,
-      arguments: {"level": level, "number": number, "response": response});
+goToAssignCreatedClass(
+    String level, String number, var response, String courseId, bool isNew) {
+  Get.toNamed(AppRoutes.assignCreatedClass.name, arguments: {
+    "level": level,
+    "number": number,
+    "response": response,
+    "isNew": isNew,
+    "courseId": courseId
+  });
 }
 
 goToMessageUploadData() {
@@ -245,11 +287,14 @@ goToSearchEvidences(bool isFull, String idCollege) {
 }
 
 goToMenuEvidences(List data) {
-  Get.toNamed(AppRoutes.menuEvidences.name);
+  // Get.toNamed(AppRoutes.menuEvidences.name);
+  Get.to(MenuEvidences(data: data));
 }
 
 goToSupport(bool isFull) {
-  Get.to(Support(isFull: isFull,));
+  Get.to(Support(
+    isFull: isFull,
+  ));
 }
 
 goToManuals(bool isFull) {

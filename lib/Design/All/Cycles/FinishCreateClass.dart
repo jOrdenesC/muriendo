@@ -38,8 +38,8 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buttonRounded(context, func: () {
-              goToAssignCreatedClass(
-                  args["level"], args["number"], args["response"]);
+              goToAssignCreatedClass(args["level"], args["number"],
+                  args["response"], args["courseId"], args["isNew"]);
             }, text: "   SUBE AQUÍ")
           ],
         ),
@@ -89,12 +89,15 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
                     decoration: BoxDecoration(
                         color: green,
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    width: 70.0.w,
-                    height: 5.0.h,
+                    width: args["isNew"] ? 70.0.w : 85.0.w,
+                    height: args["isNew"] ? 5.0.h : 7.0.h,
                     child: Center(
                       child: Text(
-                        "Has finalizado tu clase",
+                        args["isNew"]
+                            ? "Has finalizado tu clase"
+                            : "Has finalizado de modificar tu clase",
                         style: TextStyle(color: Colors.white, fontSize: 6.0.w),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   )
@@ -108,7 +111,7 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
                   viewClass();
                 },
                 child: Container(
-                  width: 70.0.w,
+                  width: args["isNew"] ? 70.0.w : 90.0.w,
                   height: 5.0.h,
                   decoration: BoxDecoration(
                       color: red,
@@ -119,7 +122,9 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
                       Icon(Icons.remove_red_eye,
                           color: Colors.white, size: 8.0.w),
                       Text(
-                        "Ver clase creada".toUpperCase(),
+                        args["isNew"]
+                            ? "Ver clase creada".toUpperCase()
+                            : "Ver clase modificada".toUpperCase(),
                         style: TextStyle(color: Colors.white, fontSize: 5.0.w),
                       )
                     ],

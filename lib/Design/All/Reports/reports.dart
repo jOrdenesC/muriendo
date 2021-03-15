@@ -7,7 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Reports extends StatefulWidget {
   final bool drawerMenu;
-  Reports({this.drawerMenu});
+  final bool isTeacher;
+  final List data;
+  Reports({this.drawerMenu, this.isTeacher, this.data});
   @override
   _ReportsState createState() => _ReportsState();
 }
@@ -100,7 +102,7 @@ class _ReportsState extends State<Reports> {
                   ),
               InkWell(
                 onTap: () {
-                  goToCaloricExpenditure();
+                  goToCaloricExpenditure(widget.isTeacher, null);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -145,7 +147,7 @@ class _ReportsState extends State<Reports> {
               ),
               InkWell(
                 onTap: () {
-                  goToApplicationUse();
+                  goToApplicationUse(widget.isTeacher, widget.data);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,

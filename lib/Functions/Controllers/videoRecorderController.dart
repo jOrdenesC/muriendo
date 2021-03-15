@@ -34,11 +34,15 @@ class VideoController extends GetxController {
 
   //Observe changes done to variable and return different controller??
   //Get Controller over here and send it to another class so we can easily change it as an observable??
-  recordMovie(String uuid, String idClass, double kCal, int number, List exercises, String phase) async {
+  recordMovie(String uuid, String idClass, double kCal, int number,
+      List exercises, String phase) async {
     var prefs = await SharedPreferences.getInstance();
+    loading.value = true;
     final file = await ImagePicker().getVideo(
         source: ImageSource.camera, maxDuration: Duration(seconds: 30));
-    loading.value = true;
+    if (file == null) {
+      loading.value = false;
+    }
     await VideoCompress.setLogLevel(0);
     final info = await VideoCompress.compressVideo(
       file.path,
@@ -54,13 +58,14 @@ class VideoController extends GetxController {
           mets: kCal,
           number: number,
           exercises: exercises,
-          phase: phase
-          );
+          phase: phase);
       loading.value = false;
       //If Method is Successfull save file location to a variable and change another one that is observable and change back to screen
       log(info.path);
       //Save actual route video
       prefs.setString("actualVideo", info.path);
+    } else {
+      loading.value = false;
     }
   }
 }

@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:movitronia/Database/Models/OfflineData.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/sembast_classlevel.dart';
+import 'package:movitronia/Database/Repository/OfflineRepository.dart';
+import 'package:movitronia/Database/Repository/sembast_offlineRepository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sembast/sembast.dart';
@@ -53,5 +56,8 @@ class Init {
 
     GetIt.I.registerLazySingleton<CourseDataRepository>(
         () => SembastCourseRepository());
+
+    GetIt.I.registerLazySingleton<OfflineRepository>(
+        () => SembastOfflineRepository());
   }
 }

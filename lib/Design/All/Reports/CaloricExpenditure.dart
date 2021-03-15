@@ -14,6 +14,9 @@ import 'dart:developer';
 import '../../../Database/Models/evidencesSend.dart';
 
 class CaloricExpenditure extends StatefulWidget {
+  final bool isTeacher;
+  final List data;
+  CaloricExpenditure({this.isTeacher, this.data});
   @override
   _CaloricExpenditureState createState() => _CaloricExpenditureState();
 }
@@ -74,7 +77,17 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 10.0.h,
+                          height: 5.0.h,
+                        ),
+                        widget.isTeacher
+                            ? Text(
+                                "Evidencias de ${widget.data[0]["student"]["name"]}",
+                                style: TextStyle(color: blue, fontSize: 5.0.w),
+                                textAlign: TextAlign.center,
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(
+                          height: 5.0.h,
                         ),
                         Text(
                           "GASTO CALÓRICO (KCal)",
@@ -199,57 +212,83 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
         });
       }
     } else {
-      var dio = Dio();
-      var prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("token");
-      try {
-        Response res =
-            await dio.get("$urlServer/api/mobile/evidences?token=$token");
-        print(res.data);
-        if (res.statusCode == 200) {
-          for (var i = 0; i < res.data.length; i++) {
-            namesClass
-                .add("Sesión ${res.data[i]["class"]["number"]}".toString());
-            kCal.add(double.parse(
-                res.data[i]["totalKilocalories"].toStringAsFixed(2)));
-            EvidencesSend evidencesSend = EvidencesSend(
-                number: res.data[i]["class"]["number"],
-                idEvidence: res.data[i]["class"]["_id"],
-                phase: res.data[i]["phase"],
-                classObject: res.data[i]["class"],
-                finished: true,
-                questionnaire: res.data[i]["questionnaire"],
-                kilocalories: res.data[i]["totalKilocalories"].toString());
-            evidencesRepository.updateEvidence(evidencesSend);
+      if (widget.isTeacher) {
+        for (var i = 0; i < widget.data.length; i++) {
+          namesClass
+              .add("Sesión ${widget.data[i]["class"]["number"]}".toString());
+          kCal.add(double.parse(
+              widget.data[i]["totalKilocalories"].toStringAsFixed(2)));
+        }
+        for (var i = 0; i < kCal.length; i++) {
+          totalKcal = totalKcal + kCal[i];
+        }
+        setState(() {
+          if (!loaded) {
+            DataRepository.data = kCal;
+            DataRepository.labels = namesClass;
+            data = DataRepository.getData();
+            loaded = true;
           }
-          for (var i = 0; i < kCal.length; i++) {
-            totalKcal = totalKcal + kCal[i];
-          }
-          setState(() {
-            if (!loaded) {
-              DataRepository.data = kCal;
-              DataRepository.labels = namesClass;
-              data = DataRepository.getData();
-              loaded = true;
-            }
-            labels = DataRepository.getLabels();
-          });
-          if (res.data.length == 0) {
-            setState(() {
-              noData = true;
-            });
-          }
-        } else {
+          labels = DataRepository.getLabels();
+        });
+        if (widget.data.length == 0) {
           setState(() {
             noData = true;
           });
-          print("no data");
         }
-      } catch (e) {
-        setState(() {
-          errorServer = true;
-        });
-        print(e);
+      } else {
+        var dio = Dio();
+        var prefs = await SharedPreferences.getInstance();
+        var token = prefs.getString("token");
+        try {
+          Response res =
+              await dio.get("$urlServer/api/mobile/evidences?token=$token");
+          print(res.data);
+          if (res.statusCode == 200) {
+            for (var i = 0; i < res.data.length; i++) {
+              namesClass
+                  .add("Sesión ${res.data[i]["class"]["number"]}".toString());
+              kCal.add(double.parse(
+                  res.data[i]["totalKilocalories"].toStringAsFixed(2)));
+              EvidencesSend evidencesSend = EvidencesSend(
+                  number: res.data[i]["class"]["number"],
+                  idEvidence: res.data[i]["class"]["_id"],
+                  phase: res.data[i]["phase"],
+                  classObject: res.data[i]["class"],
+                  finished: true,
+                  questionnaire: res.data[i]["questionnaire"],
+                  kilocalories: res.data[i]["totalKilocalories"].toString());
+              evidencesRepository.updateEvidence(evidencesSend);
+            }
+            for (var i = 0; i < kCal.length; i++) {
+              totalKcal = totalKcal + kCal[i];
+            }
+            setState(() {
+              if (!loaded) {
+                DataRepository.data = kCal;
+                DataRepository.labels = namesClass;
+                data = DataRepository.getData();
+                loaded = true;
+              }
+              labels = DataRepository.getLabels();
+            });
+            if (res.data.length == 0) {
+              setState(() {
+                noData = true;
+              });
+            }
+          } else {
+            setState(() {
+              noData = true;
+            });
+            print("no data");
+          }
+        } catch (e) {
+          setState(() {
+            errorServer = true;
+          });
+          print(e);
+        }
       }
     }
   }

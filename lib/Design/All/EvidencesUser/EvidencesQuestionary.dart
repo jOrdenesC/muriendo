@@ -11,6 +11,8 @@ import 'package:get_it/get_it.dart';
 import '../../Widgets/Toast.dart';
 
 class EvidencesQuestionary extends StatefulWidget {
+  final bool isTeacher;
+  EvidencesQuestionary({this.isTeacher});
   @override
   _EvidencesQuestionaryState createState() => _EvidencesQuestionaryState();
 }

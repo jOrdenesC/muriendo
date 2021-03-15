@@ -378,6 +378,7 @@ class _LoginState extends State<Login> {
           "uuid": uuid.toString()
         });
         if (response.statusCode == 200) {
+          log(response.data.toString());
           prefs.setString("token", response.data);
           var token = prefs.getString("token");
           final parts = token.split('.');

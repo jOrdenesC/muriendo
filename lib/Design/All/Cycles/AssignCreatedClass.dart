@@ -10,6 +10,8 @@ import 'dart:developer';
 import 'package:orientation_helper/orientation_helper.dart';
 import '../../Widgets/Loading.dart';
 import '../../Widgets/Toast.dart';
+import 'package:get/get.dart' as getRoute;
+import '../../../Functions/Controllers/ListsController.dart';
 
 class AssignCreatedClass extends StatefulWidget {
   @override
@@ -37,7 +39,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         args =
             (ModalRoute.of(context).settings.arguments as RouteArguments).args;
       });
-      log(args.toString());
+      // log(args.toString());
       selected.clear();
       getDataUsers();
     });
@@ -69,7 +71,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
       }
     }
 
-    log(courses.length.toString());
+    // log(courses.length.toString());
 
     for (var i = 0; i < courses.length; i++) {
       for (var j = 0; j < courses[i]["students"].length; j++) {
@@ -83,8 +85,8 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         });
       }
     }
-    log(courses.toString());
-    log(users.toString());
+    // log(courses.toString());
+    // log(users.toString());
     setState(() {
       loaded = true;
     });
@@ -162,27 +164,68 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
 
     var dio = Dio();
     try {
-      var data = {
-        "students": selectedUsers,
-        "originalClass": args["response"].data["_id"],
-        "number": args["number"],
-        "level": args["level"],
-        "exercisesCalentamiento": exercisesCalentamiento,
-        "exercisesFlexibilidad": exercisesFlexibilidad,
-        "exercisesDesarrollo": exercisesDesarrollo,
-        "exercisesVueltaCalma": exercisesVueltaCalma,
-        "times": args["response"].data["times"],
-        "questionnaire": args["response"].data["questionnaire"],
-        "tips": args["response"].data["tips"],
-        "pauses": args["response"].data["pauses"],
-        // "course":
-      };
-      Response response = await dio
-          .post("$urlServer/api/mobile/customClass?token=$token", data: data);
+      print("course ${args["courseId"]}");
+      List classesCourses = [];
+      if (args["isNew"]) {
+        for (var i = 0; i < selected.length; i++) {
+          var data = {
+            "course": selected[i]["id"],
+            "students": selectedUsers,
+            "originalClass": args["response"].data["_id"],
+            "number": args["number"],
+            "level": args["level"],
+            "exercisesCalentamiento": exercisesCalentamiento,
+            "exercisesFlexibilidad": exercisesFlexibilidad,
+            "exercisesDesarrollo": exercisesDesarrollo,
+            "exercisesVueltaCalma": exercisesVueltaCalma,
+            "times": args["response"].data["times"],
+            "questionnaire": args["response"].data["questionnaire"],
+            "tips": args["response"].data["tips"],
+            "pauses": args["response"].data["pauses"],
+          };
+          classesCourses.add(data);
+        }
+      } else {
+        var data = {
+          "course": args["courseId"],
+          "students": selectedUsers,
+          "originalClass": args["response"].data["_id"],
+          "number": args["number"],
+          "level": args["level"],
+          "exercisesCalentamiento": exercisesCalentamiento,
+          "exercisesFlexibilidad": exercisesFlexibilidad,
+          "exercisesDesarrollo": exercisesDesarrollo,
+          "exercisesVueltaCalma": exercisesVueltaCalma,
+          "times": args["response"].data["times"],
+          "questionnaire": args["response"].data["questionnaire"],
+          "tips": args["response"].data["tips"],
+          "pauses": args["response"].data["pauses"],
+        };
+        classesCourses.add(data);
+      }
+      log(classesCourses.toString());
+      Response response = await dio.post(
+          "$urlServer/api/mobile/customClass?token=$token",
+          data: classesCourses);
+
       print(response.data);
       if (response.statusCode == 200) {
         toast(context, "Se ha enviado la clase creada.", green);
-        goToHomeTeacher();
+        if (args["isNew"]) {
+          ListController listController = ListController();
+          listController.finishCreateClass();
+          goToHomeTeacher();
+        } else {
+          ListController listController = ListController();
+          listController.finishCreateClass();
+          getRoute.Get.back();
+          getRoute.Get.back();
+          getRoute.Get.back();
+          getRoute.Get.back();
+          getRoute.Get.back();
+          getRoute.Get.back();
+          getRoute.Get.back();
+        }
       }
     } catch (e) {
       log(e.response.toString());
@@ -200,7 +243,15 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
           children: [
             buttonRounded(context, func: () {
               // goToMessageUploadData();
-              sendData();
+              if (args["isNew"]) {
+                if (selected.isEmpty) {
+                  toast(context, "Debes seleccionar al menos un curso.", red);
+                } else {
+                  sendData();
+                }
+              } else {
+                sendData();
+              }
               // log(args["response"].data["_id"].toString());
               // log(args["response"].toString());
             }, text: "   ENVIAR")
@@ -217,7 +268,10 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
             SizedBox(
               height: 2.0.h,
             ),
-            FittedBox(fit: BoxFit.fitWidth, child: Text("CLASE CREADA")),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child:
+                    Text(args["isNew"] ? "CLASE CREADA" : "CLASE MODIFICADA")),
           ],
         ),
         elevation: 0,
@@ -238,7 +292,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                       height: 5.0.h,
                       child: Center(
                           child: Text(
-                        "CLASE CREADA",
+                        args["isNew"] ? "CLASE CREADA" : "CLASE MODIFICADA",
                         style: TextStyle(color: blue, fontSize: 6.0.w),
                       )),
                       decoration: BoxDecoration(
@@ -250,137 +304,163 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                 SizedBox(
                   height: 5.0.h,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "ENVIAR AL CURSO",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 7.0.w),
-                        ),
-                        Text(""),
-                        InkWell(
-                          onTap: () {
-                            addGrade();
-                          },
-                          child: Container(
-                            width: 80.0.w,
-                            height: selected.isEmpty ? 5.0.h : 25.0.h,
-                            child: selected.isEmpty
-                                ? Center(
-                                    child: Text(
-                                    "Oprime aquí para agregar cursos",
-                                    style: TextStyle(color: Colors.white),
-                                  ))
-                                : ListView.builder(
-                                    physics: ScrollPhysics(
-                                        parent: BouncingScrollPhysics()),
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20.0, right: 20),
-                                        child: RaisedButton.icon(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20))),
-                                          color: green,
-                                          icon: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(width: 12.0.w),
-                                              Text(
-                                                  selected[index]
-                                                      .toString()
-                                                      .toUpperCase(),
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            ],
-                                          ),
-                                          onPressed: () {
-                                            print("remove");
-                                            selected.removeAt(index);
-                                            setState(() {
-                                              grade[index]["status"] = false;
-                                            });
-                                            print(grade.toString());
-                                          },
-                                          label: Expanded(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Icon(
-                                                  Icons.close_sharp,
-                                                  color: Colors.white,
-                                                  size: 10.0.w,
+                args["isNew"]
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                "ENVIAR AL CURSO",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 7.0.w),
+                              ),
+                              Text(""),
+                              InkWell(
+                                onTap: () {
+                                  addGrade();
+                                },
+                                child: Container(
+                                  width: 80.0.w,
+                                  height: selected.isEmpty ? 5.0.h : 25.0.h,
+                                  child: selected.isEmpty
+                                      ? Center(
+                                          child: Text(
+                                          "Oprime aquí para agregar cursos",
+                                          style: TextStyle(color: Colors.white),
+                                        ))
+                                      : ListView.builder(
+                                          physics: ScrollPhysics(
+                                              parent: BouncingScrollPhysics()),
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0, right: 20),
+                                              child: RaisedButton.icon(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                20))),
+                                                color: green,
+                                                icon: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(width: 12.0.w),
+                                                    Text(
+                                                        selected[index]["name"]
+                                                            .toString()
+                                                            .toUpperCase(),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          ),
+                                                onPressed: () {
+                                                  print("remove");
+                                                  selected.removeAt(index);
+                                                  setState(() {
+                                                    grade[index]["status"] =
+                                                        false;
+                                                  });
+                                                  print(grade.toString());
+                                                },
+                                                label: Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.close_sharp,
+                                                        color: Colors.white,
+                                                        size: 10.0.w,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          itemCount: selected.length,
                                         ),
-                                      );
-                                    },
-                                    itemCount: selected.length,
-                                  ),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Center(
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 18.0.w,
+                              child: Center(
+                                  child: Icon(Icons.check,
+                                      color: green, size: 25.0.w)),
+                            ),
                           ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                          SizedBox(
+                            height: 6.0.h,
+                          ),
+                          Text(
+                              "Envía tu clase y será modificada en el sistema.",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 7.0.w),
+                              textAlign: TextAlign.center),
+                        ],
+                      ),
                 SizedBox(
                   height: 6.0.h,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "ENVIAR A ALUMNO",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 7.0.w),
-                        ),
-                        Text(""),
-                        InkWell(
-                          onTap: () {
-                            addUsers();
-                          },
-                          child: Container(
-                            width: 80.0.w,
-                            height: 5.0.h,
-                            child: selectedUsers.isEmpty
-                                ? Center(
-                                    child: Text(
-                                    "Oprime aquí para agregar alumnos",
-                                    style: TextStyle(color: Colors.white),
-                                  ))
-                                : Center(
-                                    child: Text(
-                                      "Seleccionaste ${selectedUsers.length} alumnos.",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                            decoration: BoxDecoration(
-                                color: selectedUsers.isEmpty
-                                    ? Colors.transparent
-                                    : green,
-                                border: Border.all(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                )
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Column(
+                //       children: [
+                //         Text(
+                //           "ENVIAR A ALUMNO",
+                //           style:
+                //               TextStyle(color: Colors.white, fontSize: 7.0.w),
+                //         ),
+                //         Text(""),
+                //         InkWell(
+                //           onTap: () {
+                //             addUsers();
+                //           },
+                //           child: Container(
+                //             width: 80.0.w,
+                //             height: 5.0.h,
+                //             child: selectedUsers.isEmpty
+                //                 ? Center(
+                //                     child: Text(
+                //                     "Oprime aquí para agregar alumnos",
+                //                     style: TextStyle(color: Colors.white),
+                //                   ))
+                //                 : Center(
+                //                     child: Text(
+                //                       "Seleccionaste ${selectedUsers.length} alumnos.",
+                //                       style: TextStyle(color: Colors.white),
+                //                     ),
+                //                   ),
+                //             decoration: BoxDecoration(
+                //                 color: selectedUsers.isEmpty
+                //                     ? Colors.transparent
+                //                     : green,
+                //                 border: Border.all(color: Colors.white),
+                //                 borderRadius:
+                //                     BorderRadius.all(Radius.circular(15))),
+                //           ),
+                //         )
+                //       ],
+                //     )
+                //   ],
+                // )
               ],
             )
           : Center(
@@ -529,36 +609,17 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                   buttonRounded(context, text: "AGREGAR",
                                       func: () {
                                     selected.clear();
-                                    print(grade.toString());
                                     for (var i = 0; i < grade.length; i++) {
                                       if (grade[i]["status"]) {
-                                        selected.add(grade[i]["name"]);
-                                        for (var k = 0;
-                                            k < grade[i]["students"].length;
-                                            k++) {
-                                          if (selectedUsers.contains(
-                                              grade[i]["students"][k]["_id"])) {
-                                            print("ya existe");
-                                          } else {
-                                            selectedUsers.add(
-                                                grade[i]["students"][k]["_id"]);
-                                          }
-                                        }
+                                        selected.add({
+                                          "id": grade[i]["id"],
+                                          "name": grade[i]["name"]
+                                        });
                                       } else {
                                         print("nada");
                                       }
+                                      log("log  " + selected.toString());
                                     }
-                                    for (var i = 0; i < users.length; i++) {
-                                      for (var j = 0;
-                                          j < selectedUsers.length;
-                                          j++) {
-                                        if (users[i]["_id"] ==
-                                            selectedUsers[j]) {
-                                          users[i]["add"] = true;
-                                        }
-                                      }
-                                    }
-                                    print(selected);
                                     Navigator.pop(context);
                                     refresh();
                                   })
