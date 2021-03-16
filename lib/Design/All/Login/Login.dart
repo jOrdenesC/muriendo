@@ -63,17 +63,23 @@ class _LoginState extends State<Login> {
       var text = data;
       var numbers = int.parse(text.substring(0, text.length - 1));
       var dv = text.substring(text.length - 1);
-      if (RUTValidator(numbers: numbers, dv: dv).isValid) {
+      if (dv == "k" || dv == "K") {
         setState(() {
-          rut.text = RUTValidator.formatFromText(data);
           isValid = true;
         });
       } else {
-        setState(() {
-          isValid = false;
-          accessWithEmail = false;
-        });
-        toast(context, "Ingresa un rut válido.", red);
+        if (RUTValidator(numbers: numbers, dv: dv).isValid) {
+          setState(() {
+            rut.text = RUTValidator.formatFromText(data);
+            isValid = true;
+          });
+        } else {
+          setState(() {
+            isValid = false;
+            accessWithEmail = false;
+          });
+          toast(context, "Ingresa un rut válido.", red);
+        }
       }
     }
   }

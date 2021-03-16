@@ -423,7 +423,7 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 5.0.h,
             ),
             Text(
-              "Versión: 1.0",
+              "Versión: 1.0.7",
               style: TextStyle(color: Colors.white, fontSize: 5.0.w),
             )
           ],

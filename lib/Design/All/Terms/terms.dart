@@ -3,6 +3,7 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Terms extends StatefulWidget {
   @override
@@ -14,37 +15,39 @@ class _TermsState extends State<Terms> {
   Widget build(BuildContext context) {
     final dynamic role =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SizedBox(
-            height: 5.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                "Assets/images/logo.png",
-                width: 20.0.w,
-              )
-            ],
-          ),
-          Text(
-            "Términos y acuerdos de privacidad",
-            style: TextStyle(fontSize: 5.0.w),
-          ),
-          SizedBox(
-            height: 3.0.h,
-          ),
-          Container(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-              child: Column(
-                children: [
-                  Text(
-                    """Esta Política de privacidad describe cómo manejamos la información personal recopilada, utilizada y compartida cuando un visitante o un cliente accede a Movitronia.
+    return WillPopScope(
+      onWillPop: pop,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            SizedBox(
+              height: 5.0.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "Assets/images/logo.png",
+                  width: 20.0.w,
+                )
+              ],
+            ),
+            Text(
+              "Términos y acuerdos de privacidad",
+              style: TextStyle(fontSize: 5.0.w),
+            ),
+            SizedBox(
+              height: 3.0.h,
+            ),
+            Container(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+                child: Column(
+                  children: [
+                    Text(
+                      """Esta Política de privacidad describe cómo manejamos la información personal recopilada, utilizada y compartida cuando un visitante o un cliente accede a Movitronia.
 
 SECCIÓN 1 - INFORMACIÓN TRANSACCIONAL
 ¿Qué haces con mi información?
@@ -114,70 +117,79 @@ Si nuestra tienda es adquirida o fusionada con otra compañía, su información 
 
 PREGUNTAS E INFORMACIÓN DE CONTACTO
 Si desea: acceder, corregir, enmendar o eliminar cualquier información personal que tengamos sobre usted, registrar una queja o simplemente desea más información, comuníquese con nuestro Oficial de Cumplimiento de Privacidad en contacto@movitronia.com o por correo a Movitronia [Re: Oficial de cumplimiento de la privacidad],Santa Maria del Boldo, Pasaje la Sequia # 02081 Curicó Maule Chile""",
-                    style: TextStyle(
-                        color: Colors.black, fontFamily: "", fontSize: 4.5.w),
-                    textAlign: TextAlign.start,
-                  )
-                ],
+                      style: TextStyle(
+                          color: Colors.black, fontFamily: "", fontSize: 4.5.w),
+                      textAlign: TextAlign.start,
+                    )
+                  ],
+                ),
               ),
+              width: 90.0.w,
+              height: 60.0.h,
             ),
-            width: 90.0.w,
-            height: 60.0.h,
-          ),
-          SizedBox(
-            height: 1.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ButtonTheme(
-                buttonColor: cyan,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                minWidth: 90.0.w,
-                height: 5.0.h,
-                child: RaisedButton(
-                  onPressed: () {
-                    goToBasal(role);
-                    // Get.to(WelcomePage(
-                    //   role: widget.role,
-                    // ));
-                  },
-                  child: Text(
-                    "Acepto",
-                    style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ButtonTheme(
+                  buttonColor: cyan,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  minWidth: 90.0.w,
+                  height: 5.0.h,
+                  child: RaisedButton(
+                    onPressed: () {
+                      goToBasal(role);
+                      // Get.to(WelcomePage(
+                      //   role: widget.role,
+                      // ));
+                    },
+                    child: Text(
+                      "Acepto",
+                      style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 1.0.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ButtonTheme(
-                buttonColor: cyan,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                minWidth: 90.0.w,
-                height: 5.0.h,
-                child: RaisedButton(
-                  onPressed: () {
-                    rechazo();
-                  },
-                  child: Text(
-                    "Rechazo",
-                    style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ButtonTheme(
+                  buttonColor: cyan,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  minWidth: 90.0.w,
+                  height: 5.0.h,
+                  child: RaisedButton(
+                    onPressed: () {
+                      rechazo();
+                    },
+                    child: Text(
+                      "Rechazo",
+                      style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+                    ),
                   ),
-                ),
-              )
-            ],
-          )
-        ],
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  Future<bool> pop() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    Navigator.pop(context);
+    Navigator.pop(context);
+    return false;
   }
 
   rechazo() {
