@@ -327,7 +327,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                   "exercisesDesarrollo": exerciseDesarrollo,
                   "exercisesVueltaCalma": exerciseVueltaCalma
                 };
-                goToPlanification(null, index, true, dataClass, null);
+                goToPlanification(null, index, true, dataClass, null, false);
               } else {
                 List exists = [];
                 if (index == 1) {
@@ -545,7 +545,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass, null);
+              goToPlanification(null, index, true, dataClass, null, false);
             } else {
               List exists = [];
               if (index == 1) {
@@ -763,7 +763,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass, null);
+              goToPlanification(null, index, true, dataClass, null, false);
             } else {
               List exists = [];
               if (index == 1) {
@@ -981,7 +981,7 @@ class _ShowPhasesState extends State<ShowPhases> {
                 "exercisesDesarrollo": exerciseDesarrollo,
                 "exercisesVueltaCalma": exerciseVueltaCalma
               };
-              goToPlanification(null, index, true, dataClass, null);
+              goToPlanification(null, index, true, dataClass, null, false);
             } else {
               List exists = [];
               if (index == 1) {

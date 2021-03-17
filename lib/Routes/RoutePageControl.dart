@@ -48,14 +48,16 @@ goToWelcome(String role) {
   Get.toNamed(AppRoutes.welcome.name, arguments: role);
 }
 
-goToPlanification(
-    ClassLevel data, int number, bool isTeacher, Map dataClass, String phase) {
+goToPlanification(ClassLevel data, int number, bool isTeacher, Map dataClass,
+    String phase, bool isCustom) {
+  log("IS CUSTOOOM : $isCustom");
   Get.toNamed(AppRoutes.planification.name, arguments: {
     "data": data,
     "number": number,
     "isTeacher": isTeacher,
     "dataClass": dataClass,
-    "phase": phase
+    "phase": phase,
+    "isCustom": isCustom
   });
 }
 
@@ -89,14 +91,17 @@ goToEvidencesSession(
     double kCal,
     int number,
     List exercises,
-    String phase}) {
+    String phase,
+    bool isCustom}) {
+  log("IS CUSTOOOM go to evidences : ${isCustom}");
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
     "kCal": kCal,
     "number": number,
     "exercises": exercises,
-    "phase": phase
+    "phase": phase,
+    "isCustom": isCustom
   });
 }
 
@@ -106,14 +111,17 @@ goToUploadData(
     double mets,
     int number,
     List exercises,
-    String phase}) {
+    String phase,
+    bool isCustom}) {
+  log("IS CUSTOOOM go to uploaddata : ${isCustom}");
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
     "mets": mets,
     "number": number,
     "exercises": exercises,
-    "phase": phase
+    "phase": phase,
+    "isCustom": isCustom
   });
 }
 
@@ -122,22 +130,30 @@ goToVideosToRecord(
     String idClass,
     double kCal,
     int number,
-    List exercises}) {
+    List exercises,
+    bool isCustom}) {
   Get.toNamed(AppRoutes.videosToRecord.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
     "kCal": kCal,
     "number": number,
-    "exercises": exercises
+    "exercises": exercises,
+    "isCustom": isCustom
   });
 }
 
-goToQuestionary({List questionnaire, String idClass, List mets, int number}) {
+goToQuestionary(
+    {List questionnaire,
+    String idClass,
+    List mets,
+    int number,
+    bool isCustom}) {
   Get.toNamed(AppRoutes.questionary.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
     "mets": mets,
-    "number": number
+    "number": number,
+    "isCustom": isCustom
   });
 }
 

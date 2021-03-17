@@ -21,6 +21,7 @@ class ShowCalories extends StatefulWidget {
   final List questionnaire;
   final int number;
   final String phase;
+  final bool isCustom;
 
   ShowCalories(
       {this.mets,
@@ -28,7 +29,8 @@ class ShowCalories extends StatefulWidget {
       this.idClass,
       this.questionnaire,
       this.number,
-      this.phase
+      this.phase,
+      this.isCustom
       });
 
   @override
@@ -43,6 +45,7 @@ class _ShowCaloriesState extends State<ShowCalories> {
   double total = 0;
   @override
   void initState() {
+    log("IS CUSTOOOM SHOW CALORIES : ${widget.isCustom}");
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -90,7 +93,8 @@ class _ShowCaloriesState extends State<ShowCalories> {
                           kCal: total,
                           number: widget.number,
                           idClass: widget.idClass,
-                          phase: widget.phase
+                          phase: widget.phase,
+                          isCustom: widget.isCustom
                           );
                 }, text: "   CONTINUAR")
               ],

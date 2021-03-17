@@ -246,18 +246,23 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
           print(res.data);
           if (res.statusCode == 200) {
             for (var i = 0; i < res.data.length; i++) {
-              namesClass
-                  .add("Sesión ${res.data[i]["class"]["number"]}".toString());
+              namesClass.add(
+                  "Sesión ${res.data[i]["class"] == null ? res.data[i]["customClass"]["number"] : res.data[i]["class"]["number"]}"
+                      .toString());
               kCal.add(double.parse(
                   res.data[i]["totalKilocalories"].toStringAsFixed(2)));
               EvidencesSend evidencesSend = EvidencesSend(
-                  number: res.data[i]["class"]["number"],
-                  idEvidence: res.data[i]["class"]["_id"],
+                  number: res.data[i]["class"] == null
+                      ? res.data[i]["customClass"]["number"]
+                      : res.data[i]["class"]["number"],
+                  kilocalories: res.data[i]["totalKilocalories"].toString(),
+                  idEvidence: res.data[i]["_id"],
                   phase: res.data[i]["phase"],
-                  classObject: res.data[i]["class"],
-                  finished: true,
+                  classObject: res.data[i]["class"] == null
+                      ? res.data[i]["customClass"]
+                      : res.data[i]["class"],
                   questionnaire: res.data[i]["questionnaire"],
-                  kilocalories: res.data[i]["totalKilocalories"].toString());
+                  finished: true);
               evidencesRepository.updateEvidence(evidencesSend);
             }
             for (var i = 0; i < kCal.length; i++) {

@@ -621,7 +621,8 @@ class DownloadData {
             timeFlexibilidad: responseobject['times']['flexibilidad'],
             timeDesarrollo: responseobject['times']['desarrollo'],
             timeVcalma: responseobject['times']['vcalma'],
-            tips: tips);
+            tips: tips,
+            isCustom: false);
         await _classDataRepository.insertClass(classLevel);
         pauses.clear();
         tips.clear();
@@ -658,15 +659,20 @@ class DownloadData {
         if (res.statusCode == 200) {
           for (var i = 0; i < res.data.length; i++) {
             EvidencesSend evidencesSend = EvidencesSend(
-                number: res.data[i]["class"]["number"],
+                number: res.data[i]["class"] == null
+                    ? res.data[i]["customClass"]["number"]
+                    : res.data[i]["class"]["number"],
                 kilocalories: res.data[i]["totalKilocalories"].toString(),
                 idEvidence: res.data[i]["_id"],
                 phase: res.data[i]["phase"],
-                classObject: res.data[i]["class"],
+                classObject: res.data[i]["class"] == null
+                    ? res.data[i]["customClass"]
+                    : res.data[i]["class"],
                 questionnaire: res.data[i]["questionnaire"],
                 finished: true);
             await evidencesRepository.updateEvidence(evidencesSend);
           }
+          print("fin for evidences");
         }
       } catch (e) {
         toast(context, "Ha ocurrido un error. Inténtalo más tarde.", red);
@@ -847,7 +853,8 @@ class DownloadData {
                 timeFlexibilidad: responseobject['times']['flexibilidad'],
                 timeDesarrollo: responseobject['times']['desarrollo'],
                 timeVcalma: responseobject['times']['vcalma'],
-                tips: tips);
+                tips: tips,
+                isCustom: true);
             for (var i = 0; i < classIds.length; i++) {
               log(classLevel.toMap().toString());
               var res = await _classDataRepository.updateClass(classLevel,

@@ -19,6 +19,7 @@ import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import '../SessionPage/VideosToRecord.dart';
 import 'package:flutter/services.dart';
+import 'dart:developer';
 
 class Questionary extends StatefulWidget {
   final int number;
@@ -26,9 +27,10 @@ class Questionary extends StatefulWidget {
   final double kCal;
   final List exercises;
   final String phase;
+  final bool isCustom;
 
   Questionary(
-      {this.number, this.classId, this.exercises, this.kCal, this.phase});
+      {this.number, this.classId, this.exercises, this.kCal, this.phase, this.isCustom});
   @override
   _QuestionaryState createState() => _QuestionaryState();
 }
@@ -59,6 +61,7 @@ class _QuestionaryState extends State<Questionary> {
 
   @override
   void initState() {
+    log("IS CUSTOOOM questionary : ${widget.isCustom}");
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
@@ -159,6 +162,7 @@ class _QuestionaryState extends State<Questionary> {
         number: widget.number,
         idClass: widget.classId,
         phase: widget.phase,
+        isCustom: widget.isCustom,
       ));
       // Get.back(result: uuid.toString());
     } else {

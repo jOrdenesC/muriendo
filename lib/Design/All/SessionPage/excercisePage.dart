@@ -23,7 +23,8 @@ class ExcerciseVideo extends StatefulWidget {
   final List questionnaire;
   final int number;
   final String phase;
-  ExcerciseVideo(this.id, this.questionnaire, this.number, this.phase);
+  final bool isCustom;
+  ExcerciseVideo(this.id, this.questionnaire, this.number, this.phase, this.isCustom);
   @override
   _ExcerciseVideoState createState() => _ExcerciseVideoState();
 }
@@ -116,7 +117,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                               timeout: 3,
                               onPressed: () {
                                 _.controllTimer(widget.id, widget.questionnaire,
-                                    widget.number, widget.phase);
+                                    widget.number, widget.phase,
+                                    widget.isCustom);
                               },
                               toastMessage: "Adelantado"),
                         )
@@ -541,7 +543,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       onTap: () {
                         print("Button pressed");
                         _.controllTimer(widget.id, widget.questionnaire,
-                            widget.number, widget.phase);
+                            widget.number, widget.phase,widget.isCustom);
                       },
                       child: Icon(
                         Icons.volume_up_rounded,
@@ -1185,7 +1187,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
       width: MediaQuery.of(context).size.width / 2.5,
       onComplete: () {
         _.controllTimer(
-            widget.id, widget.questionnaire, widget.number, widget.phase);
+            widget.id, widget.questionnaire, widget.number, widget.phase,widget.isCustom);
       },
     );
   }

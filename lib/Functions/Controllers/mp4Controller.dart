@@ -425,7 +425,8 @@ class Mp4Controller extends GetxController {
     //TODO
   }
 
-  controllTimer(String idClass, List questionnaire, int number, String phase) {
+  controllTimer(String idClass, List questionnaire, int number, String phase, bool isCustom) {
+    log("IS CUSTOOOM CONTROLL TIMER : $isCustom");
     if (step <= 3) {
       if (microPause.value != true) {
         microPause.value = true;
@@ -518,6 +519,7 @@ class Mp4Controller extends GetxController {
               questionnaire: questionnaire,
               number: number,
               phase: phase,
+              isCustom: isCustom,
             ));
             index.value = 0;
           }

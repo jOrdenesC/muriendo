@@ -35,7 +35,8 @@ class VideoController extends GetxController {
   //Observe changes done to variable and return different controller??
   //Get Controller over here and send it to another class so we can easily change it as an observable??
   recordMovie(String uuid, String idClass, double kCal, int number,
-      List exercises, String phase) async {
+      List exercises, String phase, bool isCustom) async {
+        log("IS CUSTOOOM record movie : ${isCustom}");
     var prefs = await SharedPreferences.getInstance();
     loading.value = true;
     final file = await ImagePicker().getVideo(
@@ -58,7 +59,9 @@ class VideoController extends GetxController {
           mets: kCal,
           number: number,
           exercises: exercises,
-          phase: phase);
+          phase: phase,
+          isCustom: isCustom
+          );
       loading.value = false;
       //If Method is Successfull save file location to a variable and change another one that is observable and change back to screen
       log(info.path);

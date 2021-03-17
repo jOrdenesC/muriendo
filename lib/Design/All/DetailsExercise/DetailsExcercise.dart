@@ -18,7 +18,8 @@ class DetailsExcercise extends StatefulWidget {
   final String kcal;
   final String desc;
   final bool isTeacher;
-  DetailsExcercise(this.nameVideo ,this.name, this.kcal, this.desc, this.isTeacher);
+  DetailsExcercise(
+      this.nameVideo, this.name, this.kcal, this.desc, this.isTeacher);
   @override
   _DetailsExcerciseState createState() => _DetailsExcerciseState();
 }
@@ -61,7 +62,8 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       weight = res;
     });
 
-    final result = await _excerciseRepository.getExcerciseName(widget.name);
+    final result =
+        await _excerciseRepository.getExcerciseVideoName(widget.name);
     print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
   }

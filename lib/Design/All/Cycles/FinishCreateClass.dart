@@ -209,7 +209,7 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
       "exercisesDesarrollo": finalListDesarrollo,
       "exercisesVueltaCalma": finalListVueltaCalma
     };
-    goToPlanification(null, int.parse(args["number"]), true, dataClass, null);
+    goToPlanification(null, int.parse(args["number"]), true, dataClass, null, false);
   }
 
   Future addAll(List exercisesLocal, List exercisesAdd, int total) {

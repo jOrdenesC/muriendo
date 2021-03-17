@@ -47,6 +47,7 @@ class _UploadDataState extends State<UploadData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               buttonRounded(context, func: () async {
+                log("IS CUSTOOOM questionary : ${args["isCustom"]}");
                 uploadVideo(args);
                 // uploadQuestionary(args, "");
                 // goToFinalPage();
@@ -122,6 +123,7 @@ class _UploadDataState extends State<UploadData> {
       try {
         var data = {
           "uuid": Uuid().v4().toString(),
+          "type": args["isCustom"] ? "customClass" : "normalClass",
           "phase": phase.toString(),
           "class": args["idClass"].toString(),
           "totalKilocalories": args["mets"],
@@ -194,9 +196,12 @@ class _UploadDataState extends State<UploadData> {
       } catch (e) {
         if (e is DioError) {
           print("EEEEEEEEEEEEEERROR " + e.response.data.toString());
+           Navigator.pop(context);
+           toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
         }
         print("EEEEEEEEEEEEEEEEEERRRROR " + e.toString());
-        toast(context, "Ha ocurrido un error, inténtalo más tarde.", red);
+        Navigator.pop(context);
+        toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
       }
     } else {
       var actualVideo = prefs.getString("actualVideo");

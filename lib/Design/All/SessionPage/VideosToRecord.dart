@@ -10,11 +10,13 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Functions/Controllers/videoRecorderController.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import '../DetailsExercise/DetailsExcercise.dart';
 import 'package:get_it/get_it.dart';
+import 'dart:developer' as dev;
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 class VideosToRecord extends StatefulWidget {
@@ -24,13 +26,16 @@ class VideosToRecord extends StatefulWidget {
   final int number;
   final String idClass;
   final String phase;
+  final bool isCustom;
   VideosToRecord(
       {this.exercises,
       this.kCal,
       this.idClass,
       this.number,
       this.uuidQuestionary,
-      this.phase});
+      this.phase,
+      this.isCustom
+      });
   @override
   _VideosToRecordState createState() => _VideosToRecordState();
 }
@@ -48,6 +53,11 @@ class _VideosToRecordState extends State<VideosToRecord>
 
   @override
   void initState() {
+    dev.log("IS CUSTOOOM videos to record: ${widget.isCustom}");
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     super.initState();
   }
 
@@ -113,7 +123,9 @@ class _VideosToRecordState extends State<VideosToRecord>
                               widget.kCal,
                               widget.number,
                               widget.exercises,
-                              widget.phase);
+                              widget.phase,
+                              widget.isCustom
+                              );
                         },
                           text: "   GRABAR",
                           icon: Icon(

@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'Questionary.dart';
+import 'dart:developer' as dev;
 
 class EvidencesSession extends StatefulWidget {
   @override
@@ -202,12 +203,14 @@ class _EvidencesSessionState extends State<EvidencesSession> {
 
   void navigate(var args) {
     print("AAAAAAAAAAAAAA " + args.toString());
+    dev.log("IS CUSTOOOM go to questionary : ${args["isCustom"]}");
     Get.to(Questionary(
       number: args["number"],
       classId: args["idClass"],
       exercises: args["exercises"],
       kCal: args["kCal"],
       phase: args["phase"],
+      isCustom: args["isCustom"],
     ));
   }
 

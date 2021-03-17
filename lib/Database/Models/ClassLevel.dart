@@ -22,6 +22,7 @@ class ClassLevel {
   final String classID;
   final int number;
   final List questionnaire;
+  final bool isCustom;
   ClassLevel(
       {this.id,
       this.tips,
@@ -38,7 +39,9 @@ class ClassLevel {
       this.timeVcalma,
       this.classID,
       this.number,
-      this.questionnaire});
+      this.questionnaire,
+      this.isCustom
+      });
   Map<String, dynamic> toMap() {
     return {
       'tips': this.tips,
@@ -55,7 +58,8 @@ class ClassLevel {
       'timeVcalma': this.timeVcalma,
       'classID': this.classID,
       'number': this.number,
-      'questionnaire': this.questionnaire
+      'questionnaire': this.questionnaire,
+      'isCustom': this.isCustom
     };
   }
 
@@ -76,6 +80,8 @@ class ClassLevel {
         timeVcalma: map['timeVcalma'],
         classID: map['classID'],
         number: map['number'],
-        questionnaire: map['questionnaire']);
+        questionnaire: map['questionnaire'],
+        isCustom: map["isCustom"]
+        );
   }
 }
