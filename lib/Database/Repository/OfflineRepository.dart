@@ -7,6 +7,8 @@ abstract class OfflineRepository{
 
   Future delete(int uuid);
 
+  Future deleteElement(String uuid);
+
   Future<List<OfflineData>> getAll();
 
   Future<List<OfflineData>> getAllFalse();

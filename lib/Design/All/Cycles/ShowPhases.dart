@@ -1209,12 +1209,21 @@ class _ShowPhasesState extends State<ShowPhases> {
                                           ),
                                           InkWell(
                                               onTap: () {
+                                                print({
+                                                  "course": courses[index]
+                                                      ["_id"],
+                                                  "number":
+                                                      numberClass.toString()
+                                                });
                                                 goToCreateClass(
                                                     arguments["level"],
                                                     numberClass.toString(),
-                                                    classesCourses.contains(
-                                                            courses[index]
-                                                                ["_id"])
+                                                    classesCourses.contains({
+                                                      "course": courses[index]
+                                                          ["_id"],
+                                                      "number":
+                                                          numberClass.toString()
+                                                    }.toString())
                                                         ? false
                                                         : true,
                                                     true,

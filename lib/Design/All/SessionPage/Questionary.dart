@@ -199,10 +199,10 @@ class _QuestionaryState extends State<Questionary> {
       };
       responsedUser.add(obj);
     }
-    QuestionaryRepository offlineRepository = GetIt.I.get();
+    QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
     QuestionaryData offlineData =
         QuestionaryData(uuid: uuid.toString(), questionary: responsedUser);
-    await offlineRepository.insert(offlineData);
+    await offlineQuestionaryRepository.insert(offlineData);
     return true;
   }
 

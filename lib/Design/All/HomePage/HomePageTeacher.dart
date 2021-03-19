@@ -25,7 +25,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
-  String version = "1.0.8";
+  String version = "1.0.9";
   var args;
   @override
   void initState() {

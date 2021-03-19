@@ -49,7 +49,7 @@ class _SupportState extends State<Support> {
           SizedBox(
             height: 6.0.h,
           ),
-          button("FONO SOPORTE", "+56 9 9698 9831"),
+          button("FONO SOPORTE", "+56 442021189"),
           SizedBox(
             height: 3.0.h,
           ),

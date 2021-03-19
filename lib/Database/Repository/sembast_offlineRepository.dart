@@ -21,6 +21,12 @@ class SembastOfflineRepository extends OfflineRepository {
     await _store.record(gifDataId).delete(_database);
   }
 
+  Future deleteElement(String id) async {
+    final finder = Finder(filter: Filter.equals('uuid', id));
+    await _store.delete(_database, finder: finder);
+    return true;
+  }
+
   Future<List<OfflineData>> getAll() async {
     final snapshots = await _store.find(_database);
     return snapshots

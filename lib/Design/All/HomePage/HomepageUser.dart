@@ -1,23 +1,31 @@
+import 'dart:io';
 import 'dart:math';
+import 'package:badges/badges.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as GET;
 import 'package:get_it/get_it.dart';
+import 'package:movitronia/Database/Models/OfflineData.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Design/All/Reports/reports.dart';
 import 'package:movitronia/Design/All/Sessions/Sessions.dart';
 import 'package:movitronia/Design/All/Settings/ProfilePage.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
+import 'package:movitronia/Design/Widgets/Loading.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/ConnectionState.dart';
+import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
-import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 import '../../../Database/Repository/OfflineRepository.dart';
+import 'dart:developer' as dev;
+import '../../../Functions/downloadData.dart';
 
 class HomePageUser extends StatefulWidget {
   @override
@@ -30,15 +38,32 @@ class _HomePageUserState extends State<HomePageUser> {
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
-
+  int dataOffline = 0;
+  var progressVideo = 0.0;
   List dataClasses = [];
+  List<OfflineData> dataOfflineList = [];
 
   @override
   void initState() {
     super.initState();
+    getDataOffline();
     _screens.add(Sessions());
     _screens.add(Reports(drawerMenu: false, isTeacher: false, data: null));
     _screens.add(ProfilePage(isMenu: true));
+  }
+
+  getDataOffline() async {
+    OfflineRepository offlineRepository = GetIt.I.get();
+    var res = await offlineRepository.getAll();
+    setState(() {
+      dataOffline = res.length;
+    });
+    if (res.isNotEmpty) {
+      dev.log(res[0].exercises.toString());
+      for (var i = 0; i < res.length; i++) {
+        dataOfflineList.add(res[i]);
+      }
+    }
   }
 
   getClasses() async {
@@ -46,7 +71,9 @@ class _HomePageUserState extends State<HomePageUser> {
     var res = await classDataRepository.getAllClassLevel();
     if (res.isNotEmpty) {
       for (var i = 0; i < res.length; i++) {
-        dataClasses.add(res[i]);
+        setState(() {
+          dataClasses.add(res[i]);
+        });
       }
     }
   }
@@ -253,7 +280,7 @@ class _HomePageUserState extends State<HomePageUser> {
             buttonRounded(context,
                 icon: Image.asset("Assets/images/reportIcon.png", width: 7.0.w),
                 circleRadius: 6.0.w, func: () {
-              Get.to(Reports(
+              GET.Get.to(Reports(
                 drawerMenu: true,
               ));
             },
@@ -370,35 +397,54 @@ class _HomePageUserState extends State<HomePageUser> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // InkWell(
-                //   onTap: () async {
-                //     var dio = Dio();
-                //     OfflineRepository offlineRepository = GetIt.I.get();
-                //     print("Download Data");
-                //   },
-                //   child: CircleAvatar(
-                //     backgroundColor: Colors.white,
-                //     radius: 9.0.w,
-                //     child: CircleAvatar(
-                //       radius: 8.0.w,
-                //       backgroundColor: blue,
-                //       child: Center(
-                //         child: Icon(
-                //           Icons.file_download,
-                //           color: Colors.white,
-                //           size: 15.0.w,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 InkWell(
                   onTap: () async {
-                    var dio = Dio();
-                    OfflineRepository offlineRepository = GetIt.I.get();
-                    var res = await offlineRepository.getAll();
-                    dev.log(res.toString());
-                    print("UploadData");
+                    if (dataOffline == 0) {
+                      toast(context, "No hay datos guardados localmente.", red);
+                    } else {
+                      uploadData();
+                      // dev.log(dataOfflineList[2].toMap().toString());
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 9.0.w,
+                        child: CircleAvatar(
+                          radius: 8.0.w,
+                          backgroundColor: blue,
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: Colors.white,
+                              size: 15.0.w,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 5.0.h,
+                          ),
+                          dataOffline == 0
+                              ? SizedBox.shrink()
+                              : Badge(
+                                  badgeContent: Text(
+                                    "$dataOffline",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 7.0.w),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    Navigator.pop(context);
                   },
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
@@ -408,7 +454,7 @@ class _HomePageUserState extends State<HomePageUser> {
                       backgroundColor: blue,
                       child: Center(
                         child: Icon(
-                          Icons.file_upload,
+                          Icons.close,
                           color: Colors.white,
                           size: 15.0.w,
                         ),
@@ -423,13 +469,185 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 5.0.h,
             ),
             Text(
-              "Versión: 1.0.8",
+              "Versión: 1.0.9",
               style: TextStyle(color: Colors.white, fontSize: 5.0.w),
             )
           ],
         ),
       ),
     );
+  }
+
+  uploadData() async {
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+    if (hasInternet) {
+      loading(context,
+          content: Center(
+            child: Image.asset(
+              "Assets/videos/loading.gif",
+              width: 70.0.w,
+              height: 15.0.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+          title: Text(
+            "Enviando evidencia...",
+            textAlign: TextAlign.center,
+          ));
+      var prefs = await SharedPreferences.getInstance();
+      for (var i = 0; i < dataOfflineList.length; i++) {
+        try {
+          var dio = Dio();
+          var uuid = Uuid().v4();
+          File file = File("${dataOfflineList[i].uriVideo}");
+          //Create Multipart form for cloudflare with video, they key is file
+          FormData data = FormData.fromMap({
+            "file": await MultipartFile.fromFile(file.path, filename: uuid)
+          });
+          try {
+            var token = prefs.getString("token");
+            //First call api for generate token in cloudflare
+            Response response = await dio.get(
+                "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
+            print(response.data);
+            Navigator.pop(context);
+            loading(context,
+                content: Center(
+                  child: Image.asset(
+                    "Assets/videos/loading.gif",
+                    width: 70.0.w,
+                    height: 15.0.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                title: Text(
+                  "Enviando video...",
+                  textAlign: TextAlign.center,
+                ));
+            //Second call cloudflare api with account id and send multipart form and bearer token in headers
+            Response response2 = await dio.post(
+              "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
+              data: data,
+              options: Options(headers: {
+                HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
+              }),
+              onSendProgress: (int sent, int total) {
+                setState(() {
+                  progressVideo = sent / total * 100;
+                  print(progressVideo.floor());
+                });
+              },
+            );
+            print(response2.data);
+            var videoData = {
+              "uuid": uuid,
+              "exercises": dataOfflineList[i].exercises, //args["exercises"],
+              "cloudflareId": response2.data["result"]["uid"]
+            };
+            dev.log(videoData.toString());
+            toast(context, "Video subido con éxito.", green);
+            // Navigator.pop(context);
+            //Call API for send data of video in cloudflare
+            // Response response3 = await dio.post("path?token=$token", data: dataSend);
+            uploadQuestionary(dataOfflineList[i], videoData);
+          } catch (e) {
+            Navigator.pop(context);
+            toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
+            print("EO " + e.toString());
+          }
+        } catch (e) {
+          print(e.response);
+        }
+      }
+    } else {
+      toast(
+          context,
+          "No cuentas con conexión a internet. Por favor conéctate a una red estable.",
+          red);
+    }
+  }
+
+  uploadQuestionary(OfflineData offlineData, videoData) async {
+    var prefs = await SharedPreferences.getInstance();
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+    String token = prefs.getString("token");
+    if (hasInternet) {
+      var dio = Dio();
+      try {
+        var data = {
+          "uuid": Uuid().v4().toString(),
+          "type": offlineData.type,
+          "phase": offlineData.phase,
+          "class": offlineData.idClass,
+          "totalKilocalories": offlineData.totalKilocalories,
+          "questionnaire": offlineData.questionary,
+          "videoData": videoData,
+          "course": offlineData.course
+        };
+
+        Navigator.pop(context);
+        loading(context,
+            content: Center(
+              child: Image.asset(
+                "Assets/videos/loading.gif",
+                width: 70.0.w,
+                height: 15.0.h,
+                fit: BoxFit.contain,
+              ),
+            ),
+            title: Text(
+              "Enviando cuestionario...",
+              textAlign: TextAlign.center,
+            ));
+        var response = await dio
+            .post("$urlServer/api/mobile/evidence?token=$token", data: data);
+        print(response);
+        print(response.data);
+        // goToFinalPage();
+        if (response.statusCode == 201) {
+          List corrects = [];
+          int total = offlineData.questionary.length;
+          var quest = offlineData.questionary;
+          for (var i = 0; i < quest.length; i++) {
+            if (quest[i]["type"] == "vf") {
+              if (quest[i]["correctVf"] == quest[i]["studentResponseVf"]) {
+                setState(() {
+                  corrects.add(quest[i]);
+                });
+              }
+            } else {
+              if (quest[i]["correctAl"] == quest[i]["studentResponseAl"]) {
+                setState(() {
+                  corrects.add(quest[i]);
+                });
+              }
+            }
+          }
+          toast(
+              context,
+              "Se han subido los datos correctamente.\n\nTuviste ${corrects.length} correctas de $total en este cuestionario.",
+              green);
+          await DownloadData().downloadEvidencesData(context);
+          OfflineRepository offlineRepository = GetIt.I.get();
+          await offlineRepository.deleteElement(offlineData.uuid);
+          GET.Get.offAll(HomePageUser());
+        }
+      } catch (e) {
+        if (e is DioError) {
+          print("EEEEEEEEEEEEEERROR " + e.response.data.toString());
+          Navigator.pop(context);
+          toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
+        }
+        print("EEEEEEEEEEEEEEEEEERRRROR " + e.toString());
+        Navigator.pop(context);
+        toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
+      }
+    } else {
+      toast(
+          context,
+          "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
+          green);
+    }
   }
 
   @override

@@ -341,7 +341,7 @@ class _SessionsState extends State<Sessions> {
           loaded = true;
         });
         prefs.setBool("downloaded", true);
-        // _restartApp();
+        _restartApp();
       } catch (e) {
         print(e);
       }

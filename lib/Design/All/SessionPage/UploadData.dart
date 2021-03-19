@@ -114,17 +114,16 @@ class _UploadDataState extends State<UploadData> {
     var course = await courseDataRepository.getAllCourse();
     var prefs = await SharedPreferences.getInstance();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
-    QuestionaryRepository offlineRepository = GetIt.I.get();
-    var res = await offlineRepository.getForId(args["uuid"]);
+    QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
+    var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
     String token = prefs.getString("token");
-    var phase = prefs.get("phase");
     if (hasInternet) {
       var dio = Dio();
       try {
         var data = {
           "uuid": Uuid().v4().toString(),
           "type": args["isCustom"] ? "customClass" : "normalClass",
-          "phase": phase.toString(),
+          "phase": args["phase"].toString(),
           "class": args["idClass"].toString(),
           "totalKilocalories": args["mets"],
           "questionnaire": res[0].questionary,
@@ -196,8 +195,8 @@ class _UploadDataState extends State<UploadData> {
       } catch (e) {
         if (e is DioError) {
           print("EEEEEEEEEEEEEERROR " + e.response.data.toString());
-           Navigator.pop(context);
-           toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
+          Navigator.pop(context);
+          toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
         }
         print("EEEEEEEEEEEEEEEEEERRRROR " + e.toString());
         Navigator.pop(context);
@@ -206,14 +205,16 @@ class _UploadDataState extends State<UploadData> {
     } else {
       var actualVideo = prefs.getString("actualVideo");
       saveOffline(
-          Uuid().v4().toString(),
-          phase.toString(),
-          args["idClass"].toString(),
-          args["mets"],
-          course[0].courseId,
-          res[0].questionary,
-          actualVideo,
-          args["exercises"]);
+        Uuid().v4().toString(),
+        args["phase"].toString(),
+        args["idClass"].toString(),
+        args["mets"],
+        course[0].courseId,
+        res[0].questionary,
+        actualVideo,
+        args["exercises"],
+        args["isCustom"] ? "customClass" : "normalClass",
+      );
       toast(
           context,
           "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
@@ -223,15 +224,15 @@ class _UploadDataState extends State<UploadData> {
   }
 
   Future saveOffline(
-    var uuid,
-    var phase,
-    var classId,
-    var totalKilocalories,
-    var course,
-    var questionnaire,
-    var uriVideo,
-    var exercises,
-  ) async {
+      var uuid,
+      var phase,
+      var classId,
+      var totalKilocalories,
+      var course,
+      var questionnaire,
+      var uriVideo,
+      var exercises,
+      String type) async {
     OfflineRepository offlineRepository = GetIt.I.get();
     OfflineData questionaryData = OfflineData(
         uuid: uuid,
@@ -240,8 +241,10 @@ class _UploadDataState extends State<UploadData> {
         questionary: questionnaire,
         uriVideo: uriVideo,
         idClass: classId,
-        exercices: exercises,
-        totalKilocalories: totalKilocalories);
+        exercises: exercises,
+        totalKilocalories: totalKilocalories,
+        type: type);
+    log(questionaryData.toMap().toString());
     await offlineRepository.insert(questionaryData);
     return true;
   }
@@ -322,7 +325,31 @@ class _UploadDataState extends State<UploadData> {
         print("EO " + e.toString());
       }
     } else {
-      toast(context, "Debes estar conectado a internet para subir datos.", red);
+      var prefs = await SharedPreferences.getInstance();
+      CourseDataRepository courseDataRepository = GetIt.I.get();
+      var course = await courseDataRepository.getAllCourse();
+      OfflineRepository offlineRepository = GetIt.I.get();
+      QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
+      var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
+      var actualVideo = prefs.getString("actualVideo");
+      saveOffline(
+        Uuid().v4().toString(),
+        args["phase"].toString(),
+        args["idClass"].toString(),
+        args["mets"],
+        course[0].courseId,
+        res[0].questionary,
+        actualVideo,
+        args["exercises"],
+        args["isCustom"] ? "customClass" : "normalClass",
+      );
+      var resOffline = await offlineRepository.getAll();
+      log(resOffline.toString());
+      GET.Get.offAll(HomePageUser());
+      toast(
+          context,
+          "Se guardaron los datos localmente. Deberás conectarte a internet para subir tus evidencias.",
+          green);
     }
   }
 }

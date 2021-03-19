@@ -1,12 +1,13 @@
 class OfflineData {
-  final int uuid;
+  final String uuid;
   final double totalKilocalories;
   final String uriVideo;
   final List questionary;
   final String idClass;
-  final List exercices;
+  final List exercises;
   final String phase;
   final String course;
+  final String type;
 
   OfflineData({
     this.uuid,
@@ -15,8 +16,9 @@ class OfflineData {
     this.idClass,
     this.course,
     this.phase,
-    this.exercices,
+    this.exercises,
     this.totalKilocalories,
+    this.type
   });
 
   Map<String, dynamic> toMap() {
@@ -24,11 +26,12 @@ class OfflineData {
       'uuid': this.uuid,
       'totalKilocalories': this.totalKilocalories,
       'course': this.course,
-      'exercises': this.exercices,
+      'exercises': this.exercises,
       'uriVideo': this.uriVideo,
       'questionary': this.questionary,
       'idClass': this.idClass,
-      'phase': this.phase
+      'phase': this.phase,
+      "type":this.type
     };
   }
 
@@ -37,10 +40,12 @@ class OfflineData {
         uuid: map['uuid'],
         totalKilocalories: map['totalKilocalories'],
         course: map['course'],
-        exercices: map['exercices'],
+        exercises: map['exercises'],
         uriVideo: map['uriVideo'],
         questionary: map['questionary'],
         idClass: map['idClass'],
-        phase: map['phase']);
+        phase: map['phase'],
+        type: map['type']
+        );
   }
 }

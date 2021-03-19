@@ -63,7 +63,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
     });
 
     final result =
-        await _excerciseRepository.getExcerciseVideoName(widget.name);
+        await _excerciseRepository.getExcerciseName(widget.name);
     print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
   }
