@@ -5,7 +5,6 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:developer';
 import 'package:get_it/get_it.dart';
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 

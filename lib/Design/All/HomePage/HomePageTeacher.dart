@@ -300,7 +300,46 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             ),
             InkWell(
               onTap: () {
-                closeSession();
+                // closeSession();
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: Text(
+                          '¿Estás seguro que deseas cerrar tu sesión?',
+                          style: TextStyle(color: blue),
+                        ),
+                        actions: [
+                          FlatButton(
+                            onPressed: () =>
+                                Navigator.pop(context, false), // passing false
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(fontSize: 6.0.w, color: green),
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () =>
+                                Navigator.pop(context, true), // passing true
+                            child: Text(
+                              'Salir',
+                              style: TextStyle(fontSize: 6.0.w, color: red),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).then((exit) {
+                  if (exit == null) return;
+
+                  if (exit) {
+                    print("yes");
+                    closeSession();
+                    // user pressed Yes button
+                  } else {
+                    print("no");
+                    // user pressed No button
+                  }
+                });
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

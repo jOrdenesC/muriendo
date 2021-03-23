@@ -11,6 +11,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
@@ -18,6 +19,9 @@ import 'dart:developer';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import '../../../Utils/ConnectionState.dart';
+import '../../../Utils/UrlServer.dart';
+import '../../Widgets/Toast.dart';
 
 class Sessions extends StatefulWidget {
   @override
@@ -37,6 +41,9 @@ class _SessionsState extends State<Sessions> {
   var progressAudios = "0.0";
   var progressTips = "0.0";
   var totalMax = "100.0";
+  var version = "1.0.9";
+  var _url =
+      'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 
   Future getEvidence() async {
     var all = await evidencesRepository.getAllEvidences();
@@ -317,10 +324,62 @@ class _SessionsState extends State<Sessions> {
     setState(() {
       loaded = false;
     });
+
     getAll();
     // getData();
     super.initState();
   }
+
+  compareVersions() async {
+    var dio = Dio();
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    if (hasInternet) {
+      try {
+        Response response = await dio.get("https://api.genshin.dev/");
+        if (response.data != version) {
+          showDialog(
+              barrierDismissible: false,
+              context: context, 
+              builder: (_) {
+                return WillPopScope(
+                  onWillPop: pop,
+                  child: AlertDialog(
+                    title: Text(
+                      'Hay una nueva versión disponible en la tienda, será necesario que actualices para continuar.',
+                      style: TextStyle(color: blue),
+                    ),
+                    actions: [
+                      FlatButton(
+                        onPressed: () {
+                          _launchURL();
+                        },
+                        child: Text(
+                          'Descargar',
+                          style: TextStyle(fontSize: 6.0.w, color: red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        print(e);
+        toast(context, "Ha ocurrido un error, inténtalo más tarde.", red);
+      }
+    }
+  }
+
+  Future<bool> pop() async {
+    print("back");
+    return false;
+  }
+
+  void _launchURL() async => await canLaunch(_url)
+      ? await launch(_url)
+      : throw 'Could not launch $_url';
 
   getAll() async {
     var prefs = await SharedPreferences.getInstance();
@@ -348,7 +407,6 @@ class _SessionsState extends State<Sessions> {
     } else {
       try {
         CourseDataRepository courseDataRepository = GetIt.I.get();
-
         var course = await courseDataRepository.getAllCourse();
         print(course[0].courseId);
         log("get evidence");
@@ -362,6 +420,7 @@ class _SessionsState extends State<Sessions> {
         setState(() {
           loaded = true;
         });
+        compareVersions();
       } catch (e) {
         print(e);
       }

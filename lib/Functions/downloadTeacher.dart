@@ -1,19 +1,12 @@
-import 'dart:io';
-
-import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Models/ExcerciseData.dart';
 import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
-import 'package:movitronia/Design/Widgets/Loading.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
-import '../Functions/Controllers/mp4Controller.dart';
 
 class DownloadTeacher {
   

@@ -13,7 +13,6 @@ import 'package:movitronia/Database/Models/ExcerciseData.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:movitronia/Database/Repository/TipsDataRepository/TipsDataRepository.dart';
-import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quiver/async.dart';
 import 'package:video_player/video_player.dart';
@@ -174,7 +173,7 @@ class Mp4Controller extends GetxController {
   }
 
   macroTimer(List<dynamic> tips, int loops, int time, List<dynamic> audioName) {
-    print("TIP TIME ${time}");
+    print("TIP TIME $time");
     print("TIP MACRO TIMER");
     int i = 0;
     print('Macro Timer Started');
@@ -212,7 +211,7 @@ class Mp4Controller extends GetxController {
       /**Setting Counter for MacroTimer */
       double getTime = macroTime[index] / macroList[index].length;
       print("MacroResult: ${tips}");
-      macrocounter.value = getTime.floor(); //TODO PROBABLY UNNECCESARY
+      macrocounter.value = getTime.floor();
       int loops = macroList[index].length;
       macroTimer(tips, loops, getTime.floor(), audioTip);
       print(tips);
@@ -268,7 +267,7 @@ class Mp4Controller extends GetxController {
     excerciseCalentamientoList = responseclass[0].excerciseCalentamiento;
     for (int i = 0; i < responseclass[0].excerciseCalentamiento.length; i++) {
       //Loop through class excercises by category
-      final responseDB = await _excerciseRepository //TODO Search for
+      final responseDB = await _excerciseRepository
           .getExcerciseName(responseclass[0].excerciseCalentamiento[i]);
       //print("Excercise ID $i :  ${responseDB[0].nameExcercise}");
       String value = responseDB[0].excerciseNameAudioId;
@@ -347,7 +346,7 @@ class Mp4Controller extends GetxController {
     List<String> tipsList = [];
     List<String> tipsID = [];
     List<dynamic> empty = ["   Prepárate para el \nsiguiente ejercicio"];
-    int indexaudio = 0;
+
     /**Values for each macro index */
     int macro1 = excerciseCalentamientoList.length - 1;
     int macro2 = excerciseCalentamientoList.length +
@@ -385,11 +384,11 @@ class Mp4Controller extends GetxController {
         }
       }
     }
-    print("${macroTipsAudio}");
+    print("$macroTipsAudio");
 /**Results of Lists */
     print("TIP tipList: ${tipsList.length}");
     print("TIP tipID: ${tipsID.length}");
-    print("TIP macroList: ${macroList} ");
+    print("TIP macroList: $macroList ");
 /** */
     documentIds = responseclass[0].tips;
     //Making MicroTimes
@@ -422,10 +421,10 @@ class Mp4Controller extends GetxController {
     tipIDs = tipsID; //Document ID to general TipID
     videoName.value = excerciseCalentamientoList[0];
     print(videoName);
-    //TODO
   }
 
-  controllTimer(String idClass, List questionnaire, int number, String phase, bool isCustom) {
+  controllTimer(String idClass, List questionnaire, int number, String phase,
+      bool isCustom) {
     log("IS CUSTOOOM CONTROLL TIMER : $isCustom");
     if (step <= 3) {
       if (microPause.value != true) {
@@ -584,7 +583,6 @@ class Mp4Controller extends GetxController {
     //Remove Video Controller and reload video
     if (Platform.isIOS) {
       videoPlayerController1.dispose();
-      //TODO CALL FILE OBJECT
       videoPlayerController1 =
           VideoPlayerController.file(File('${dir.path}/${videoName.value}.mp4'))
             ..setLooping(true)
@@ -594,7 +592,6 @@ class Mp4Controller extends GetxController {
       update();
     } else if (Platform.isAndroid) {
       videoPlayerController1.dispose();
-      //TODO use FIle to get object
       videoPlayerController1 = VideoPlayerController.file(
           File('${dir.path}/videos/${videoName.value}.webm'));
 

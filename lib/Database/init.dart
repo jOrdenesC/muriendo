@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:movitronia/Database/Models/OfflineData.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/sembast_classlevel.dart';
 import 'package:movitronia/Database/Repository/OfflineRepository.dart';

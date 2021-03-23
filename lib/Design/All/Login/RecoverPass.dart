@@ -122,9 +122,7 @@ class _RecoverPassState extends State<RecoverPass> {
           title: Text(
             "Cargando...",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 6.0.w
-            ),
+            style: TextStyle(fontSize: 6.0.w),
           ));
       try {
         var dio = Dio();
@@ -142,9 +140,13 @@ class _RecoverPassState extends State<RecoverPass> {
         }
       } catch (e) {
         print({"email": mail.text.trim(), "entity": "mobile"});
-        print(e);
-        toastTop(context, "Ha ocurrido un error, por favor inténtalo más tarde",
-            red);
+        print(e.response);
+        if (e.response.toString().contains("must be a valid email")) {
+          toastTop(context, "Ingresa un correo válido.", red);
+        } else {
+          toastTop(context,
+              "Ha ocurrido un error, por favor inténtalo más tarde", red);
+        }
         Navigator.pop(context);
       }
     } else {

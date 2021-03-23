@@ -61,7 +61,9 @@ class _HomePageUserState extends State<HomePageUser> {
     if (res.isNotEmpty) {
       dev.log(res[0].exercises.toString());
       for (var i = 0; i < res.length; i++) {
-        dataOfflineList.add(res[i]);
+        setState(() {
+          dataOfflineList.add(res[i]);
+        });
       }
     }
   }
@@ -258,8 +260,6 @@ class _HomePageUserState extends State<HomePageUser> {
               Navigator.pop(context);
               setState(() async {
                 CourseDataRepository courseDataRepository = GetIt.I.get();
-                ClassDataRepository classDataRepository = GetIt.I.get();
-                var res = await classDataRepository.getAllClassLevel();
                 var resCourse = await courseDataRepository.getAllCourse();
                 var prefs = await SharedPreferences.getInstance();
                 var res1 = prefs.getString("token");
@@ -367,7 +367,46 @@ class _HomePageUserState extends State<HomePageUser> {
             // ),
             InkWell(
               onTap: () {
-                closeSession();
+                // closeSession();
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: Text(
+                          '¿Estás seguro que deseas cerrar tu sesión?',
+                          style: TextStyle(color: blue),
+                        ),
+                        actions: [
+                          FlatButton(
+                            onPressed: () =>
+                                Navigator.pop(context, false), // passing false
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(fontSize: 6.0.w, color: green),
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () =>
+                                Navigator.pop(context, true), // passing true
+                            child: Text(
+                              'Salir',
+                              style: TextStyle(fontSize: 6.0.w, color: red),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).then((exit) {
+                  if (exit == null) return;
+
+                  if (exit) {
+                    print("yes");
+                    closeSession();
+                    // user pressed Yes button
+                  } else {
+                    print("no");
+                    // user pressed No button
+                  }
+                });
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -97,6 +97,7 @@ dependencies:
   flutter_time_button: ^1.0.0+1
   screen: ^0.0.5
   progress_dialog: ^1.1.0+1
+  url_launcher: ^5.7.10
 
 dev_dependencies:
   flutter_test:

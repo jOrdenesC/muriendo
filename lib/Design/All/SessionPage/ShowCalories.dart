@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +12,7 @@ import 'package:get/get.dart';
 import '../HomePage/HomepageUser.dart';
 import '../../Widgets/Toast.dart';
 import 'package:flutter/services.dart';
+import '../../../Database/Repository/OfflineRepository.dart';
 
 class ShowCalories extends StatefulWidget {
   final List mets;
@@ -30,8 +30,7 @@ class ShowCalories extends StatefulWidget {
       this.questionnaire,
       this.number,
       this.phase,
-      this.isCustom
-      });
+      this.isCustom});
 
   @override
   _ShowCaloriesState createState() => _ShowCaloriesState();
@@ -41,6 +40,7 @@ class _ShowCaloriesState extends State<ShowCalories> {
   EvidencesRepository sembastEvidenceRepository = GetIt.I.get();
 
   bool exists = false;
+  bool existsOffline = false;
   List args = [];
   double total = 0;
   @override
@@ -59,6 +59,7 @@ class _ShowCaloriesState extends State<ShowCalories> {
       "number": widget.number
     });
     getData(args);
+    getOfflineData();
     super.initState();
   }
 
@@ -75,17 +76,28 @@ class _ShowCaloriesState extends State<ShowCalories> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 buttonRounded(context, func: () async {
-                  // var res = await getData(args);
-                  // print(res);
-                  // log(args.toString());
+                  OfflineRepository offlineRepository = GetIt.I.get();
+                  var res = await offlineRepository.getAll();
+                  if (res.isNotEmpty) {
+                    print(res[0].idClass);
+                  } else {
+                    print("a");
+                  }
+                  print(widget.idClass);
+
                   if (exists) {
                     toast(
                         context,
                         "Ya has subido los datos de esta sesión. Puedes volver a realizarlas las veces que quieras.",
                         green);
+                  } else if (existsOffline) {
+                    toast(
+                        context,
+                        "Tienes esta sesión guardada localmente. Sube los datos una vez te conectes a internet.",
+                        green);
                   }
 
-                  exists
+                  exists || existsOffline
                       ? Get.offAll(HomePageUser())
                       : goToEvidencesSession(
                           exercises: widget.exercises,
@@ -94,8 +106,7 @@ class _ShowCaloriesState extends State<ShowCalories> {
                           number: widget.number,
                           idClass: widget.idClass,
                           phase: widget.phase,
-                          isCustom: widget.isCustom
-                          );
+                          isCustom: widget.isCustom);
                 }, text: "   CONTINUAR")
               ],
             ),
@@ -170,6 +181,22 @@ has quemado ${total.toString().substring(0, 4)} KCal""",
       total = responseCalories;
     });
     print(responseCalories);
+  }
+
+  getOfflineData() async {
+    OfflineRepository offlineRepository = GetIt.I.get();
+    var res = await offlineRepository.getAll();
+    if (res.isNotEmpty) {
+      if (res[0].idClass == widget.idClass) {
+        setState(() {
+          existsOffline = true;
+        });
+      } else {
+        setState(() {
+          existsOffline = false;
+        });
+      }
+    }
   }
 
   Future<double> getTotalKCal(args) async {

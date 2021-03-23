@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 
 class Support extends StatefulWidget {

@@ -93,7 +93,7 @@ goToEvidencesSession(
     List exercises,
     String phase,
     bool isCustom}) {
-  log("IS CUSTOOOM go to evidences : ${isCustom}");
+  log("IS CUSTOOOM go to evidences : $isCustom");
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
@@ -113,7 +113,7 @@ goToUploadData(
     List exercises,
     String phase,
     bool isCustom}) {
-  log("IS CUSTOOOM go to uploaddata : ${isCustom}");
+  log("IS CUSTOOOM go to uploaddata : $isCustom");
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
