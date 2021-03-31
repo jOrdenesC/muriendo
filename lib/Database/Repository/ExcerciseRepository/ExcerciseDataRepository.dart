@@ -19,6 +19,8 @@ abstract class ExcerciseDataRepository {
 
   Future<List<ExcerciseData>> getExcerciseName(String name);
 
+  Future<List<ExcerciseData>> getExcerciseByLevelAndStage(int level, String stage);
+
   Future<List<ExcerciseData>> getExcerciseVideoName(String name);
 
   Future<List<ExcerciseData>> getExercisesByCategories(String stage, String category, String subCategory, String level);

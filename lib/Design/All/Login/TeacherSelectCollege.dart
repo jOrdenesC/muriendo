@@ -52,6 +52,7 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
       }
     }
     print(colleges.toList().toString());
+    
     setState(() {
       loading = false;
     });
@@ -152,35 +153,38 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15.0, right: 15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "${colleges[index]["name"]}"
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                          color: colleges[index]["selected"]
-                                              ? Colors.white
-                                              : blue,
-                                          fontSize: 7.0.w),
-                                    ),
-                                    CircleAvatar(
-                                      backgroundColor: colleges[index]
-                                              ["selected"]
-                                          ? Colors.white
-                                          : blue,
-                                      radius: 5.0.w,
-                                      child: Center(
-                                          child: colleges[index]["selected"]
-                                              ? Icon(
-                                                  Icons.check,
-                                                  color: blue,
-                                                  size: 8.0.w,
-                                                )
-                                              : SizedBox.shrink()),
-                                    )
-                                  ],
+                                child: FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${colleges[index]["name"]}"
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                            color: colleges[index]["selected"]
+                                                ? Colors.white
+                                                : blue,
+                                            fontSize: 7.0.w),
+                                      ),
+                                      CircleAvatar(
+                                        backgroundColor: colleges[index]
+                                                ["selected"]
+                                            ? Colors.white
+                                            : blue,
+                                        radius: 5.0.w,
+                                        child: Center(
+                                            child: colleges[index]["selected"]
+                                                ? Icon(
+                                                    Icons.check,
+                                                    color: blue,
+                                                    size: 8.0.w,
+                                                  )
+                                                : SizedBox.shrink()),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

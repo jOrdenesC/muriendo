@@ -92,6 +92,23 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
         .toList(growable: false);
   }
 
+  @override
+  Future<List<ExcerciseData>> getExcerciseByLevelAndStage(int level, String stage) async {
+    print("level $level");
+    print("stage $stage");
+    final finder = Finder(
+      filter: Filter.and([
+        Filter.equals('level', level, anyInList: true),
+        Filter.equals('stages', stage, anyInList: true,)
+      ]),
+    );
+
+    final snapshots = await _store.find(_database, finder: finder);
+    return snapshots
+        .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
+        .toList(growable: false);
+  }
+
   Future<List<ExcerciseData>> getExercisesByCategories(
       String stage, String category, String subCategory, String level) async {
     log("""

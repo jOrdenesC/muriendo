@@ -253,6 +253,7 @@ class Mp4Controller extends GetxController {
   }
 
   gettingdatabase(String id) async {
+    print("THis is iddd $id");
     //Obtain ID from external page when selecting class
     excerciseCalentamientoList.clear();
     excerciseFlexibilidadList.clear();
@@ -261,6 +262,7 @@ class Mp4Controller extends GetxController {
     var obj = {};
     final responseclass =
         await _classRepository.getClassID(id); //Get Class Index
+    log(responseclass[0].toMap().toString());
     print(responseclass);
     pauses = responseclass[0].pauses;
     times = responseclass[0].macropause;
@@ -390,6 +392,15 @@ class Mp4Controller extends GetxController {
     print("TIP tipID: ${tipsID.length}");
     print("TIP macroList: $macroList ");
 /** */
+
+    print("""DATAAAAAAAAAAAAAAAA
+${excerciseCalentamientoList.length},
+${excerciseFlexibilidadList.length},
+${excerciseDesarrolloList.length},
+${excerciseVcalmaList.length}
+${microTime.length}
+${macroList.length}
+""");
     documentIds = responseclass[0].tips;
     //Making MicroTimes
     macroTime.add(pauses[excerciseCalentamientoList.length - 1]);

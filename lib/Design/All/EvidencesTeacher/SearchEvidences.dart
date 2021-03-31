@@ -36,8 +36,8 @@ class _SearchEvidencesState extends State<SearchEvidences> {
     var token = prefs.getString("token");
     var resProfessorData =
         await dio.get("$urlServer/api/mobile/user/course?token=$token");
+    log(resProfessorData.data.toString());
     for (var i = 0; i < resProfessorData.data.length; i++) {
-      log(resProfessorData.data[i].toString());
       if (colleges
           .toString()
           .contains(resProfessorData.data[i]["college"]["_id"].toString())) {
@@ -51,13 +51,17 @@ class _SearchEvidencesState extends State<SearchEvidences> {
     }
 
     for (var i = 0; i < resProfessorData.data.length; i++) {
-      courses.add({
-        "_id": resProfessorData.data[i]["_id"],
-        "name": resProfessorData.data[i]["number"] +
-            "° " +
-            resProfessorData.data[i]["letter"],
-        "students": resProfessorData.data[i]["students"]
-      });
+      if (resProfessorData.data[i]["college"]["_id"] == widget.idCollege) {
+        courses.add({
+          "_id": resProfessorData.data[i]["_id"],
+          "name": resProfessorData.data[i]["number"] +
+              "° " +
+              resProfessorData.data[i]["letter"],
+          "students": resProfessorData.data[i]["students"]
+        });
+      } else {
+        print("a");
+      }
     }
 
     print(courses.toList().toString());

@@ -41,7 +41,7 @@ class _SessionsState extends State<Sessions> {
   var progressAudios = "0.0";
   var progressTips = "0.0";
   var totalMax = "100.0";
-  var version = "1.0.9";
+  var version = "1.0.10";
   var _url =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 
@@ -335,13 +335,24 @@ class _SessionsState extends State<Sessions> {
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
+    String platform = "";
+    if (Platform.isAndroid) {
+      setState(() {
+        platform = "android";
+      });
+    } else if (Platform.isIOS) {
+      setState(() {
+        platform = "ios";
+      });
+    }
     if (hasInternet) {
       try {
-        Response response = await dio.get("https://api.genshin.dev/");
-        if (response.data != version) {
+        Response response = await dio.post("$urlServer/api/mobile/version",
+            data: {"platform": platform, "type": "appVersion"});
+        if (response.data["version"] != version) {
           showDialog(
               barrierDismissible: false,
-              context: context, 
+              context: context,
               builder: (_) {
                 return WillPopScope(
                   onWillPop: pop,
@@ -364,6 +375,8 @@ class _SessionsState extends State<Sessions> {
                   ),
                 );
               });
+        } else {
+          print("ya está actualizado");
         }
       } catch (e) {
         print(e);
@@ -491,7 +504,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[0],
                           dataClasses[0].number,
-                          true,
+                          phasePhone >= 1 ? true : false,
                           "1",
                           dataClasses[0].isCustom),
                       //fourth
@@ -502,7 +515,9 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[3],
                           dataClasses[3].number,
-                          evidences[2] == true ? true : false,
+                          phasePhone >= 1 && evidences[2] == true
+                              ? true
+                              : false,
                           "1",
                           dataClasses[3].isCustom),
                       //second
@@ -513,7 +528,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[1],
                           dataClasses[1].number,
-                          evidences[0] ? true : false,
+                          phasePhone >= 1 && evidences[0] ? true : false,
                           "1",
                           dataClasses[1].isCustom),
                       //third
@@ -524,7 +539,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 1 ? false : true,
                           dataClasses[2],
                           dataClasses[2].number,
-                          evidences[1] ? true : false,
+                          phasePhone >= 1 && evidences[1] ? true : false,
                           "1",
                           dataClasses[2].isCustom),
                     ]),
@@ -538,7 +553,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[4],
                           dataClasses[4].number,
-                          evidences[3] ? true : false,
+                          phasePhone >= 2 && evidences[3] ? true : false,
                           "2",
                           dataClasses[4].isCustom),
                       //fourth
@@ -549,7 +564,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[7],
                           dataClasses[7].number,
-                          evidences[6] ? true : false,
+                          phasePhone >= 2 && evidences[6] ? true : false,
                           "2",
                           dataClasses[7].isCustom),
                       //second
@@ -560,7 +575,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[5],
                           dataClasses[5].number,
-                          evidences[4] ? true : false,
+                          phasePhone >= 2 && evidences[4] ? true : false,
                           "2",
                           dataClasses[5].isCustom),
                       //third
@@ -571,7 +586,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 2 ? false : true,
                           dataClasses[6],
                           dataClasses[6].number,
-                          evidences[5] ? true : false,
+                          phasePhone >= 2 && evidences[5] ? true : false,
                           "2",
                           dataClasses[6].isCustom),
                     ]),
@@ -585,7 +600,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[8],
                           dataClasses[8].number,
-                          evidences[7] ? true : false,
+                          phasePhone >= 3 && evidences[7] ? true : false,
                           "3",
                           dataClasses[8].isCustom),
                       //fourth
@@ -596,7 +611,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[11],
                           dataClasses[11].number,
-                          evidences[10] ? true : false,
+                          phasePhone >= 3 && evidences[10] ? true : false,
                           "3",
                           dataClasses[11].isCustom),
                       //second
@@ -607,7 +622,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[9],
                           dataClasses[9].number,
-                          evidences[8] ? true : false,
+                          phasePhone >= 3 && evidences[8] ? true : false,
                           "3",
                           dataClasses[9].isCustom),
                       //third
@@ -618,7 +633,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 3 ? false : true,
                           dataClasses[10],
                           dataClasses[10].number,
-                          evidences[9] ? true : false,
+                          phasePhone >= 3 && evidences[9] ? true : false,
                           "3",
                           dataClasses[10].isCustom),
                     ]),
@@ -632,7 +647,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[12],
                           dataClasses[12].number,
-                          evidences[11] ? true : false,
+                          phasePhone >= 4 && evidences[11] ? true : false,
                           "4",
                           dataClasses[12].isCustom),
                       //fourth
@@ -643,7 +658,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[15],
                           dataClasses[15].number,
-                          evidences[14] ? true : false,
+                          phasePhone >= 4 && evidences[14] ? true : false,
                           "4",
                           dataClasses[15].isCustom),
                       //second
@@ -654,7 +669,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[13],
                           dataClasses[13].number,
-                          evidences[12] ? true : false,
+                          phasePhone >= 4 && evidences[12] ? true : false,
                           "4",
                           dataClasses[13].isCustom),
                       //third
@@ -665,7 +680,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 4 ? false : true,
                           dataClasses[14],
                           dataClasses[14].number,
-                          evidences[13] ? true : false,
+                          phasePhone >= 4 && evidences[13] ? true : false,
                           "4",
                           dataClasses[14].isCustom),
                     ]),
@@ -679,7 +694,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[16],
                           dataClasses[16].number,
-                          evidences[15] ? true : false,
+                          phasePhone >= 5 && evidences[15] ? true : false,
                           "5",
                           dataClasses[16].isCustom),
                       //fourth
@@ -690,7 +705,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[19],
                           dataClasses[19].number,
-                          evidences[18] ? true : false,
+                          phasePhone >= 5 && evidences[18] ? true : false,
                           "5",
                           dataClasses[19].isCustom),
                       //second
@@ -701,7 +716,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[17],
                           dataClasses[17].number,
-                          evidences[16] ? true : false,
+                          phasePhone >= 5 && evidences[16] ? true : false,
                           "5",
                           dataClasses[17].isCustom),
                       //third
@@ -712,7 +727,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 5 ? false : true,
                           dataClasses[18],
                           dataClasses[18].number,
-                          evidences[17] ? true : false,
+                          phasePhone >= 5 && evidences[17] ? true : false,
                           "5",
                           dataClasses[18].isCustom),
                     ]),
@@ -726,7 +741,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[20],
                           dataClasses[20].number,
-                          evidences[19] ? true : false,
+                          phasePhone >= 6 && evidences[19] ? true : false,
                           "6",
                           dataClasses[20].isCustom),
                       //fourth
@@ -737,7 +752,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[23],
                           dataClasses[23].number,
-                          evidences[22] ? true : false,
+                          phasePhone >= 6 && evidences[22] ? true : false,
                           "6",
                           dataClasses[23].isCustom),
                       //second
@@ -748,7 +763,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[21],
                           dataClasses[21].number,
-                          evidences[20] ? true : false,
+                          phasePhone >= 6 && evidences[20] ? true : false,
                           "6",
                           dataClasses[21].isCustom),
                       //third
@@ -759,7 +774,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 6 ? false : true,
                           dataClasses[22],
                           dataClasses[22].number,
-                          evidences[21] ? true : false,
+                          phasePhone >= 6 && evidences[21] ? true : false,
                           "6",
                           dataClasses[22].isCustom),
                     ]),
@@ -773,7 +788,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[24],
                           dataClasses[24].number,
-                          evidences[23] ? true : false,
+                          phasePhone >= 7 && evidences[23] ? true : false,
                           "7",
                           dataClasses[24].isCustom),
                       //fourth
@@ -784,7 +799,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[27],
                           dataClasses[27].number,
-                          evidences[26] ? true : false,
+                          phasePhone >= 7 && evidences[26] ? true : false,
                           "7",
                           dataClasses[27].isCustom),
                       //second
@@ -795,7 +810,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[25],
                           dataClasses[25].number,
-                          evidences[24] ? true : false,
+                          phasePhone >= 7 && evidences[24] ? true : false,
                           "7",
                           dataClasses[25].isCustom),
                       //third
@@ -806,7 +821,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 7 ? false : true,
                           dataClasses[26],
                           dataClasses[26].number,
-                          evidences[25] ? true : false,
+                          phasePhone >= 7 && evidences[25] ? true : false,
                           "7",
                           dataClasses[26].isCustom),
                     ]),
@@ -820,7 +835,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[28],
                           dataClasses[28].number,
-                          evidences[27] ? true : false,
+                          phasePhone >= 8 && evidences[27] ? true : false,
                           "8",
                           dataClasses[28].isCustom),
                       //fourth
@@ -831,7 +846,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[31],
                           dataClasses[31].number,
-                          evidences[30] ? true : false,
+                          phasePhone >= 8 && evidences[30] ? true : false,
                           "8",
                           dataClasses[31].isCustom),
                       //second
@@ -842,7 +857,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[29],
                           dataClasses[29].number,
-                          evidences[28] ? true : false,
+                          phasePhone >= 8 && evidences[28] ? true : false,
                           "8",
                           dataClasses[29].isCustom),
                       //third
@@ -853,7 +868,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 8 ? false : true,
                           dataClasses[30],
                           dataClasses[30].number,
-                          evidences[29] ? true : false,
+                          phasePhone >= 8 && evidences[29] ? true : false,
                           "8",
                           dataClasses[30].isCustom),
                     ]),
@@ -867,7 +882,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[32],
                           dataClasses[32].number,
-                          evidences[31] ? true : false,
+                          phasePhone >= 9 && evidences[31] ? true : false,
                           "9",
                           dataClasses[32].isCustom),
                       //fourth
@@ -878,7 +893,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[35],
                           dataClasses[35].number,
-                          evidences[34] ? true : false,
+                          phasePhone >= 9 && evidences[34] ? true : false,
                           "9",
                           dataClasses[35].isCustom),
                       //second
@@ -889,7 +904,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[33],
                           dataClasses[33].number,
-                          evidences[32] ? true : false,
+                          phasePhone >= 9 && evidences[32] ? true : false,
                           "9",
                           dataClasses[33].isCustom),
                       //third
@@ -900,7 +915,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 9 ? false : true,
                           dataClasses[34],
                           dataClasses[34].number,
-                          evidences[33] ? true : false,
+                          phasePhone >= 9 && evidences[33] ? true : false,
                           "9",
                           dataClasses[34].isCustom),
                     ]),
@@ -914,7 +929,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[36],
                           dataClasses[36].number,
-                          evidences[35] ? true : false,
+                          phasePhone >= 10 && evidences[35] ? true : false,
                           "10",
                           dataClasses[36].isCustom),
                       //fourth
@@ -925,7 +940,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[39],
                           dataClasses[39].number,
-                          evidences[38] ? true : false,
+                          phasePhone >= 10 && evidences[38] ? true : false,
                           "10",
                           dataClasses[39].isCustom),
                       //second
@@ -936,7 +951,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[37],
                           dataClasses[37].number,
-                          evidences[36] ? true : false,
+                          phasePhone >= 10 && evidences[36] ? true : false,
                           "10",
                           dataClasses[37].isCustom),
                       //third
@@ -947,7 +962,7 @@ class _SessionsState extends State<Sessions> {
                           phasePhone == 10 ? false : true,
                           dataClasses[38],
                           dataClasses[38].number,
-                          evidences[37] ? true : false,
+                          phasePhone >= 10 && evidences[37] ? true : false,
                           "10",
                           dataClasses[38].isCustom),
                     ]),

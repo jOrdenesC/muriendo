@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:movitronia/Database/Models/ClassLevel.dart';
+import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Design/All/DetailsExercise/DetailsExcercise.dart';
 import 'package:movitronia/Functions/Controllers/ListsController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -324,6 +325,8 @@ closeSession() async {
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
   await evidencesRepository.deleteAll();
   await excerciseDataRepository.deleteAll();
+  ClassDataRepository classDataRepository = GetIt.I.get();
+  await classDataRepository.deleteAll();
   var prefs = await SharedPreferences.getInstance();
   prefs.setInt("phase", null);
   prefs.setString("rut", null);

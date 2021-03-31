@@ -225,6 +225,7 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
           getRoute.Get.back();
           getRoute.Get.back();
           getRoute.Get.back();
+          getRoute.Get.back();
         }
       }
     } catch (e) {

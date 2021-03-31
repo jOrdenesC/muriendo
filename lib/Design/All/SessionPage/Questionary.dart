@@ -30,7 +30,12 @@ class Questionary extends StatefulWidget {
   final bool isCustom;
 
   Questionary(
-      {this.number, this.classId, this.exercises, this.kCal, this.phase, this.isCustom});
+      {this.number,
+      this.classId,
+      this.exercises,
+      this.kCal,
+      this.phase,
+      this.isCustom});
   @override
   _QuestionaryState createState() => _QuestionaryState();
 }
@@ -222,7 +227,7 @@ class _QuestionaryState extends State<Questionary> {
                     circleRadius: 6.0.w,
                     height: 7.0.h,
                     func: () => validate(),
-                    text: "Finalizar",
+                    text: "FINALIZAR",
                     textStyle: TextStyle(fontSize: 7.0.w, color: Colors.white),
                     icon: Icon(
                       Icons.arrow_forward_ios_rounded,

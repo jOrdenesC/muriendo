@@ -13,6 +13,8 @@ import '../../Widgets/Toast.dart';
 import 'dart:developer';
 import 'package:archive/archive.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../Utils/ConnectionState.dart';
 
 class Cycles extends StatefulWidget {
   final String courseId;
@@ -29,6 +31,9 @@ class _CyclesState extends State<Cycles> {
   List coursesNumber = [];
   var progress = "0.0";
   var maxTotal = 100.0;
+  var version = "1.0.10";
+  var _url =
+      'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 
   downloadAll() async {
     ProgressDialog prInfo;
@@ -109,11 +114,76 @@ class _CyclesState extends State<Cycles> {
     }
   }
 
+  compareVersions() async {
+    var dio = Dio();
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    String platform = "";
+    if (Platform.isAndroid) {
+      setState(() {
+        platform = "android";
+      });
+    } else if (Platform.isIOS) {
+      setState(() {
+        platform = "ios";
+      });
+    }
+    if (hasInternet) {
+      try {
+        Response response = await dio.post("$urlServer/api/mobile/version",
+            data: {"platform": platform, "type": "appVersion"});
+        if (response.data["version"] != version) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (_) {
+                return WillPopScope(
+                  onWillPop: pop,
+                  child: AlertDialog(
+                    title: Text(
+                      'Hay una nueva versión disponible en la tienda, será necesario que actualices para continuar.',
+                      style: TextStyle(color: blue),
+                    ),
+                    actions: [
+                      FlatButton(
+                        onPressed: () {
+                          _launchURL();
+                        },
+                        child: Text(
+                          'Descargar',
+                          style: TextStyle(fontSize: 6.0.w, color: red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        } else {
+          print("ya está actualizado");
+        }
+      } catch (e) {
+        print(e);
+        toast(context, "No se ha podido verificar la versión de la aplicación.", red);
+      }
+    }
+  }
+
+  void _launchURL() async => await canLaunch(_url)
+      ? await launch(_url)
+      : throw 'Could not launch $_url';
+
+  Future<bool> pop() async {
+    print("back");
+    return false;
+  }
+
   @override
   void initState() {
     if (downloaded == false) {
       downloadAll();
     }
+    compareVersions();
     getCourses();
     super.initState();
   }
