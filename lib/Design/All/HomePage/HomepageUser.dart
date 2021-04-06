@@ -281,6 +281,7 @@ class _HomePageUserState extends State<HomePageUser> {
                 icon: Image.asset("Assets/images/reportIcon.png", width: 7.0.w),
                 circleRadius: 6.0.w, func: () {
               GET.Get.to(Reports(
+                isTeacher: false,
                 drawerMenu: true,
               ));
             },
@@ -507,7 +508,7 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 5.0.h,
             ),
             Text(
-              "Versión: 1.0.10",
+              "Versión: 1.0.11",
               style: TextStyle(color: Colors.white, fontSize: 5.0.w),
             )
           ],

@@ -24,17 +24,17 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.search_sharp,
-              size: 7.0.w,
-            ),
-            onPressed: () {
-              addExercises(title);
-            },
-          )
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.search_sharp,
+        //       size: 7.0.w,
+        //     ),
+        //     onPressed: () {
+        //       addExercises(title);
+        //     },
+        //   )
+        // ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),

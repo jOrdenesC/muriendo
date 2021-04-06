@@ -31,7 +31,7 @@ class _CyclesState extends State<Cycles> {
   List coursesNumber = [];
   var progress = "0.0";
   var maxTotal = 100.0;
-  var version = "1.0.10";
+  var version = "1.0.11";
   var _url =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 

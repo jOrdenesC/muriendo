@@ -526,6 +526,8 @@ class _LoginState extends State<Login> {
     if (isValid == true) {
       setState(() {
         isValid = false;
+        passIsValid = false;
+        pass.clear();
       });
     } else {
       setState(() {

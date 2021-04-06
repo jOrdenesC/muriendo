@@ -50,6 +50,8 @@ class VideoController extends GetxController {
       quality: VideoQuality.LowQuality,
       deleteOrigin: true,
       includeAudio: true,
+      startTime: 0,
+      duration: 30
     );
     if (info != null) {
       //Should send video location on back

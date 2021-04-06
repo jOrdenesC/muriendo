@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import '../../Widgets/Toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Manuals extends StatefulWidget {
   @override
@@ -9,6 +10,12 @@ class Manuals extends StatefulWidget {
 }
 
 class _ManualsState extends State<Manuals> {
+  String urlManual = "https://intranet.movitronia.com/manuals";
+
+  void _launchURL() async => await canLaunch(urlManual)
+      ? await launch(urlManual)
+      : throw 'Could not launch $urlManual';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,27 +66,32 @@ class _ManualsState extends State<Manuals> {
           SizedBox(
             height: 3.0.h,
           ),
-          button(
-              MainAxisAlignment.start,
-              Text(
-                "  MANUAL CLASES",
-                style: TextStyle(color: Colors.white, fontSize: 7.0.w),
-              ),
-              Container(
-                child: Center(
-                    child: Image.asset(
-                  "Assets/images/docImage.png",
-                  color: Colors.white,
-                  width: 18.0.w,
+          InkWell(
+            onTap: () {
+              _launchURL();
+            },
+            child: button(
+                MainAxisAlignment.start,
+                Text(
+                  "  MANUAL CLASES",
+                  style: TextStyle(color: Colors.white, fontSize: 7.0.w),
+                ),
+                Container(
+                  child: Center(
+                      child: Image.asset(
+                    "Assets/images/docImage.png",
+                    color: Colors.white,
+                    width: 18.0.w,
+                  )),
+                  width: 50.0.w,
+                  height: 15.0.h,
+                  decoration: BoxDecoration(
+                      color: red,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(80),
+                          bottomRight: Radius.circular(80))),
                 )),
-                width: 50.0.w,
-                height: 15.0.h,
-                decoration: BoxDecoration(
-                    color: red,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(80),
-                        bottomRight: Radius.circular(80))),
-              )),
+          ),
           SizedBox(
             height: 1.0.h,
           ),

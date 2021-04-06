@@ -36,7 +36,8 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
     print("""
     Data
     ${widget.isTeacher},
-    ${widget.name}
+    ${widget.name},
+    ${widget.nameVideo}
     """);
     super.initState();
     getWeight();
@@ -62,8 +63,7 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
       weight = res;
     });
 
-    final result =
-        await _excerciseRepository.getExcerciseName(widget.name);
+    final result = await _excerciseRepository.getExcerciseName(widget.name);
     print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
   }

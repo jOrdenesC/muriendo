@@ -10,6 +10,7 @@ import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePageTeacher extends StatefulWidget {
   final String classId;
@@ -25,7 +26,8 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
-  String version = "1.0.10";
+  String urlIntranet = "https://intranet.movitronia.com";
+  String version = "1.0.11";
   var args;
   @override
   void initState() {
@@ -133,6 +135,10 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
 
     return false;
   }
+
+  void _launchURL() async => await canLaunch(urlIntranet)
+      ? await launch(urlIntranet)
+      : throw 'Could not launch $urlIntranet';
 
   Widget bottomNavBar() {
     return Container(
@@ -293,6 +299,24 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "SOPORTE",
+                circleColor: blue,
+                backgroudColor: Colors.white),
+            SizedBox(
+              height: 2.0.h,
+            ),
+            buttonRounded(context,
+                icon: Icon(
+                  Icons.person,
+                  size: 7.0.w,
+                  color: Colors.white,
+                ),
+                circleRadius: 6.0.w, func: () {
+              _launchURL();
+            },
+                height: 8.0.h,
+                width: 80.0.w,
+                textStyle: TextStyle(color: blue, fontSize: 6.0.w),
+                text: "INTRANET",
                 circleColor: blue,
                 backgroudColor: Colors.white),
             SizedBox(

@@ -41,7 +41,7 @@ class _SessionsState extends State<Sessions> {
   var progressAudios = "0.0";
   var progressTips = "0.0";
   var totalMax = "100.0";
-  var version = "1.0.10";
+  var version = "1.0.11";
   var _url =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 
