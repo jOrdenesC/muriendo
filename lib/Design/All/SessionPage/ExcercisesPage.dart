@@ -114,139 +114,146 @@ class _ExcercisesPageState extends State<ExcercisesPage>
             ],
           ),
           name["name"] == "calentamiento"
-              ? ListView.builder(
-                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                  itemCount: name["data"].length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 5.0.h,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            var res = await excerciseDataRepository
-                                .getExcerciseName(name["data"][index]);
-                            goToDetailsExcercises(
-                                res[0].videoName,
-                                "${name["data"][index]}",
-                                "${res[0].mets}",
-                                "${res[0].recommendation}",
-                                name["isTeacher"]);
-                          },
-                          child: Container(
-                            color: Colors.white,
-                            width: w,
-                            child: Image.asset(
-                                "Assets/thumbnails/${thumbnails[index]}.jpeg"),
-                          ),
-                        ),
-                        Text(""),
-                        FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "${name["data"][index]}",
-                                style: TextStyle(
-                                    fontSize: w * 0.06, color: Colors.white),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  })
+              ? Scrollbar(
+                  child: ListView.builder(
+                      physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+                      itemCount: name["data"].length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 5.0.h,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                var res = await excerciseDataRepository
+                                    .getExcerciseName(name["data"][index]);
+                                goToDetailsExcercises(
+                                    res[0].videoName,
+                                    "${name["data"][index]}",
+                                    "${res[0].mets}",
+                                    "${res[0].recommendation}",
+                                    name["isTeacher"]);
+                              },
+                              child: Container(
+                                color: Colors.white,
+                                width: w,
+                                child: Image.asset(
+                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
+                              ),
+                            ),
+                            Text(""),
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${name["data"][index]}",
+                                    style: TextStyle(
+                                        fontSize: w * 0.06,
+                                        color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                )
               : name["name"] == "desarrollo"
-                  ? ListView.builder(
-                      itemCount: name["data"].length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: 4.0.h,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                var res = await excerciseDataRepository
-                                    .getExcerciseName(name["data"][index]);
-                                goToDetailsExcercises(
-                                    res[0].videoName,
-                                    "${name["data"][index]}",
-                                    "${res[0].mets}",
-                                    "${res[0].recommendation}",
-                                    name["isTeacher"]);
-                              },
-                              child: Container(
-                                color: Colors.white,
-                                width: w,
-                                child: Image.asset(
-                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
-                              ),
-                            ),
-                            Text(""),
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${name["data"][index]}",
-                                    style: TextStyle(
-                                        fontSize: w * 0.06,
-                                        color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      })
-                  : ListView.builder(
-                      itemCount: name["data"].length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: 4.0.h,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                var res = await excerciseDataRepository
-                                    .getExcerciseName(name["data"][index]);
-                                goToDetailsExcercises(
-                                    res[0].videoName,
-                                    "${name["data"][index]}",
-                                    "${res[0].mets}",
-                                    "${res[0].recommendation}",
-                                    name["isTeacher"]);
-                              },
-                              child: Container(
-                                color: Colors.white,
-                                width: w,
-                                child: Image.asset(
-                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
-                              ),
-                            ),
-                            Text(""),
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${name["data"][index]}",
-                                    style: TextStyle(
-                                        fontSize: w * 0.06,
-                                        color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      })
+                  ? Scrollbar(
+                      child: ListView.builder(
+                          itemCount: name["data"].length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 4.0.h,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    var res = await excerciseDataRepository
+                                        .getExcerciseName(name["data"][index]);
+                                    goToDetailsExcercises(
+                                        res[0].videoName,
+                                        "${name["data"][index]}",
+                                        "${res[0].mets}",
+                                        "${res[0].recommendation}",
+                                        name["isTeacher"]);
+                                  },
+                                  child: Container(
+                                    color: Colors.white,
+                                    width: w,
+                                    child: Image.asset(
+                                        "Assets/thumbnails/${thumbnails[index]}.jpeg"),
+                                  ),
+                                ),
+                                Text(""),
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${name["data"][index]}",
+                                        style: TextStyle(
+                                            fontSize: w * 0.06,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                    )
+                  : Scrollbar(
+                      child: ListView.builder(
+                          itemCount: name["data"].length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 4.0.h,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    var res = await excerciseDataRepository
+                                        .getExcerciseName(name["data"][index]);
+                                    goToDetailsExcercises(
+                                        res[0].videoName,
+                                        "${name["data"][index]}",
+                                        "${res[0].mets}",
+                                        "${res[0].recommendation}",
+                                        name["isTeacher"]);
+                                  },
+                                  child: Container(
+                                    color: Colors.white,
+                                    width: w,
+                                    child: Image.asset(
+                                        "Assets/thumbnails/${thumbnails[index]}.jpeg"),
+                                  ),
+                                ),
+                                Text(""),
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${name["data"][index]}",
+                                        style: TextStyle(
+                                            fontSize: w * 0.06,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                    )
         ],
       ),
     );

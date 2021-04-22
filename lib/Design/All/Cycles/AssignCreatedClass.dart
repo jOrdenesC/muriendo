@@ -1,7 +1,11 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,12 +32,21 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
   List users = [];
 
   List courses = [];
+  var dio = Dio();
 
   var args;
 
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     Future.delayed(Duration.zero, () {
       setState(() {
         args =
@@ -162,7 +175,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
           textAlign: TextAlign.center,
         ));
 
-    var dio = Dio();
     try {
       print("course ${args["courseId"]}");
       List classesCourses = [];
@@ -229,6 +241,8 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         }
       }
     } catch (e) {
+      CreateError()
+          .createError(dio, e.response.toString(), "AssignCreateClass");
       log(e.response.toString());
     }
   }

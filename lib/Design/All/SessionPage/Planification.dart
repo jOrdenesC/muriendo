@@ -164,7 +164,7 @@ class _PlanificationState extends State<Planification> {
                                   ],
                                 ),
                                 Text(
-                                  "CALENTAMIENTO",
+                                  " CALENTAMIENTO",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 6.0.w),
                                 )
@@ -277,7 +277,7 @@ class _PlanificationState extends State<Planification> {
                                   ],
                                 ),
                                 Text(
-                                  "DESARROLLO",
+                                  " DESARROLLO",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 6.0.w),
                                 )
@@ -372,7 +372,7 @@ class _PlanificationState extends State<Planification> {
                                   ],
                                 ),
                                 Text(
-                                  "VUELTA A LA CALMA",
+                                  " VUELTA A LA CALMA",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 5.0.w),
                                 )

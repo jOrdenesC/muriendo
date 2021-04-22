@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,10 +8,13 @@ import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Design/Widgets/Loading.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_rut_validator/dart_rut_validator.dart';
@@ -31,6 +35,7 @@ class _BasalUserState extends State<BasalUser> {
   TextEditingController phone = TextEditingController();
   TextEditingController mail = TextEditingController();
   final f = new DateFormat('yyyy-MM-dd');
+  var dio = Dio();
 
   getInitDataUser() async {
     var prefs = await SharedPreferences.getInstance();
@@ -44,6 +49,14 @@ class _BasalUserState extends State<BasalUser> {
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getInitDataUser();
   }
 
@@ -192,7 +205,8 @@ class _BasalUserState extends State<BasalUser> {
                                     counterText: "",
                                     border: InputBorder.none,
                                     hintStyle: TextStyle(color: Colors.white),
-                                    hintText: 'Ingresa tu estatura (cm)')),
+                                    hintText:
+                                        'Ingresa tu estatura (ej: 120 cm.)')),
                             name: "Estatura"),
                         item(
                             child: TextField(
@@ -204,7 +218,7 @@ class _BasalUserState extends State<BasalUser> {
                                     counterText: "",
                                     border: InputBorder.none,
                                     hintStyle: TextStyle(color: Colors.white),
-                                    hintText: 'Ingresa tu peso')),
+                                    hintText: 'Ingresa tu peso (ej: 30 kg.)')),
                             name: "Peso"),
                         item(
                             child: DropdownButton<String>(
@@ -359,7 +373,6 @@ class _BasalUserState extends State<BasalUser> {
       var prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("token");
       try {
-        var dio = Dio();
         var response = await dio
             .post("$urlServer/api/mobile/uploadUserData?token=$token", data: {
           "name": name.text,
@@ -416,6 +429,7 @@ class _BasalUserState extends State<BasalUser> {
           toast(context, "Por favor inténtalo nuevamente.", red);
         }
       } catch (e) {
+        CreateError().createError(dio, e.response.toString(), "BasalUser");
         print(e.response);
       }
     } else {

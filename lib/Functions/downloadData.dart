@@ -13,6 +13,7 @@ import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:movitronia/Database/Repository/TipsDataRepository/TipsDataRepository.dart';
 import 'package:movitronia/Database/Repository/QuestionDataRepository/QuestionDataRepository.dart';
+import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Design/Widgets/Toast.dart';
@@ -26,6 +27,8 @@ import '../Utils/ConnectionState.dart';
 import '../Design/Widgets/Loading.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
+
+import 'createError.dart';
 
 class DownloadData {
   var dio = Dio();
@@ -61,6 +64,7 @@ class DownloadData {
               red);
         }
       } catch (e) {
+        CreateError().createError(dio, e.toString(), "downloadData");
         print(e);
         toast(
             context,
@@ -178,45 +182,47 @@ class DownloadData {
   //   print("ok");
   // }
 
-  downloadAudiosTest(List audioList, String type) async {
-    log(audioList.toList().toString());
-    var dir = await getApplicationDocumentsDirectory();
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    List<Future> listDio = [];
-    int downloaded = 0;
-    // String path = p.join("/storage/emulated/0/Movitronia/audios/$type/");
-    Response response2 = await Dio().post(
-        "https://intranet.movitronia.com/api/mobile/audios?token=$token",
-        data: {"type": "$type", "audioList": audioList});
-    for (int i = 0; i < response2.data.length; i++) {
-      print("${i.toString()} ${response2.data[i]}");
-      try {
-        // ${audioList[i]}
-        listDio.add(Dio().download(
-            response2.data[i], '${dir.path}/audios/${audioList[i]}.mp3',
-            onReceiveProgress: (rec, total) {
-          if (rec == total) {
-            // print(i.toString() + " Descargado");
-            downloaded++;
-            print(downloaded);
-          }
-        }));
-      } catch (e) {
-        print(e.toString());
-      }
-    }
-    print(listDio.toString());
-    try {
-      await Future.wait(listDio);
-    } catch (e) {
-      print("ERRORRR $e");
-    }
-  }
+  // downloadAudiosTest(List audioList, String type) async {
+  //   log(audioList.toList().toString());
+  //   var dir = await getApplicationDocumentsDirectory();
+  //   var prefs = await SharedPreferences.getInstance();
+  //   var token = prefs.getString("token");
+  //   List<Future> listDio = [];
+  //   int downloaded = 0;
+  //   // String path = p.join("/storage/emulated/0/Movitronia/audios/$type/");
+  //   Response response2 = await Dio().post(
+  //       "https://intranet.movitronia.com/api/mobile/audios?token=$token",
+  //       data: {"type": "$type", "audioList": audioList});
+  //   for (int i = 0; i < response2.data.length; i++) {
+  //     print("${i.toString()} ${response2.data[i]}");
+  //     try {
+  //       // ${audioList[i]}
+  //       listDio.add(Dio().download(
+  //           response2.data[i], '${dir.path}/audios/${audioList[i]}.mp3',
+  //           onReceiveProgress: (rec, total) {
+  //         if (rec == total) {
+  //           // print(i.toString() + " Descargado");
+  //           downloaded++;
+  //           print(downloaded);
+  //         }
+  //       }));
+  //     } catch (e) {
+  //       print(e.toString());
+  //     }
+  //   }
+  //   print(listDio.toString());
+  //   try {
+  //     await Future.wait(listDio);
+  //   } catch (e) {
+  //     print("ERRORRR $e");
+  //   }
+  // }
 
   getHttp(BuildContext context, String level) async {
     if (level.isEmpty) {
-      toast(context, "No se ha encontrado un curso asignado.", red);
+      toast(context,
+          "No se ha encontrado un curso asignado. Contacta con soporte.", red);
+      goToSupport(true);
     } else {
       bool hasInternet = await ConnectionStateClass().comprobationInternet();
       if (hasInternet) {
@@ -281,16 +287,16 @@ class DownloadData {
               ],
             ),
           );
-          print("LENGTH " + responseClasses.data.length.toString());
-          print("CLASSSSSSSSSSSSEES ${responseClasses.data}");
-          var responsess = ResultModel.fromJson(responseClasses.data[0]);
-          log("DAAAAAAAAAAAAAAAAAAAAAAATOS " + responsess.toJson().toString());
+          // print("LENGTH " + responseClasses.data.length.toString());
+          // print("CLASSSSSSSSSSSSEES ${responseClasses.data}");
+          // var responsess = ResultModel.fromJson(responseClasses.data[0]);
           for (int i = 0; i < responseClasses.data.length; i++) {
             print(i.toString() + " DATA DATA");
             Map responseBody =
                 responseClasses.data[i]; //Loop through all objects
             print("PASÓ RESPONSEBODY");
             ResultModel jsonResponse = ResultModel.fromJson(responseBody);
+            log(jsonResponse.toJson().toString());
             for (int i = 0; i < jsonResponse.tips.length; i++) {
               print("json RESPONSE $i");
               var tipsResponse = jsonResponse.tips[i];

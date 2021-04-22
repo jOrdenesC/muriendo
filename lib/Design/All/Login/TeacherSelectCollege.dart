@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
@@ -217,6 +218,7 @@ class _TeacherSelectCollegeState extends State<TeacherSelectCollege> {
           }
         }
       } catch (e) {
+        CreateError().createError(dio, e.toString(), "TeacherSelectCollege");
         toast(context, "Ha ocurrido un error, inténtalo más tarde.", red);
       }
     } else {

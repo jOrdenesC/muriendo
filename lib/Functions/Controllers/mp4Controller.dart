@@ -216,7 +216,7 @@ class Mp4Controller extends GetxController {
       macroTimer(tips, loops, getTime.floor(), audioTip);
       print(tips);
     } else {
-      macroTip.value = "Preparate para el Siguiente Ejercicio";
+      macroTip.value = "Prepárate para el Siguiente Ejercicio";
     }
   }
 

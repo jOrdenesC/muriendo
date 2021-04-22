@@ -129,366 +129,368 @@ class _EvidencesQuestionaryState extends State<EvidencesQuestionary> {
               height: 2.0.h,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 7.0.h,
-                    ),
-                    divider(yellow, "FASE 1"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[0], questionnaires[0]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Scrollbar(
+                              child: SingleChildScrollView(
+                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 7.0.h,
+                      ),
+                      divider(yellow, "FASE 1"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[1],
-                              questionnaires[1]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[2],
-                              questionnaires[2]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[0], questionnaires[0]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[3], questionnaires[3]),
-                      ],
-                    ),
-                    divider(green, "FASE 2"),
-                    Text(""),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[4], questionnaires[4]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[1],
+                                questionnaires[1]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[2],
+                                questionnaires[2]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[5],
-                              questionnaires[5]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[6],
-                              questionnaires[6]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[3], questionnaires[3]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[7], questionnaires[7]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 3"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[8], questionnaires[8]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(green, "FASE 2"),
+                      Text(""),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[9],
-                              questionnaires[9]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[10],
-                              questionnaires[10]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[4], questionnaires[4]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[11], questionnaires[11]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 4"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[12], questionnaires[12]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[5],
+                                questionnaires[5]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[6],
+                                questionnaires[6]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[13],
-                              questionnaires[13]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[14],
-                              questionnaires[14]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[7], questionnaires[7]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[15], questionnaires[15]),
-                      ],
-                    ),
-                    divider(green, "FASE 5"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[16], questionnaires[16]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(cyan, "FASE 3"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[17],
-                              questionnaires[17]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[18],
-                              questionnaires[18]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[8], questionnaires[8]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[19], questionnaires[19]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 6"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[20], questionnaires[20]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[9],
+                                questionnaires[9]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[10],
+                                questionnaires[10]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[21],
-                              questionnaires[21]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[22],
-                              questionnaires[22]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[11], questionnaires[11]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[23], questionnaires[23]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 7"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[24], questionnaires[24]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(yellow, "FASE 4"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[25],
-                              questionnaires[25]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[26],
-                              questionnaires[26]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[12], questionnaires[12]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[27], questionnaires[27]),
-                      ],
-                    ),
-                    divider(green, "FASE 8"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[28], questionnaires[28]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[13],
+                                questionnaires[13]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[14],
+                                questionnaires[14]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[29],
-                              questionnaires[28]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[30],
-                              questionnaires[30]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[15], questionnaires[15]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[31], questionnaires[31]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 9"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[32], questionnaires[32]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(green, "FASE 5"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[33],
-                              questionnaires[33]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[34],
-                              questionnaires[34]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[16], questionnaires[16]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[35], questionnaires[35]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 10"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[36], questionnaires[36]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[17],
+                                questionnaires[17]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[18],
+                                questionnaires[18]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[37],
-                              questionnaires[37]),
-                          circularActivity(
-                              "title",
-                              "Assets/images/docImage.png",
-                              "1",
-                              evidences[38],
-                              questionnaires[38]),
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[19], questionnaires[19]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity("title", "Assets/images/docImage.png",
-                            "1", evidences[39], questionnaires[39]),
-                      ],
-                    ),
-                  ],
+                      divider(cyan, "FASE 6"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[20], questionnaires[20]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[21],
+                                questionnaires[21]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[22],
+                                questionnaires[22]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[23], questionnaires[23]),
+                        ],
+                      ),
+                      divider(yellow, "FASE 7"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[24], questionnaires[24]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[25],
+                                questionnaires[25]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[26],
+                                questionnaires[26]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[27], questionnaires[27]),
+                        ],
+                      ),
+                      divider(green, "FASE 8"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[28], questionnaires[28]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[29],
+                                questionnaires[28]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[30],
+                                questionnaires[30]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[31], questionnaires[31]),
+                        ],
+                      ),
+                      divider(cyan, "FASE 9"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[32], questionnaires[32]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[33],
+                                questionnaires[33]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[34],
+                                questionnaires[34]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[35], questionnaires[35]),
+                        ],
+                      ),
+                      divider(yellow, "FASE 10"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[36], questionnaires[36]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[37],
+                                questionnaires[37]),
+                            circularActivity(
+                                "title",
+                                "Assets/images/docImage.png",
+                                "1",
+                                evidences[38],
+                                questionnaires[38]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity("title", "Assets/images/docImage.png",
+                              "1", evidences[39], questionnaires[39]),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

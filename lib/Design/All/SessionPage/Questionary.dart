@@ -554,94 +554,92 @@ class _QuestionaryState extends State<Questionary> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      FittedBox(
-                                        fit: BoxFit.fitWidth,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                InkWell(
-                                                  onTap: () async {
-                                                    for (var i = 0;
-                                                        i < responses.length;
-                                                        i++) {
-                                                      if (responses[i]["number"]
-                                                              .toString() ==
-                                                          "${number - 1}") {
-                                                        setState(() {
-                                                          responses[i] = {
-                                                            "number":
-                                                                "${number - 1}",
-                                                            "response": questions[
-                                                                        0][
-                                                                    "alternatives"]
-                                                                .keys
-                                                                .toList()[index]
-                                                                .toString()
-                                                          };
-                                                        });
-                                                      }
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              InkWell(
+                                                onTap: () async {
+                                                  for (var i = 0;
+                                                      i < responses.length;
+                                                      i++) {
+                                                    if (responses[i]["number"]
+                                                            .toString() ==
+                                                        "${number - 1}") {
+                                                      setState(() {
+                                                        responses[i] = {
+                                                          "number":
+                                                              "${number - 1}",
+                                                          "response": questions[
+                                                                      0][
+                                                                  "alternatives"]
+                                                              .keys
+                                                              .toList()[index]
+                                                              .toString()
+                                                        };
+                                                      });
                                                     }
-                                                  },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: questions[0]["alternatives"]
-                                                                    .keys
-                                                                    .toList()[
-                                                                        index]
-                                                                    .toString() ==
-                                                                responses
-                                                                        .where((element) =>
-                                                                            element["number"].toString() ==
-                                                                            "${number - 1}")
-                                                                        .toList()[0]
-                                                                    ["response"]
-                                                            ? green
-                                                            : red,
-                                                        borderRadius: BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    90),
-                                                            bottomRight:
-                                                                Radius.circular(90))),
-                                                    width: 25.0.w,
-                                                    height: 10.0.h,
-                                                    child: Center(
-                                                        child: Text(
-                                                            questions[0][
-                                                                    "alternatives"]
-                                                                .keys
-                                                                .toList()[index]
-                                                                .toString()
-                                                                .toUpperCase(),
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                    10.0.w,
-                                                                color: Colors
-                                                                    .white))),
-                                                  ),
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: questions[0]["alternatives"]
+                                                                  .keys
+                                                                  .toList()[
+                                                                      index]
+                                                                  .toString() ==
+                                                              responses
+                                                                      .where((element) =>
+                                                                          element["number"].toString() ==
+                                                                          "${number - 1}")
+                                                                      .toList()[0]
+                                                                  ["response"]
+                                                          ? green
+                                                          : red,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topRight: Radius
+                                                                  .circular(90),
+                                                              bottomRight:
+                                                                  Radius.circular(90))),
+                                                  width: 25.0.w,
+                                                  height: 10.0.h,
+                                                  child: Center(
+                                                      child: Text(
+                                                          questions[0][
+                                                                  "alternatives"]
+                                                              .keys
+                                                              .toList()[index]
+                                                              .toString()
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                              fontSize: 10.0.w,
+                                                              color: Colors
+                                                                  .white))),
                                                 ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              width: 1.0.w,
-                                            ),
-                                            Text(
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: 1.0.w,
+                                          ),
+                                          Flexible(
+                                                                                      child: Text(
                                                 questions[number - 1]
                                                         ["alternatives"]
                                                     .values
                                                     .toList()[index]
                                                     .toString()
                                                     .toUpperCase(),
+                                                
                                                 style: TextStyle(
-                                                    fontSize: 7.0.w,
-                                                    color: blue))
-                                          ],
-                                        ),
+                                                    fontSize: 6.0.w, color: blue)),
+                                          )
+                                        ],
                                       ),
                                       SizedBox(
                                         height: 2.0.h,

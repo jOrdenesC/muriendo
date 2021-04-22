@@ -1,7 +1,11 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:dio/dio.dart';
@@ -20,6 +24,7 @@ class CreateClass extends StatefulWidget {
 class _CreateClassState extends State<CreateClass>
     with TickerProviderStateMixin {
   ListController listController = ListController();
+  var dio = Dio();
   int count = 0;
   bool loading = false;
   Response response;
@@ -28,6 +33,15 @@ class _CreateClassState extends State<CreateClass>
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
+
     Future.delayed(Duration.zero, () {
       setState(() {
         args =
@@ -148,6 +162,7 @@ class _CreateClassState extends State<CreateClass>
             red);
       }
     } catch (e) {
+      CreateError().createError(dio, e.toString(), "CreateClass");
       setState(() {
         loading = false;
       });
@@ -169,7 +184,7 @@ class _CreateClassState extends State<CreateClass>
     List totalDesarrollo = [];
     List totalVueltaCalma = [];
     var prefs = await SharedPreferences.getInstance();
-    var dio = Dio();
+
     var token = prefs.getString("token");
     List classActual = [];
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
@@ -348,6 +363,7 @@ class _CreateClassState extends State<CreateClass>
           prefs.setInt("maxdesarrollo", 0);
           prefs.setInt("maxvueltacalma", 0);
         } catch (e) {
+          CreateError().createError(dio, e.toString(), "createClass");
           print(e);
           toast(context, "Ha ocurrido un error. Inténtalo más tarde.", red);
         }

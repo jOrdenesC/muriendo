@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +11,7 @@ import 'package:movitronia/Design/All/Support/Support.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,7 +30,6 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
   List<Widget> _screens = [];
   int count = 0;
   String urlIntranet = "https://intranet.movitronia.com";
-  String version = "1.0.11";
   var args;
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
     //   });
     //   print(args);
     // });
+    //
     _screens.add(Cycles(
       courseId: widget.classId,
     ));
@@ -418,9 +421,16 @@ class _HomePageTeacherState extends State<HomePageTeacher> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Versión: $version",
-                  style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+                InkWell(
+                  onTap: () async {
+                    ClassDataRepository classDataRepository = GetIt.I.get();
+                    var res = await classDataRepository.getAllClassLevel();
+                    print(res);
+                  },
+                  child: Text(
+                    "Versión: $versionApp",
+                    style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+                  ),
                 )
               ],
             )

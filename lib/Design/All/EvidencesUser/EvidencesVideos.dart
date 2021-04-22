@@ -119,34 +119,18 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
               height: 2.0.h,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 7.0.h,
-                    ),
-                    divider(yellow, "FASE 1"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: blue,
-                            ),
-                            "1",
-                            evidences[0]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 7.0.h,
+                      ),
+                      divider(yellow, "FASE 1"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -156,8 +140,41 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: blue,
                               ),
-                              "2",
-                              evidences[1]),
+                              "1",
+                              evidences[0]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: blue,
+                                ),
+                                "2",
+                                evidences[1]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: blue,
+                                ),
+                                "3",
+                                evidences[2]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           circularActivity(
                               "title",
                               0,
@@ -166,47 +183,14 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: blue,
                               ),
-                              "3",
-                              evidences[2]),
+                              "4",
+                              evidences[3]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: blue,
-                            ),
-                            "4",
-                            evidences[3]),
-                      ],
-                    ),
-                    divider(green, "FASE 2"),
-                    Text(""),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "5",
-                            evidences[4]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(green, "FASE 2"),
+                      Text(""),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -216,56 +200,40 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "6",
-                              evidences[5]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "7",
-                              evidences[6]),
+                              "5",
+                              evidences[4]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "8",
-                            evidences[7]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 3"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[8]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "6",
+                                evidences[5]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "7",
+                                evidences[6]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -275,56 +243,13 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[9]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[10]),
+                              "8",
+                              evidences[7]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[11]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 4"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[12]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(cyan, "FASE 3"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -334,56 +259,40 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[13]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[14]),
+                              "9",
+                              evidences[8]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[15]),
-                      ],
-                    ),
-                    divider(green, "FASE 5"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[16]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[9]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[10]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -393,56 +302,13 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[17]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[18]),
+                              "12",
+                              evidences[11]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[19]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 6"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[20]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(yellow, "FASE 4"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -452,56 +318,40 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[21]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[22]),
+                              "9",
+                              evidences[12]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[23]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 7"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[24]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[13]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[14]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -511,56 +361,13 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[25]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[26]),
+                              "12",
+                              evidences[15]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[27]),
-                      ],
-                    ),
-                    divider(green, "FASE 8"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[28]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(green, "FASE 5"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -570,56 +377,40 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[29]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[30]),
+                              "9",
+                              evidences[16]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[31]),
-                      ],
-                    ),
-                    divider(cyan, "FASE 9"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[32]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[17]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[18]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -629,56 +420,13 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[33]),
-                          circularActivity(
-                              "title",
-                              0,
-                              Icon(
-                                Icons.camera_alt,
-                                size: 20.0.w,
-                                color: Colors.white,
-                              ),
-                              "11",
-                              evidences[34]),
+                              "12",
+                              evidences[19]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[35]),
-                      ],
-                    ),
-                    divider(yellow, "FASE 10"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "9",
-                            evidences[36]),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      divider(cyan, "FASE 6"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           circularActivity(
                               "title",
@@ -688,8 +436,41 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "10",
-                              evidences[37]),
+                              "9",
+                              evidences[20]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[21]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[22]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           circularActivity(
                               "title",
                               0,
@@ -698,27 +479,248 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
                                 size: 20.0.w,
                                 color: Colors.white,
                               ),
-                              "11",
-                              evidences[38]),
+                              "12",
+                              evidences[23]),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circularActivity(
-                            "title",
-                            0,
-                            Icon(
-                              Icons.camera_alt,
-                              size: 20.0.w,
-                              color: Colors.white,
-                            ),
-                            "12",
-                            evidences[39]),
-                      ],
-                    ),
-                  ],
+                      divider(yellow, "FASE 7"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "9",
+                              evidences[24]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[25]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[26]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "12",
+                              evidences[27]),
+                        ],
+                      ),
+                      divider(green, "FASE 8"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "9",
+                              evidences[28]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[29]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[30]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "12",
+                              evidences[31]),
+                        ],
+                      ),
+                      divider(cyan, "FASE 9"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "9",
+                              evidences[32]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[33]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[34]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "12",
+                              evidences[35]),
+                        ],
+                      ),
+                      divider(yellow, "FASE 10"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "9",
+                              evidences[36]),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "10",
+                                evidences[37]),
+                            circularActivity(
+                                "title",
+                                0,
+                                Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0.w,
+                                  color: Colors.white,
+                                ),
+                                "11",
+                                evidences[38]),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          circularActivity(
+                              "title",
+                              0,
+                              Icon(
+                                Icons.camera_alt,
+                                size: 20.0.w,
+                                color: Colors.white,
+                              ),
+                              "12",
+                              evidences[39]),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

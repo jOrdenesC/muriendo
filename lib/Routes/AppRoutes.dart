@@ -32,6 +32,7 @@ import 'package:movitronia/Design/All/SessionPage/UploadData.dart';
 import 'package:movitronia/Design/All/SessionPage/VideosToRecord.dart';
 import 'package:movitronia/Design/All/Settings/ProfilePage.dart';
 import 'package:movitronia/Design/All/Settings/SettingsPage.dart';
+import 'package:movitronia/Design/All/Settings/changePass.dart';
 import 'package:movitronia/Design/All/Support/Support.dart';
 import 'package:movitronia/Design/All/Terms/terms.dart';
 import 'package:movitronia/Design/All/Welcome/WelcomePage.dart';
@@ -288,6 +289,12 @@ class AppRoutes {
     orientation: ScreenOrientation.portraitOnly,
   );
 
+  static var changePass = RouteDetails(
+    name: '/changePass',
+    page: ChangePass(),
+    orientation: ScreenOrientation.portraitOnly,
+  );
+
   static List<RouteDetails> get routes => [
         splash,
         login,
@@ -331,6 +338,7 @@ class AppRoutes {
         recoverPass,
         settingsPage,
         teacherSelectCollege,
-        profilePage
+        profilePage,
+        changePass
       ];
 }

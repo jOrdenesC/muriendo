@@ -1,7 +1,11 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Utils/UrlServer.dart';
@@ -14,6 +18,7 @@ import '../../../Utils/ConnectionState.dart';
 class SearchEvidences extends StatefulWidget {
   final String idCollege;
   final bool isFull;
+
   SearchEvidences({this.idCollege, this.isFull});
   @override
   _SearchEvidencesState createState() => _SearchEvidencesState();
@@ -24,11 +29,11 @@ class _SearchEvidencesState extends State<SearchEvidences> {
   Map grade;
   bool loading = false;
   List colleges = [];
+  var dio = Dio();
   List courses = [];
   TextEditingController rut = TextEditingController();
 
   getData() async {
-    var dio = Dio();
     setState(() {
       loading = true;
     });
@@ -80,7 +85,7 @@ class _SearchEvidencesState extends State<SearchEvidences> {
   searchData() async {
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     String idStudent;
-    var dio = Dio();
+
     if (hasInternet) {
       try {
         load.loading(context,
@@ -129,6 +134,7 @@ class _SearchEvidencesState extends State<SearchEvidences> {
           }
         }
       } catch (e) {
+        CreateError().createError(dio, e.toString(), "SearchEvidences");
         Navigator.pop(context);
         toast(context, "Ha ocurrido un error, inténtalo más tarde", red);
         log(e.toString());
@@ -141,6 +147,14 @@ class _SearchEvidencesState extends State<SearchEvidences> {
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getData();
   }
 

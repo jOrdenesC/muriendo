@@ -50,7 +50,7 @@ class _RecoverPassState extends State<RecoverPass> {
                     padding: const EdgeInsets.only(left: 2.0),
                     child: InkWell(
                       onTap: () {
-                        sendMailRecuperation();
+                        validation();
                       },
                       child: CircleAvatar(
                         radius: 6.0.w,
@@ -135,7 +135,7 @@ class _RecoverPassState extends State<RecoverPass> {
           Navigator.pop(context);
         } else if (response.statusCode == 404) {
           toastTop(context,
-              "El correo indicado no está registrado en nuestro sistema.", red);
+              "El correo indicado no está registrado en el sistema.", red);
           Navigator.pop(context);
         }
       } catch (e) {
@@ -143,6 +143,9 @@ class _RecoverPassState extends State<RecoverPass> {
         print(e.response);
         if (e.response.toString().contains("must be a valid email")) {
           toastTop(context, "Ingresa un correo válido.", red);
+        } else if (e.response.toString().contains("no existe")) {
+          toastTop(context,
+              "El correo indicado no está registrado en el sistema.", red);
         } else {
           toastTop(context,
               "Ha ocurrido un error, por favor inténtalo más tarde", red);

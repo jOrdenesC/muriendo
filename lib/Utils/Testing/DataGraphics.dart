@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../Colors.dart';
 
@@ -17,40 +19,36 @@ class DataRepository {
     return labels;
   }
 
-  static Color getColor(double value) {
-    if (value < 100) {
-      return green;
-    } else if (value < 150) {
-      return green;
-    } else
-      return green;
+  static Color getColor() {
+    List<Color> colors = [cyan, red, green, yellow];
+    return colors[Random().nextInt(colors.length)];
   }
 
   static Color getDayColor(int day) {
     if (day < data.length) {
-      return getColor(data[day]);
+      return getColor();
     } else
       return Colors.indigo.shade50;
   }
 
-  static Icon getIcon(double value) {
+  static Icon getIcon(int value) {
     if (value < 100) {
       return Icon(
         Icons.sentiment_very_satisfied_rounded,
         size: 24,
-        color: getColor(value),
+        color: getColor(),
       );
     } else if (value < 150) {
       return Icon(
         Icons.sentiment_very_satisfied_rounded,
         size: 24,
-        color: getColor(value),
+        color: getColor(),
       );
     } else
       return Icon(
         Icons.sentiment_very_satisfied_rounded,
         size: 24,
-        color: getColor(value),
+        color: getColor(),
       );
   }
 }

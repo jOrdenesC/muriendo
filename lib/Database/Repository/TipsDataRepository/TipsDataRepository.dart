@@ -7,6 +7,8 @@ abstract class TipsDataRepository {
 
   Future deleteTips(int gifDataId);
 
+  Future deleteAll();
+
   Future<List<TipsData>> getAllTips();
 
   Future<List<TipsData>> getTips(String id);

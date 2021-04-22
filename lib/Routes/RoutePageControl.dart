@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:movitronia/Database/Models/ClassLevel.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
+import 'package:movitronia/Database/Repository/TipsDataRepository/TipsDataRepository.dart';
 import 'package:movitronia/Design/All/DetailsExercise/DetailsExcercise.dart';
 import 'package:movitronia/Functions/Controllers/ListsController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -320,6 +321,7 @@ goToManuals(bool isFull) {
 
 closeSession() async {
   CourseDataRepository courseDataRepository = GetIt.I.get();
+  TipsDataRepository tipsDataRepository = GetIt.I.get();
   await courseDataRepository.deleteAll();
   EvidencesRepository evidencesRepository = GetIt.I.get();
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
@@ -327,6 +329,22 @@ closeSession() async {
   await excerciseDataRepository.deleteAll();
   ClassDataRepository classDataRepository = GetIt.I.get();
   await classDataRepository.deleteAll();
+  await tipsDataRepository.deleteAll();
+  var resCourse = await courseDataRepository.getAllCourse();
+  var resTips = await tipsDataRepository.getAllTips();
+  var resEvidence = await evidencesRepository.getAllEvidences();
+  var resExercises = await excerciseDataRepository.getAllExcercise();
+  var resClass = await classDataRepository.getAllClassLevel();
+  print(resClass.length);
+  print(resEvidence.length);
+  print(resExercises.length);
+  print(resTips.length);
+  print("""
+    course ${resCourse.toList()}
+    evidence ${resEvidence.toList()}
+    exercises ${resExercises.toList()}
+    classes ${resClass.toList()}
+    """);
   var prefs = await SharedPreferences.getInstance();
   prefs.setInt("phase", null);
   prefs.setString("rut", null);
@@ -377,4 +395,8 @@ goToTeacherSelectCollege() {
 
 goToProfilePage(bool isHome) {
   Get.toNamed(AppRoutes.profilePage.name, arguments: isHome);
+}
+
+goToChangePass() {
+  Get.toNamed(AppRoutes.changePass.name);
 }

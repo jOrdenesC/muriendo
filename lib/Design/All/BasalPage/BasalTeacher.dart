@@ -1,4 +1,9 @@
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
+import 'package:movitronia/Functions/createError.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
+
 import '../../Widgets/Loading.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +29,7 @@ class _BasalTeacherState extends State<BasalTeacher> {
   TextEditingController phone = TextEditingController();
   TextEditingController mail = TextEditingController();
   TextEditingController comune = TextEditingController();
+  var dio = Dio();
 
   getInitDataTeacher() async {
     var prefs = await SharedPreferences.getInstance();
@@ -36,6 +42,14 @@ class _BasalTeacherState extends State<BasalTeacher> {
 
   @override
   void initState() {
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getInitDataTeacher();
     super.initState();
   }
@@ -225,7 +239,6 @@ class _BasalTeacherState extends State<BasalTeacher> {
       var prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("token");
       try {
-        var dio = Dio();
         var response = await dio.post(
             "$urlServer/api/mobile/uploadProfessorData?token=$token",
             data: {
@@ -256,6 +269,7 @@ class _BasalTeacherState extends State<BasalTeacher> {
           toast(context, "Por favor inténtalo nuevamente.", red);
         }
       } catch (e) {
+        CreateError().createError(dio, e.toString(), "BasalTeacher");
         print(e.response);
       }
     } else {

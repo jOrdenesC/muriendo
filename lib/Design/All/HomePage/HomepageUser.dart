@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:badges/badges.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,6 +18,8 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
@@ -34,7 +37,7 @@ class HomePageUser extends StatefulWidget {
 
 class _HomePageUserState extends State<HomePageUser> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  var dio = Dio();
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
@@ -46,6 +49,14 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getDataOffline();
     _screens.add(Sessions());
     _screens.add(Reports(drawerMenu: false, isTeacher: false, data: null));
@@ -239,6 +250,7 @@ class _HomePageUserState extends State<HomePageUser> {
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
@@ -294,6 +306,7 @@ class _HomePageUserState extends State<HomePageUser> {
             SizedBox(
               height: 2.0.h,
             ),
+
             // buttonRounded(context,
             //     icon: Image.asset("Assets/images/reportIcon.png", width: 7.5.w),
             //     circleRadius: 6.0.w, func: () async {
@@ -330,6 +343,61 @@ class _HomePageUserState extends State<HomePageUser> {
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "EVIDENCIAS",
+                circleColor: blue,
+                backgroudColor: Colors.white),
+            SizedBox(
+              height: 2.0.h,
+            ),
+            buttonRounded(context,
+                icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 8.0.w,
+                ),
+                // dataOffline == 0
+                //     ? Icon(
+                //         Icons.arrow_upward,
+                //         color: Colors.white,
+                //         size: 8.0.w,
+                //       )
+                //     : Badge(
+                //         badgeContent: Text(
+                //           "$dataOffline",
+                //           style:
+                //               TextStyle(color: Colors.white, fontSize: 7.0.w),
+                //         ),
+                //       ),
+                circleRadius: 6.0.w, func: () {
+              goToSettingsPage("user");
+              // if (dataOffline == 0) {
+              //   toast(context, "No hay datos guardados localmente.", red);
+              // } else {
+              //   uploadData();
+              //   // dev.log(dataOfflineList[2].toMap().toString());
+              // }
+            },
+                height: 8.0.h,
+                width: 80.0.w,
+                textStyle: TextStyle(color: blue, fontSize: 6.0.w),
+                text: "AJUSTES",
+                circleColor: blue,
+                backgroudColor: Colors.white),
+            SizedBox(
+              height: 2.0.h,
+            ),
+            buttonRounded(context,
+                icon: Icon(
+                  Icons.help,
+                  size: 10.0.w,
+                  color: Colors.white,
+                ),
+                circleRadius: 6.0.w, func: () {
+              goToSupport(true);
+            },
+                height: 8.0.h,
+                width: 80.0.w,
+                textStyle: TextStyle(color: blue, fontSize: 6.0.w),
+                text: "AYUDA",
                 circleColor: blue,
                 backgroudColor: Colors.white),
             SizedBox(
@@ -439,51 +507,6 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 InkWell(
                   onTap: () async {
-                    if (dataOffline == 0) {
-                      toast(context, "No hay datos guardados localmente.", red);
-                    } else {
-                      uploadData();
-                      // dev.log(dataOfflineList[2].toMap().toString());
-                    }
-                  },
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 9.0.w,
-                        child: CircleAvatar(
-                          radius: 8.0.w,
-                          backgroundColor: blue,
-                          child: Center(
-                            child: Icon(
-                              Icons.arrow_upward,
-                              color: Colors.white,
-                              size: 15.0.w,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: 5.0.h,
-                          ),
-                          dataOffline == 0
-                              ? SizedBox.shrink()
-                              : Badge(
-                                  badgeContent: Text(
-                                    "$dataOffline",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 7.0.w),
-                                  ),
-                                ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
                     Navigator.pop(context);
                   },
                   child: CircleAvatar(
@@ -505,11 +528,18 @@ class _HomePageUserState extends State<HomePageUser> {
               ],
             ),
             SizedBox(
-              height: 5.0.h,
+              height: 2.0.h,
             ),
-            Text(
-              "Versión: 1.0.11",
-              style: TextStyle(color: Colors.white, fontSize: 5.0.w),
+            InkWell(
+              onTap: () async {
+                ClassDataRepository classDataRepository = GetIt.I.get();
+                var res = await classDataRepository.getAllClassLevel();
+                print(res);
+              },
+              child: Text(
+                "Versión: $versionApp",
+                style: TextStyle(color: Colors.white, fontSize: 4.0.w),
+              ),
             )
           ],
         ),
@@ -535,68 +565,89 @@ class _HomePageUserState extends State<HomePageUser> {
           ));
       var prefs = await SharedPreferences.getInstance();
       for (var i = 0; i < dataOfflineList.length; i++) {
-        try {
-          var dio = Dio();
-          var uuid = Uuid().v4();
-          File file = File("${dataOfflineList[i].uriVideo}");
-          //Create Multipart form for cloudflare with video, they key is file
-          FormData data = FormData.fromMap({
-            "file": await MultipartFile.fromFile(file.path, filename: uuid)
-          });
-          try {
-            var token = prefs.getString("token");
-            //First call api for generate token in cloudflare
-            Response response = await dio.get(
-                "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
-            print(response.data);
-            Navigator.pop(context);
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Enviando video...",
-                  textAlign: TextAlign.center,
-                ));
-            //Second call cloudflare api with account id and send multipart form and bearer token in headers
-            Response response2 = await dio.post(
-              "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
-              data: data,
-              options: Options(headers: {
-                HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
-              }),
-              onSendProgress: (int sent, int total) {
-                setState(() {
-                  progressVideo = sent / total * 100;
-                  print(progressVideo.floor());
-                });
-              },
-            );
-            print(response2.data);
-            var videoData = {
-              "uuid": uuid,
-              "exercises": dataOfflineList[i].exercises, //args["exercises"],
-              "cloudflareId": response2.data["result"]["uid"]
-            };
-            dev.log(videoData.toString());
-            toast(context, "Video subido con éxito.", green);
-            // Navigator.pop(context);
-            //Call API for send data of video in cloudflare
-            // Response response3 = await dio.post("path?token=$token", data: dataSend);
-            uploadQuestionary(dataOfflineList[i], videoData);
-          } catch (e) {
-            Navigator.pop(context);
-            toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
-            print("EO " + e.toString());
-          }
-        } catch (e) {
-          print(e.response);
-        }
+        // try {
+        var uuid = Uuid().v4();
+        File file = File("${dataOfflineList[i].uriVideo}");
+        //Create Multipart form for cloudflare with video, they key is file
+        FormData data = FormData.fromMap(
+            {"file": await MultipartFile.fromFile(file.path, filename: uuid)});
+        // try {
+        var token = prefs.getString("token");
+        //First call api for generate token in cloudflare
+
+        Response response = await dio.get(
+            "https://intranet.movitronia.com/api/mobile/classes/6?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2MDNkNDM3NTNmOWUxODQ5ZGI5NmVjNjMiLCJhdWQiOiJtb2JpbGV1c2VyIiwiaWF0IjoxNjE0NjI4MzU5LCJpZCI6IjYwM2Q0Mzc1M2Y5ZTE4NDlkYjk2ZWM2MyIsInJ1dCI6Ijc3Nzc3Nzc3NyIsImVtYWlsIjoiZGVzYXJyb2xsb0BtaWNoY29tLmNsIiwibmFtZSI6ImRlc2Fycm9sbG8gbWljaGNvbSIsInNjb3BlIjoidXNlciIsInRlcm1zQWNjZXB0ZWQiOnRydWV9.abeXTOMLvrpaUCC3u6BJWSnd60IJiveMt170LKva6tVWF7Ww2PlF3WLrOf-l6wDVqffcz0GDhyZRnVz8LRLBtA");
+        // "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
+        //
+        //
+        //     .timeout(Duration(seconds: 10), onTimeout: () {
+        //   return Response(data: {
+        //     "Tiempo de espera agotado, por favor verifica tu conexión a internet"
+        //   });
+        // }).catchError((onError) {
+        //   print(onError.toString());
+        //   toast(context,
+        //       "No se ha podido obtener información de cloudflare.", red);
+        // });
+        print(response.data);
+        Navigator.pop(context);
+        // loading(context,
+        //     content: Center(
+        //       child: Image.asset(
+        //         "Assets/videos/loading.gif",
+        //         width: 70.0.w,
+        //         height: 15.0.h,
+        //         fit: BoxFit.contain,
+        //       ),
+        //     ),
+        //     title: Text(
+        //       "Enviando video...",
+        //       textAlign: TextAlign.center,
+        //     ));
+        // //Second call cloudflare api with account id and send multipart form and bearer token in headers
+        // Response response2 = await dio.post(
+        //   "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
+        //   data: data,
+        //   options: Options(headers: {
+        //     HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
+        //   }),
+        //   onSendProgress: (int sent, int total) {
+        //     setState(() {
+        //       progressVideo = sent / total * 100;
+        //       print(progressVideo.floor());
+        //     });
+        //   },
+        // ).catchError((onError) {
+        //   throw Exception("algo");
+        // });
+        // print(response2.data);
+        // var videoData = {
+        //   "uuid": uuid,
+        //   "exercises": dataOfflineList[i].exercises, //args["exercises"],
+        //   "cloudflareId": response2.data["result"]["uid"]
+        // };
+        // dev.log(videoData.toString());
+        // toast(context, "Video subido con éxito.", green);
+        // // Navigator.pop(context);
+        // //Call API for send data of video in cloudflare
+        // // Response response3 = await dio.post("path?token=$token", data: dataSend);
+        // uploadQuestionary(dataOfflineList[i], videoData);
+        // } catch (e) {
+        //   Navigator.pop(context);
+        //   toast(
+        //       context,
+        //       "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
+        //       red);
+        //   print("EO " + e.toString());
+        // }
+        // } catch (e) {
+        //   Navigator.pop(context);
+        //   toast(
+        //       context,
+        //       "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
+        //       red);
+        //   print(e.response);
+        // }
       }
     } else {
       toast(

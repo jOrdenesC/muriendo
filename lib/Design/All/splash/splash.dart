@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Models/evidencesSend.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
@@ -24,6 +25,7 @@ class _SplashState extends State<Splash> {
   int _text = 2;
   bool text = false;
   bool createdEvidence = false;
+  var dio = Dio();
 
   @override
   void initState() {
@@ -174,7 +176,6 @@ class _SplashState extends State<Splash> {
     var prefs = await SharedPreferences.getInstance();
     if (hasInternet) {
       try {
-        var dio = Dio();
         var response = await dio.get(
           "$urlServer/api/mobile/phase/chile?token=$token",
         );
@@ -206,7 +207,7 @@ class _SplashState extends State<Splash> {
             phase: null,
             classObject: null,
             finished: false);
-        print("Se nsertó una evidencia");
+        print("Se insertó una evidencia");
         await evidencesRepository.insertEvidence(evidencesSend);
       } else {
         EvidencesSend evidencesSend = EvidencesSend(

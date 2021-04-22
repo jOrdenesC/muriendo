@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Functions/downloadTeacher.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
@@ -31,7 +32,6 @@ class _CyclesState extends State<Cycles> {
   List coursesNumber = [];
   var progress = "0.0";
   var maxTotal = 100.0;
-  var version = "1.0.11";
   var _url =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
 
@@ -110,6 +110,7 @@ class _CyclesState extends State<Cycles> {
         loaded = true;
       });
     } catch (e) {
+      CreateError().createError(dio, e.response.toString(), "Cycles");
       log(e.response.toString());
     }
   }
@@ -117,8 +118,6 @@ class _CyclesState extends State<Cycles> {
   compareVersions() async {
     var dio = Dio();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
     String platform = "";
     if (Platform.isAndroid) {
       setState(() {
@@ -133,7 +132,7 @@ class _CyclesState extends State<Cycles> {
       try {
         Response response = await dio.post("$urlServer/api/mobile/version",
             data: {"platform": platform, "type": "appVersion"});
-        if (response.data["version"] != version) {
+        if (response.data["version"] != versionApp) {
           showDialog(
               barrierDismissible: false,
               context: context,
@@ -163,8 +162,13 @@ class _CyclesState extends State<Cycles> {
           print("ya está actualizado");
         }
       } catch (e) {
+        CreateError().createError(
+            dio,
+            "${e.toString()} No se ha podido verificar la versión de la aplicación",
+            "Cycles");
         print(e);
-        toast(context, "No se ha podido verificar la versión de la aplicación.", red);
+        toast(context, "No se ha podido verificar la versión de la aplicación.",
+            red);
       }
     }
   }

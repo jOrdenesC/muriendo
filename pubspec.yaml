@@ -73,7 +73,6 @@ dependencies:
   dots_indicator: ^1.2.0
   #Library for show badges when add exccercise or user in CreateClass
   badges: ^1.1.6
-  chart_components: ^0.1.6
   audioplayers: 0.17.0
    #Tessting Video Player Webm
   chewie: ^0.12.1+1
@@ -98,6 +97,8 @@ dependencies:
   screen: ^0.0.5
   progress_dialog: ^1.1.0+1
   url_launcher: ^5.7.10
+  connectivity: ^2.0.2
+  flutter_cupertino_date_picker_fork: ^1.0.3
 
 dev_dependencies:
   flutter_test:

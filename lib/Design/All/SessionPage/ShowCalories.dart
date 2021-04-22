@@ -147,7 +147,7 @@ class _ShowCaloriesState extends State<ShowCalories> {
                     children: [
                       Text(
                         """Felicidades
-has quemado ${total.toString().substring(0, 4)} KCal""",
+has quemado ${total.toInt()} KCal""",
                         style: TextStyle(
                           fontSize: 7.0.w,
                           color: blue,

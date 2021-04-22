@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Utils/Colors.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +26,7 @@ class ApplicationUse extends StatefulWidget {
 
 class _ApplicationUseState extends State<ApplicationUse> {
   bool loaded = false;
-
+  var dio = Dio();
   double phase1Value = 0;
   double phase2Value = 0;
   double phase3Value = 0;
@@ -34,6 +41,14 @@ class _ApplicationUseState extends State<ApplicationUse> {
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getDataForPhase();
   }
 
@@ -51,7 +66,9 @@ class _ApplicationUseState extends State<ApplicationUse> {
             SizedBox(
               height: 2.0.h,
             ),
-            FittedBox(fit: BoxFit.fitWidth, child: Text("Uso de aplicación")),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text("Uso de aplicación".toUpperCase())),
           ],
         ),
         centerTitle: true,
@@ -59,10 +76,8 @@ class _ApplicationUseState extends State<ApplicationUse> {
       ),
       body: loaded
           ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 10.0.h,
-                ),
                 cardPercentage("FASE 1", phase1Value),
                 SizedBox(
                   height: 1.0.h,
@@ -167,7 +182,6 @@ class _ApplicationUseState extends State<ApplicationUse> {
       } else {
         var prefs = await SharedPreferences.getInstance();
         String token = prefs.getString("token");
-        var dio = Dio();
 
         try {
           Response res =
@@ -214,6 +228,7 @@ class _ApplicationUseState extends State<ApplicationUse> {
             });
           }
         } catch (e) {
+          CreateError().createError(dio, e.toString(), "ApplicationUse");
           print(e);
         }
       }

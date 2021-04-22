@@ -1,10 +1,10 @@
-import 'package:chart_components/bar_chart_component.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
+import 'package:movitronia/Utils/Graphics.dart';
 import 'package:movitronia/Utils/Testing/DataGraphics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import '../../../Utils/UrlServer.dart';
 import 'dart:developer';
 import '../../../Database/Models/evidencesSend.dart';
+import '../../../Utils/Colors.dart';
 
 class CaloricExpenditure extends StatefulWidget {
   final bool isTeacher;
@@ -59,7 +60,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
       body: errorServer
           ? Center(
               child: Text(
-                "Ha ocurrido un error en el servidor. Inténtalo más tarde.",
+                "Ha ocurrido un error. Inténtalo más tarde.",
                 style: TextStyle(color: blue, fontSize: 6.0.w),
                 textAlign: TextAlign.center,
               ),
@@ -90,7 +91,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                           height: 5.0.h,
                         ),
                         Text(
-                          "GASTO CALÓRICO (KCal)",
+                          "GASTO CALÓRICO",
                           style: TextStyle(color: blue, fontSize: 7.0.w),
                         ),
                         Expanded(
@@ -106,15 +107,36 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               // border: Border.all(color: blue, width: 2),
                             ),
                             child: BarChart(
+                              // child: Padding(
+                              //     padding: EdgeInsets.only(
+                              //         left: 7,
+                              //         right: 7,
+                              //         bottom: 10.0.h,
+                              //         top: 7),
+                              // child: //widget.child,
+                              //     Container(
+                              //   height: 10.0.h,
+                              //   decoration: BoxDecoration(
+                              //       color: Colors.white,
+                              //       borderRadius: BorderRadius.all(
+                              //           Radius.circular(20))),
+                              //   child: Center(
+                              //       child: Transform.rotate(
+                              //           angle: -math.pi / 2,
+                              //           child: Text("$data"))),
+                              // )),
                               data: data,
                               labels: labels,
-                              labelStyle: TextStyle(fontSize: 3.2.w),
+                              labelStyle: TextStyle(
+                                  fontSize: 3.2.w, color: Colors.white),
                               valueStyle: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
+                                  fontSize: 5.0.w,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                               displayValue: true,
                               reverse: true,
                               getColor: DataRepository.getColor,
-                              getIcon: DataRepository.getIcon,
+                              // getIcon: DataRepository.getIcon,
                               barWidth: 15.0.w,
                               barSeparation: 7.0.w,
                               animationDuration: Duration(milliseconds: 1000),
@@ -136,14 +158,15 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Total".toUpperCase(),
+                                  " Total ".toUpperCase(),
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 6.0.w),
                                 ),
                                 Container(
                                   child: Center(
                                     child: Text(
-                                      "${totalKcal.roundToDouble().toString().length > 5 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
+                                      totalKcal.toInt().toString() + " KCal",
+                                      // "${totalKcal.roundToDouble().toString().length > 5 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
                                       style: TextStyle(
                                           fontSize: 5.0.w, color: blue),
                                     ),

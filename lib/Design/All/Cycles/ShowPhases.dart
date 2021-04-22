@@ -1,6 +1,10 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
+import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Utils/Colors.dart';
@@ -27,6 +31,7 @@ class _ShowPhasesState extends State<ShowPhases> {
   dynamic arguments;
   String level;
   int numberClass = 0;
+  var dio = Dio();
   List classes = [];
   List classesCourses = [];
   List courses = [];
@@ -45,6 +50,14 @@ class _ShowPhasesState extends State<ShowPhases> {
   @override
   void initState() {
     super.initState();
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: dio,
+          connectivity: Connectivity(),
+        ),
+      ),
+    );
     getDataClasses();
   }
 
@@ -54,7 +67,7 @@ class _ShowPhasesState extends State<ShowPhases> {
     });
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
-    var dio = Dio();
+
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       try {
@@ -75,6 +88,7 @@ class _ShowPhasesState extends State<ShowPhases> {
           }
         }
       } catch (e) {
+        CreateError().createError(dio, e.toString(), "ShowPhases");
         print(e);
         toast(context, "Ha ocurrido un error, inténtalo más tarde.", red);
       }

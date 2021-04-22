@@ -45,4 +45,10 @@ class SembastTipsDataRepository extends TipsDataRepository {
         .map((snapshot) => TipsData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
   }
+
+  Future deleteAll() async {
+    print("eliminadas todos los tips");
+    await _store.delete(_database);
+    return null;
+  }
 }

@@ -143,112 +143,116 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-        child: Column(
+      body: Scrollbar(
+        child: ListView(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                widget.isTeacher
-                    ? Text(
-                        "Mets: ",
-                        style: TextStyle(color: Colors.white, fontSize: 7.0.w),
-                      )
-                    : Icon(
-                        Icons.local_fire_department,
-                        color: cyan,
-                        size: 7.0.w,
-                      ),
-                widget.isTeacher
-                    ? Text(widget.kcal,
-                        style: TextStyle(color: Colors.white, fontSize: 7.0.w))
-                    : Text(
-                        " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().length > 3 ? (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString().substring(0, 3) : (int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toString()} Kcal/min",
-                        style: TextStyle(color: cyan, fontSize: 6.0.w),
-                      ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.height * 0.03,
-                )
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 43.0.h,
-                  width: 100.0.w,
-                  child: VideoPlayer(videoPlayerController1),
-                )
-                /*Image(
-                  width: 100.0.w,
-                  fit: BoxFit.fill,
-                  image: AssetImage('Assets/thumbnails/${args["name"]}.png'),
-                ),*/
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+            Column(
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.height * 0.03,
+                  height: MediaQuery.of(context).size.height * 0.03,
                 ),
-                // Text(
-                //   "${args["duration"]} Seg ",
-                //   style: TextStyle(color: cyan, fontSize: 6.0.w),
-                // ),
-                // Icon(Icons.alarm, color: cyan, size: 7.0.w,)
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  child: Center(
-                      child: Text(
-                    "RECOMENDACIÓN",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 5.0.w,
-                        fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    widget.isTeacher
+                        ? Text(
+                            "Mets: ",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 7.0.w),
+                          )
+                        : Icon(
+                            Icons.local_fire_department,
+                            color: cyan,
+                            size: 7.0.w,
+                          ),
+                    widget.isTeacher
+                        ? Text(widget.kcal,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 7.0.w))
+                        : Text(
+                            " ${(int.parse(widget.kcal) * 0.0175 * int.parse(weight)).toInt()} Kcal/min",
+                            style: TextStyle(color: cyan, fontSize: 6.0.w),
+                          ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.height * 0.03,
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 43.0.h,
+                      width: 100.0.w,
+                      child: VideoPlayer(videoPlayerController1),
+                    )
+                    /*Image(
+                      width: 100.0.w,
+                      fit: BoxFit.fill,
+                      image: AssetImage('Assets/thumbnails/${args["name"]}.png'),
+                    ),*/
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.height * 0.03,
+                    ),
+                    // Text(
+                    //   "${args["duration"]} Seg ",
+                    //   style: TextStyle(color: cyan, fontSize: 6.0.w),
+                    // ),
+                    // Icon(Icons.alarm, color: cyan, size: 7.0.w,)
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      child: Center(
+                          child: Text(
+                        "RECOMENDACIÓN",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 6.0.w,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      )),
+                      decoration: BoxDecoration(
+                          color: green,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(50),
+                              topLeft: Radius.circular(50))),
+                      width: 70.0.w,
+                      height: 6.0.h,
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20),
+                  child: Text(
+                    widget.desc,
+                    style: TextStyle(color: Colors.white, fontSize: 5.0.w),
                     textAlign: TextAlign.center,
-                  )),
-                  decoration: BoxDecoration(
-                      color: green,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(50),
-                          topLeft: Radius.circular(50))),
-                  width: 70.0.w,
-                  height: 6.0.h,
-                )
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
               ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.01,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20),
-              child: Text(
-                widget.desc,
-                style: TextStyle(color: Colors.white, fontSize: 6.0.w),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.01,
             ),
           ],
         ),

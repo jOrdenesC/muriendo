@@ -112,7 +112,7 @@ class _AllEvidencesState extends State<AllEvidences> {
                           SizedBox(
                             width: 2.0.w,
                           ),
-                          Text("Vídeos",
+                          Text("Vídeos".toUpperCase(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 5.0.w))
                         ],
@@ -157,7 +157,7 @@ class _AllEvidencesState extends State<AllEvidences> {
                           SizedBox(
                             width: 2.0.w,
                           ),
-                          Text("Cuestionarios",
+                          Text("Cuestionarios".toUpperCase(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 5.0.w))
                         ],

@@ -145,7 +145,27 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: h * 0.25,
+                          height: h * 0.05,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.help,
+                                    color: Colors.white,
+                                    size: 10.0.w,
+                                  ),
+                                  onPressed: () {
+                                    goToSupport(true);
+                                  }),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: h * 0.21,
                         ),
                         FadeIn(
                           duration: Duration(milliseconds: 1500),
@@ -449,7 +469,7 @@ class _LoginState extends State<Login> {
                       phase: null,
                       classObject: null,
                       finished: false);
-                  print("Se nsertó una evidencia");
+                  print("Se insertó una evidencia");
                   await evidencesRepository.insertEvidence(evidencesSend);
                 } else {
                   EvidencesSend evidencesSend = EvidencesSend(
