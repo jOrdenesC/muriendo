@@ -24,7 +24,8 @@ class ExcerciseVideo extends StatefulWidget {
   final int number;
   final String phase;
   final bool isCustom;
-  ExcerciseVideo(this.id, this.questionnaire, this.number, this.phase, this.isCustom);
+  ExcerciseVideo(
+      this.id, this.questionnaire, this.number, this.phase, this.isCustom);
   @override
   _ExcerciseVideoState createState() => _ExcerciseVideoState();
 }
@@ -116,8 +117,11 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                               label: "Espera para avanzar",
                               timeout: 3,
                               onPressed: () {
-                                _.controllTimer(widget.id, widget.questionnaire,
-                                    widget.number, widget.phase,
+                                _.controllTimer(
+                                    widget.id,
+                                    widget.questionnaire,
+                                    widget.number,
+                                    widget.phase,
                                     widget.isCustom);
                               },
                               toastMessage: "Adelantado"),
@@ -530,33 +534,33 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
               SizedBox(
                 height: 2.0.w,
               ),
-              Container(
-                decoration: BoxDecoration(
-                    color: cyan,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(80),
-                        bottomRight: Radius.circular(80))),
-                width: 10.0.h,
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print("Button pressed");
-                        _.controllTimer(widget.id, widget.questionnaire,
-                            widget.number, widget.phase,widget.isCustom);
-                      },
-                      child: Icon(
-                        Icons.volume_up_rounded,
-                        color: Colors.white,
-                        size: w * 0.08,
-                      ),
-                    ),
-                    SizedBox(
-                      width: w * 0.015,
-                    )
-                  ],
-                ),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //       color: cyan,
+              //       borderRadius: BorderRadius.only(
+              //           topRight: Radius.circular(80),
+              //           bottomRight: Radius.circular(80))),
+              //   width: 10.0.h,
+              //   child: Row(
+              //     children: [
+              //       InkWell(
+              //         onTap: () {
+              //           print("Button pressed");
+              //           _.controllTimer(widget.id, widget.questionnaire,
+              //               widget.number, widget.phase,widget.isCustom);
+              //         },
+              //         child: Icon(
+              //           Icons.volume_up_rounded,
+              //           color: Colors.white,
+              //           size: w * 0.08,
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         width: w * 0.015,
+              //       )
+              //     ],
+              //   ),
+              // ),
               SizedBox(
                 height: 2.0.w,
               ),
@@ -604,35 +608,35 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     return Column(
       children: [
         SizedBox(
-          height: 2.0.h,
+          height: 10.0.h,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.volume_up_outlined,
-                    color: Colors.white,
-                    size: 15.0.w,
-                  ),
-                  SizedBox(
-                    width: 2.0.w,
-                  )
-                ],
-              ),
-              width: 25.0.w,
-              height: 10.0.h,
-              decoration: BoxDecoration(
-                  color: cyan,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(80),
-                      bottomLeft: Radius.circular(80))),
-            )
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.end,
+        //   children: [
+        //     Container(
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           // Icon(
+        //           //   Icons.volume_up_outlined,
+        //           //   color: Colors.white,
+        //           //   size: 15.0.w,
+        //           // ),
+        //           SizedBox(
+        //             width: 2.0.w,
+        //           )
+        //         ],
+        //       ),
+        //       width: 25.0.w,
+        //       height: 10.0.h,
+        //       decoration: BoxDecoration(
+        //           color: cyan,
+        //           borderRadius: BorderRadius.only(
+        //               topLeft: Radius.circular(80),
+        //               bottomLeft: Radius.circular(80))),
+        //     )
+        //   ],
+        // ),
         SizedBox(
           height: 2.0.h,
         ),
@@ -785,27 +789,27 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
             ),
             Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: cyan,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(80),
-                          bottomRight: Radius.circular(80))),
-                  width: 15.0.w,
-                  height: 6.0.h,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.volume_up_rounded,
-                        color: Colors.white,
-                        size: 10.0.w,
-                      ),
-                      SizedBox(
-                        width: 0.15.w,
-                      )
-                    ],
-                  ),
-                ),
+                // Container(
+                //   decoration: BoxDecoration(
+                //       color: cyan,
+                //       borderRadius: BorderRadius.only(
+                //           topRight: Radius.circular(80),
+                //           bottomRight: Radius.circular(80))),
+                //   width: 15.0.w,
+                //   height: 6.0.h,
+                //   child: Row(
+                //     children: [
+                //       Icon(
+                //         Icons.volume_up_rounded,
+                //         color: Colors.white,
+                //         size: 10.0.w,
+                //       ),
+                //       SizedBox(
+                //         width: 0.15.w,
+                //       )
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             Expanded(
@@ -938,29 +942,29 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: cyan,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(80),
-                                bottomLeft: Radius.circular(80))),
-                        width: 25.0.w,
-                        height: 10.0.h,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.volume_up_rounded,
-                              color: Colors.white,
-                              size: 20.0.w,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     Container(
+                  //       decoration: BoxDecoration(
+                  //           color: cyan,
+                  //           borderRadius: BorderRadius.only(
+                  //               topLeft: Radius.circular(80),
+                  //               bottomLeft: Radius.circular(80))),
+                  //       width: 25.0.w,
+                  //       height: 10.0.h,
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(
+                  //             Icons.volume_up_rounded,
+                  //             color: Colors.white,
+                  //             size: 20.0.w,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -1186,8 +1190,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
       height: MediaQuery.of(context).size.height / 2.5,
       width: MediaQuery.of(context).size.width / 2.5,
       onComplete: () {
-        _.controllTimer(
-            widget.id, widget.questionnaire, widget.number, widget.phase,widget.isCustom);
+        _.controllTimer(widget.id, widget.questionnaire, widget.number,
+            widget.phase, widget.isCustom);
       },
     );
   }

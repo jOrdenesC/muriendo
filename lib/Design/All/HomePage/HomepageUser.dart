@@ -18,7 +18,7 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
-import 'package:movitronia/Utils/retryDio.dart';
+import 'package:movitronia/Utils/retryDioDialog.dart';
 import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -38,6 +38,7 @@ class HomePageUser extends StatefulWidget {
 class _HomePageUserState extends State<HomePageUser> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var dio = Dio();
+  var dio2 = Dio();
   int _currentIndex = 0;
   List<Widget> _screens = [];
   int count = 0;
@@ -50,9 +51,9 @@ class _HomePageUserState extends State<HomePageUser> {
   void initState() {
     super.initState();
     dio.interceptors.add(
-      RetryOnConnectionChangeInterceptor(
+      RetryOnConnectionChangeInterceptorDialog(
         requestRetrier: DioConnectivityRequestRetrier(
-          dio: dio,
+          dio: dio2,
           connectivity: Connectivity(),
         ),
       ),
@@ -532,9 +533,7 @@ class _HomePageUserState extends State<HomePageUser> {
             ),
             InkWell(
               onTap: () async {
-                ClassDataRepository classDataRepository = GetIt.I.get();
-                var res = await classDataRepository.getAllClassLevel();
-                print(res);
+                uploadData();
               },
               child: Text(
                 "Versión: $versionApp",
@@ -565,89 +564,76 @@ class _HomePageUserState extends State<HomePageUser> {
           ));
       var prefs = await SharedPreferences.getInstance();
       for (var i = 0; i < dataOfflineList.length; i++) {
-        // try {
-        var uuid = Uuid().v4();
-        File file = File("${dataOfflineList[i].uriVideo}");
-        //Create Multipart form for cloudflare with video, they key is file
-        FormData data = FormData.fromMap(
-            {"file": await MultipartFile.fromFile(file.path, filename: uuid)});
-        // try {
-        var token = prefs.getString("token");
-        //First call api for generate token in cloudflare
-
-        Response response = await dio.get(
-            "https://intranet.movitronia.com/api/mobile/classes/6?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2MDNkNDM3NTNmOWUxODQ5ZGI5NmVjNjMiLCJhdWQiOiJtb2JpbGV1c2VyIiwiaWF0IjoxNjE0NjI4MzU5LCJpZCI6IjYwM2Q0Mzc1M2Y5ZTE4NDlkYjk2ZWM2MyIsInJ1dCI6Ijc3Nzc3Nzc3NyIsImVtYWlsIjoiZGVzYXJyb2xsb0BtaWNoY29tLmNsIiwibmFtZSI6ImRlc2Fycm9sbG8gbWljaGNvbSIsInNjb3BlIjoidXNlciIsInRlcm1zQWNjZXB0ZWQiOnRydWV9.abeXTOMLvrpaUCC3u6BJWSnd60IJiveMt170LKva6tVWF7Ww2PlF3WLrOf-l6wDVqffcz0GDhyZRnVz8LRLBtA");
-        // "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
-        //
-        //
-        //     .timeout(Duration(seconds: 10), onTimeout: () {
-        //   return Response(data: {
-        //     "Tiempo de espera agotado, por favor verifica tu conexión a internet"
-        //   });
-        // }).catchError((onError) {
-        //   print(onError.toString());
-        //   toast(context,
-        //       "No se ha podido obtener información de cloudflare.", red);
-        // });
-        print(response.data);
-        Navigator.pop(context);
-        // loading(context,
-        //     content: Center(
-        //       child: Image.asset(
-        //         "Assets/videos/loading.gif",
-        //         width: 70.0.w,
-        //         height: 15.0.h,
-        //         fit: BoxFit.contain,
-        //       ),
-        //     ),
-        //     title: Text(
-        //       "Enviando video...",
-        //       textAlign: TextAlign.center,
-        //     ));
-        // //Second call cloudflare api with account id and send multipart form and bearer token in headers
-        // Response response2 = await dio.post(
-        //   "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
-        //   data: data,
-        //   options: Options(headers: {
-        //     HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
-        //   }),
-        //   onSendProgress: (int sent, int total) {
-        //     setState(() {
-        //       progressVideo = sent / total * 100;
-        //       print(progressVideo.floor());
-        //     });
-        //   },
-        // ).catchError((onError) {
-        //   throw Exception("algo");
-        // });
-        // print(response2.data);
-        // var videoData = {
-        //   "uuid": uuid,
-        //   "exercises": dataOfflineList[i].exercises, //args["exercises"],
-        //   "cloudflareId": response2.data["result"]["uid"]
-        // };
-        // dev.log(videoData.toString());
-        // toast(context, "Video subido con éxito.", green);
-        // // Navigator.pop(context);
-        // //Call API for send data of video in cloudflare
-        // // Response response3 = await dio.post("path?token=$token", data: dataSend);
-        // uploadQuestionary(dataOfflineList[i], videoData);
-        // } catch (e) {
-        //   Navigator.pop(context);
-        //   toast(
-        //       context,
-        //       "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
-        //       red);
-        //   print("EO " + e.toString());
-        // }
-        // } catch (e) {
-        //   Navigator.pop(context);
-        //   toast(
-        //       context,
-        //       "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
-        //       red);
-        //   print(e.response);
-        // }
+        try {
+          var uuid = Uuid().v4();
+          File file = File("${dataOfflineList[i].uriVideo}");
+          // Create Multipart form for cloudflare with video, they key is file
+          FormData data = FormData.fromMap({
+            "file": await MultipartFile.fromFile(file.path, filename: uuid)
+          });
+          try {
+            var token = prefs.getString("token");
+            Response response = await dio
+            .get("$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
+            //First call api for generate token in cloudflare
+            Navigator.pop(context);
+            loading(context,
+                content: Center(
+                  child: Image.asset(
+                    "Assets/videos/loading.gif",
+                    width: 70.0.w,
+                    height: 15.0.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                title: Text(
+                  "Enviando video...",
+                  textAlign: TextAlign.center,
+                ));
+            //Second call cloudflare api with account id and send multipart form and bearer token in headers
+            Response response2 = await dio.post(
+              "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
+              data: data,
+              options: Options(headers: {
+                HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
+              }),
+              onSendProgress: (int sent, int total) {
+                setState(() {
+                  progressVideo = sent / total * 100;
+                  print(progressVideo.floor());
+                });
+              },
+            ).catchError((onError) {
+              throw Exception("algo");
+            });
+            print(response2.data);
+            var videoData = {
+              "uuid": uuid,
+              "exercises": dataOfflineList[i].exercises, //args["exercises"],
+              "cloudflareId": response2.data["result"]["uid"]
+            };
+            dev.log(videoData.toString());
+            toast(context, "Video subido con éxito.", green);
+            // Navigator.pop(context);
+            //Call API for send data of video in cloudflare
+            // Response response3 = await dio.post("path?token=$token", data: dataSend);
+            uploadQuestionary(dataOfflineList[i], videoData);
+          } catch (e) {
+            Navigator.pop(context);
+            toast(
+                context,
+                "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
+                red);
+            print("EO " + e.toString());
+          }
+        } catch (e) {
+          Navigator.pop(context);
+          toast(
+              context,
+              "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
+              red);
+          print(e.response);
+        }
       }
     } else {
       toast(
