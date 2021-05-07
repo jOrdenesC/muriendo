@@ -75,7 +75,7 @@ class _SplashState extends State<Splash> {
                           duration: Duration(seconds: 1),
                           child: Image.asset(
                             "Assets/images/LogoText.png",
-                            scale: 1.5,
+                            scale: 2,
                             color: blue,
                           ),
                         ),

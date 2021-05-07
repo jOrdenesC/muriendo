@@ -27,7 +27,6 @@ import '../Utils/ConnectionState.dart';
 import '../Design/Widgets/Loading.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
-
 import 'createError.dart';
 
 class DownloadData {
@@ -257,7 +256,7 @@ class DownloadData {
           Response responseClasses = await dio.get(
             "https://intranet.movitronia.com/api/mobile/classes/$level?token=$token",
           );
-          print("RESPONSEEEEEEEEEEE ${responseClasses.data}");
+
           Navigator.pop(context);
           //getExercises();
           //await getClass(response);

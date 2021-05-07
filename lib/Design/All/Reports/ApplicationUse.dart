@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:connectivity/connectivity.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';

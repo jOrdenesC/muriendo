@@ -7,7 +7,7 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
   final DioConnectivityRequestRetrier requestRetrier;
 
   RetryOnConnectionChangeInterceptor({
-    @required this.requestRetrier,
+    @required this.requestRetrier
   });
 
   @override
@@ -29,6 +29,6 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
   }
 
   bool _shouldRetry(DioError err) {
-    return err.type == DioErrorType.DEFAULT && err.error != null;
+    return err.type == DioErrorType.DEFAULT;
   }
 }

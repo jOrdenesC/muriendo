@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:badges/badges.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +51,8 @@ class _HomePageUserState extends State<HomePageUser> {
     super.initState();
     dio.interceptors.add(
       RetryOnConnectionChangeInterceptorDialog(
+        context: context,
+        function: () => {print("Testing")},
         requestRetrier: DioConnectivityRequestRetrier(
           dio: dio2,
           connectivity: Connectivity(),
@@ -573,8 +574,8 @@ class _HomePageUserState extends State<HomePageUser> {
           });
           try {
             var token = prefs.getString("token");
-            Response response = await dio
-            .get("$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
+            Response response = await dio.get(
+                "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
             //First call api for generate token in cloudflare
             Navigator.pop(context);
             loading(context,
@@ -603,9 +604,7 @@ class _HomePageUserState extends State<HomePageUser> {
                   print(progressVideo.floor());
                 });
               },
-            ).catchError((onError) {
-              throw Exception("algo");
-            });
+            );
             print(response2.data);
             var videoData = {
               "uuid": uuid,

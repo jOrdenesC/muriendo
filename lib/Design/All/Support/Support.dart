@@ -46,19 +46,24 @@ class _SupportState extends State<Support> {
             )
           : null,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 10.0.h,
-          ),
           // button("CLAVE INTRANET", "342452"),
-          SizedBox(
-            height: 6.0.h,
-          ),
+
           InkWell(
               onTap: () {
                 _launchURL("tel:+56 442021189");
               },
               child: button("FONO SOPORTE", "+56 442021189")),
+          SizedBox(
+            height: 3.0.h,
+          ),
+          InkWell(
+              onTap: () {
+                _launchURL("https://movitronia.com/ayuda.html");
+              },
+              child: button("PREGUNTAS FRECUENTES", "IR A FAQ")),
+
           SizedBox(
             height: 3.0.h,
           ),

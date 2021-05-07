@@ -16,95 +16,115 @@ class _RecoverPassState extends State<RecoverPass> {
   bool loadingg = false;
   bool appeared = false;
   TextEditingController mail = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          centerTitle: true,
+          title: Column(
+            children: [
+              SizedBox(
+                height: 2.0.h,
+              ),
+              FittedBox(
+                  fit: BoxFit.fitWidth, child: Text("RECUPERAR CONTRASEÑA")),
+            ],
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
         body: Stack(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("Assets/images/LogoCompleto.png", width: 30.0.w),
-              ],
-            ),
-            SizedBox(
-              height: 5.0.h,
-            ),
-            Container(
-              width: 80.0.w,
-              // height: .0.h,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(50))),
-              child: TextFormField(
-                controller: mail,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: blue, fontSize: 6.0.w),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 2.0),
-                    child: InkWell(
-                      onTap: () {
-                        validation();
-                      },
-                      child: CircleAvatar(
-                        radius: 6.0.w,
-                        backgroundColor: blue,
-                        child: Center(
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 7.0.w,
-                            color: Colors.white,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("Assets/images/LogoCompleto.png",
+                        width: 30.0.w),
+                  ],
+                ),
+                SizedBox(
+                  height: 5.0.h,
+                ),
+                Container(
+                  width: 80.0.w,
+                  // height: .0.h,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(50))),
+                  child: TextFormField(
+                    controller: mail,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: blue, fontSize: 6.0.w),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: InkWell(
+                          onTap: () {
+                            validation();
+                          },
+                          child: CircleAvatar(
+                            radius: 6.0.w,
+                            backgroundColor: blue,
+                            child: Center(
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 7.0.w,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
+                      border: InputBorder.none,
+                      counterText: "",
+                      labelStyle: TextStyle(color: blue),
+                      hintText: "CORREO",
+                      hintStyle: TextStyle(color: blue, fontSize: 7.0.w),
                     ),
                   ),
-                  border: InputBorder.none,
-                  counterText: "",
-                  labelStyle: TextStyle(color: blue),
-                  hintText: "CORREO",
-                  hintStyle: TextStyle(color: blue, fontSize: 7.0.w),
-                ),
-              ),
-            )
-          ],
-        ),
-        loadingg
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
+                )
+              ],
+            ),
+            loadingg
+                ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AnimatedContainer(
-                        curve: Curves.easeIn,
-                        duration: Duration(seconds: 1),
-                        decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        width: appeared ? 40.0.w : 10.0.w,
-                        height: appeared ? 40.0.w : 10.0.w,
-                        child: Center(
-                          child: Image.asset(
-                            "Assets/videos/loading.gif",
-                            fit: BoxFit.contain,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedContainer(
+                            curve: Curves.easeIn,
+                            duration: Duration(seconds: 1),
+                            decoration: BoxDecoration(
+                                color: Colors.black54,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
+                            width: appeared ? 40.0.w : 10.0.w,
+                            height: appeared ? 40.0.w : 10.0.w,
+                            child: Center(
+                              child: Image.asset(
+                                "Assets/videos/loading.gif",
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        ],
+                      )
                     ],
                   )
-                ],
-              )
-            : SizedBox.shrink()
-      ],
-    ));
+                : SizedBox.shrink()
+          ],
+        ));
   }
 
   sendMailRecuperation() async {

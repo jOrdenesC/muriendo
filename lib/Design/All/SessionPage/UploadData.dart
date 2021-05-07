@@ -1,7 +1,13 @@
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:movitronia/Database/Models/OfflineData.dart';
+import 'package:movitronia/Database/Models/evidencesSend.dart';
+import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
+import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Database/Repository/OfflineRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
+import 'package:movitronia/Utils/retryDioConnectivity.dart';
+import 'package:movitronia/Utils/retryDioDialog.dart';
 import '../HomePage/HomepageUser.dart';
 import 'package:get/get.dart' as GET;
 import 'package:movitronia/Utils/ConnectionState.dart';
@@ -30,8 +36,27 @@ class _UploadDataState extends State<UploadData> {
   double progressQuestionary = 0.0;
   double progressVideo = 0.0;
   bool isLoading = false;
+  var dio = Dio();
 
   @override
+  void initState() {
+    initInterceptor();
+    super.initState();
+  }
+
+  initInterceptor() {
+    RetryOnConnectionChangeInterceptorDialog(
+      function: () {
+        print("a");
+      },
+      context: context,
+      requestRetrier: DioConnectivityRequestRetrier(
+        dio: dio,
+        connectivity: Connectivity(),
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     final dynamic args =
         (ModalRoute.of(context).settings.arguments as RouteArguments).args;
@@ -55,10 +80,7 @@ class _UploadDataState extends State<UploadData> {
           ),
         ),
         appBar: AppBar(
-          // leading: IconButton(
-          //   icon: Icon(Icons.arrow_back, size: 12.0.w, color: Colors.white),
-          //   onPressed: () => Navigator.pop(context),
-          // ),
+          leading: SizedBox.shrink(),
           title: Column(
             children: [
               SizedBox(
@@ -202,21 +224,59 @@ class _UploadDataState extends State<UploadData> {
         toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
       }
     } else {
+      var uuidDevice = prefs.getString("uuid");
+      var nameUser = prefs.getString("name");
+      var uuidUser = uuidDevice + nameUser;
       var actualVideo = prefs.getString("actualVideo");
+      EvidencesRepository evidencesRepository = GetIt.I.get();
+      ClassDataRepository classDataRepository = GetIt.I.get();
+      var classObj = await classDataRepository.getClassID(args["idClass"]);
       saveOffline(
-        Uuid().v4().toString(),
-        args["phase"].toString(),
-        args["idClass"].toString(),
-        args["mets"],
-        course[0].courseId,
-        res[0].questionary,
-        actualVideo,
-        args["exercises"],
-        args["isCustom"] ? "customClass" : "normalClass",
-      );
+          Uuid().v4().toString(),
+          args["phase"].toString(),
+          args["idClass"].toString(),
+          args["mets"],
+          course[0].courseId,
+          res[0].questionary,
+          actualVideo,
+          args["exercises"],
+          args["isCustom"] ? "customClass" : "normalClass",
+          uuidUser);
+      try {
+        EvidencesSend evidencesSend = EvidencesSend(
+            number: args["number"],
+            idEvidence: "evidencia${args["number"]}$uuidUser",
+            phase: args["phase"],
+            classObject: {
+              "times": {
+                "calentamiento": classObj[0].timeCalentamiento,
+                "desarrollo": classObj[0].timeDesarrollo,
+                "vcalma": classObj[0].timeVcalma,
+                "flexibilidad": classObj[0].timeFlexibilidad
+              },
+              "students": [],
+              "exercisesCalentamiento": classObj[0].excerciseCalentamiento,
+              "exercisesFlexibilidad": classObj[0].excerciseFlexibilidad,
+              "exercisesDesarrollo": classObj[0].excerciseDesarrollo,
+              "exercisesVueltaCalma": classObj[0].excerciseVueltaCalma,
+              "tips": classObj[0].tips,
+              "_id": classObj[0].classID,
+              "course": "",
+              "questionnaire": classObj[0].questionnaire,
+              "number": classObj[0].number,
+              "level": classObj[0].level,
+              "pauses": classObj[0].pauses
+            },
+            finished: true,
+            kilocalories: args["mets"],
+            questionnaire: res[0].questionary);
+        await evidencesRepository.insertEvidence(evidencesSend);
+      } catch (e) {
+        print(e.toString());
+      }
       toast(
           context,
-          "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
+          "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos automáticamente cuando tengas conexión a internet.",
           green);
       GET.Get.offAll(HomePageUser());
     }
@@ -231,7 +291,8 @@ class _UploadDataState extends State<UploadData> {
       var questionnaire,
       var uriVideo,
       var exercises,
-      String type) async {
+      String type,
+      String uuidUser) async {
     OfflineRepository offlineRepository = GetIt.I.get();
     OfflineData questionaryData = OfflineData(
         uuid: uuid,
@@ -242,7 +303,8 @@ class _UploadDataState extends State<UploadData> {
         idClass: classId,
         exercises: exercises,
         totalKilocalories: totalKilocalories,
-        type: type);
+        type: type,
+        uuidUser: uuidUser);
     log(questionaryData.toMap().toString());
     await offlineRepository.insert(questionaryData);
     return true;
@@ -321,27 +383,31 @@ class _UploadDataState extends State<UploadData> {
         uploadQuestionary(args, videoData);
       } catch (e) {
         toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
+        Navigator.pop(context);
         print("EO " + e.toString());
       }
     } else {
       var prefs = await SharedPreferences.getInstance();
       CourseDataRepository courseDataRepository = GetIt.I.get();
       var course = await courseDataRepository.getAllCourse();
+      var uuidDevice = prefs.getString("uuid");
+      var nameUser = prefs.getString("name");
+      var uuidUser = uuidDevice + nameUser;
       OfflineRepository offlineRepository = GetIt.I.get();
       QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
       var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
       var actualVideo = prefs.getString("actualVideo");
       saveOffline(
-        Uuid().v4().toString(),
-        args["phase"].toString(),
-        args["idClass"].toString(),
-        args["mets"],
-        course[0].courseId,
-        res[0].questionary,
-        actualVideo,
-        args["exercises"],
-        args["isCustom"] ? "customClass" : "normalClass",
-      );
+          Uuid().v4().toString(),
+          args["phase"].toString(),
+          args["idClass"].toString(),
+          args["mets"],
+          course[0].courseId,
+          res[0].questionary,
+          actualVideo,
+          args["exercises"],
+          args["isCustom"] ? "customClass" : "normalClass",
+          uuidUser);
       var resOffline = await offlineRepository.getAll();
       log(resOffline.toString());
       GET.Get.offAll(HomePageUser());

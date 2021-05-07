@@ -522,6 +522,7 @@ class _LoginState extends State<Login> {
       } catch (e) {
         print(e);
         if (e is DioError) {
+          print("EEEEEERROR "+e.toString());
           Navigator.pop(context);
           toastTop(
               context,

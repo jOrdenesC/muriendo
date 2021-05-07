@@ -19,7 +19,7 @@ class RetryOnConnectionChangeInterceptorDialog extends Interceptor {
   Future onError(DioError err) async {
     print("entra al onError $err");
     print(err.type);
-    showDialog(
+    return showDialog(
         context: context,
         builder: (_) {
           return AlertDialog(
@@ -29,7 +29,7 @@ class RetryOnConnectionChangeInterceptorDialog extends Interceptor {
             ),
             actions: [
               FlatButton(
-                onPressed: () => Navigator.pop(context, false), // passing false
+                onPressed: () => function, // passing false
                 child: Text(
                   'Guardar local',
                   style: TextStyle(fontSize: 6.0.w, color: green),
@@ -66,7 +66,7 @@ class RetryOnConnectionChangeInterceptorDialog extends Interceptor {
       }
     });
     // Let the error pass through if it's not the error we're looking for
-    return err;
+    
   }
 
   bool _shouldRetry(DioError err) {

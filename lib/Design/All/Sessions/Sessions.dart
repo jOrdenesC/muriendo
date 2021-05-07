@@ -33,7 +33,7 @@ class Sessions extends StatefulWidget {
 }
 
 class _SessionsState extends State<Sessions> {
-  Dio dio;
+  var dio = Dio();
   ClassDataRepository classDataRepository = GetIt.I.get();
   EvidencesRepository evidencesRepository = GetIt.I.get();
   bool loaded = false;
@@ -142,14 +142,14 @@ class _SessionsState extends State<Sessions> {
       });
     }
 
-    Response responseVideos = await Dio().post(
+    Response responseVideos = await dio.post(
         "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
         data: {"platform": platform});
     print("RESPONSE VIDEOS " + responseVideos.data);
-    Response responseAudiosExercise = await Dio().get(
+    Response responseAudiosExercise = await dio.get(
         "https://intranet.movitronia.com/api/mobile/audiosExercisesZip?token=$token");
     print("RESPONSE AUDIOS EXERCISE " + responseAudiosExercise.data);
-    Response responseAudiosLevel = await Dio().get(
+    Response responseAudiosLevel = await dio.get(
         "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
     print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
 
@@ -159,8 +159,12 @@ class _SessionsState extends State<Sessions> {
       prVideos.style(message: "Iniciando descarga de videos...");
       if (downloadedVideo == false || downloadedVideo == null) {
         await prVideos.show();
-        await downloadVideos(responseVideos.data, "videos.zip", context, "",
-            "videos", platform, prVideos);
+        var res = await downloadVideos(responseVideos.data, "videos.zip",
+            context, "", "videos", platform, prVideos);
+        if (res == false) {
+          await downloadVideos(responseVideos.data, "videos.zip", context, "",
+              "videos", platform, prVideos);
+        }
       }
       if (downloadAudio == null || downloadAudio == false) {
         await prAudios.show();
@@ -186,29 +190,44 @@ class _SessionsState extends State<Sessions> {
     var prefs = await SharedPreferences.getInstance();
     var dir = await getApplicationDocumentsDirectory();
 
-    await dio.download(url, "${dir.path}/$route/$filename",
-        onReceiveProgress: (rec, total) {
-      setState(() {
-        progressVideos = ((rec / total) * 100).floor().toString();
-        pr.update(
-            progressWidget: Image.asset(
-              "Assets/videos/loading.gif",
-              fit: BoxFit.contain,
-            ),
-            message: "Descargando vídeos... $progressVideos%");
-      });
+    setState(() {
+      // ignore: deprecated_member_use
+      dio.options.headers[HttpHeaders.connectionHeader] = "keep-alive";
     });
-    await pr.hide();
-    if (route == "videos") {
-      await unarchiveAndSaveVideos(
-          File("${dir.path}/$route/$filename"), context, route, platform);
-    } else {
-      await unarchiveAndSave(
-          File("${dir.path}/$route/$filename"), context, route, platform);
+
+    try {
+      await retry(
+          numberOfRetries: 100,
+          function: () async {
+            await dio.download(url, "${dir.path}/$route/$filename",
+                onReceiveProgress: (rec, total) {
+              setState(() {
+                progressVideos = ((rec / total) * 100).floor().toString();
+                pr.update(
+                    progressWidget: Image.asset(
+                      "Assets/videos/loading.gif",
+                      fit: BoxFit.contain,
+                    ),
+                    message: "Descargando vídeos... $progressVideos%");
+              });
+            });
+            await pr.hide();
+            if (route == "videos") {
+              await unarchiveAndSaveVideos(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            } else {
+              await unarchiveAndSave(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            }
+            prefs.setBool("downloadedVideo", true);
+            print("finish");
+            return true;
+          });
+    } catch (e) {
+      toast(context, "Error al descargar vídeos. Reintentando...", red);
+      print(e.toString());
+      return false;
     }
-    prefs.setBool("downloadedVideo", true);
-    print("finish");
-    return null;
   }
 
   Future downloadAudios(
@@ -221,30 +240,37 @@ class _SessionsState extends State<Sessions> {
       ProgressDialog pr) async {
     var dir = await getApplicationDocumentsDirectory();
     var prefs = await SharedPreferences.getInstance();
-    var dio = Dio();
-    await dio.download(url, "${dir.path}/$route/$filename",
-        onReceiveProgress: (rec, total) {
-      setState(() {
-        progressAudios = ((rec / total) * 100).floor().toString();
-        pr.update(
-            progressWidget: Image.asset(
-              "Assets/videos/loading.gif",
-              fit: BoxFit.contain,
-            ),
-            message: "Descargando audios de ejercicios... $progressAudios%");
-      });
-    });
-    await pr.hide();
-    if (route == "videos") {
-      await unarchiveAndSaveVideos(
-          File("${dir.path}/$route/$filename"), context, route, platform);
-    } else {
-      await unarchiveAndSave(
-          File("${dir.path}/$route/$filename"), context, route, platform);
+    try {
+      await retry(
+          numberOfRetries: 100,
+          function: () async {
+            await dio.download(url, "${dir.path}/$route/$filename",
+                onReceiveProgress: (rec, total) {
+              setState(() {
+                progressAudios = ((rec / total) * 100).floor().toString();
+                pr.update(
+                    progressWidget: Image.asset(
+                      "Assets/videos/loading.gif",
+                      fit: BoxFit.contain,
+                    ),
+                    message:
+                        "Descargando audios de ejercicios... $progressAudios%");
+              });
+            });
+            await pr.hide();
+            if (route == "videos") {
+              await unarchiveAndSaveVideos(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            } else {
+              await unarchiveAndSave(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            }
+            print("finish");
+            prefs.setBool("downloadedAudioExercises", true);
+          });
+    } catch (e) {
+      print(e.toString());
     }
-    print("finish");
-    prefs.setBool("downloadedAudioExercises", true);
-    return null;
   }
 
   Future downloadTips(
@@ -256,27 +282,40 @@ class _SessionsState extends State<Sessions> {
       String platform,
       ProgressDialog pr) async {
     var dir = await getApplicationDocumentsDirectory();
-    var dio = Dio();
-    await dio.download(url, "${dir.path}/$route/$filename",
-        onReceiveProgress: (rec, total) {
-      setState(() {
-        progressTips = ((rec / total) * 100).floor().toString();
-        pr.update(
-            progressWidget: Image.asset(
-              "Assets/videos/loading.gif",
-              fit: BoxFit.contain,
-            ),
-            message: "Descargando audios de tips... $progressTips%");
-      });
-    });
-
-    await pr.hide();
-    if (route == "videos") {
-      await unarchiveAndSaveVideos(
-          File("${dir.path}/$route/$filename"), context, route, platform);
-    } else {
-      await unarchiveAndSave(
-          File("${dir.path}/$route/$filename"), context, route, platform);
+    try {
+      await retry(
+          numberOfRetries: 100,
+          function: () async {
+            var res = await dio.download(url, "${dir.path}/$route/$filename",
+                options: Options(
+                    responseType: ResponseType.bytes,
+                    followRedirects: false,
+                    validateStatus: (status) {
+                      return status < 500;
+                    }), onReceiveProgress: (rec, total) {
+              setState(() {
+                progressTips = ((rec / total) * 100).floor().toString();
+                pr.update(
+                    progressWidget: Image.asset(
+                      "Assets/videos/loading.gif",
+                      fit: BoxFit.contain,
+                    ),
+                    message: "Descargando audios de tips... $progressTips%");
+              });
+            });
+            await pr.hide();
+            if (route == "videos") {
+              await unarchiveAndSaveVideos(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            } else {
+              await unarchiveAndSave(File("${dir.path}/$route/$filename"),
+                  context, route, platform);
+            }
+            print(res.data);
+          });
+    } catch (e) {
+      print("EEEEEEEERRORRR");
+      print(e.toString());
     }
 
     print("finish");
@@ -325,7 +364,6 @@ class _SessionsState extends State<Sessions> {
 
   @override
   void initState() {
-    dio = Dio();
     setState(() {
       loaded = false;
     });
@@ -344,7 +382,6 @@ class _SessionsState extends State<Sessions> {
   }
 
   compareVersions() async {
-    var dio = Dio();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     String platform = "";
     if (Platform.isAndroid) {
@@ -1155,5 +1192,44 @@ class _SessionsState extends State<Sessions> {
         ],
       ),
     );
+  }
+}
+
+Future retry<T>(
+    {Future<T> Function() function,
+    int numberOfRetries = 3,
+    Duration delayToRetry = const Duration(milliseconds: 500),
+    String message = ''}) async {
+  int retry = numberOfRetries;
+  List<Exception> exceptions = [];
+
+  while (retry-- > 0) {
+    try {
+      return await function();
+    } catch (e) {
+      exceptions.add(e);
+    }
+    if (message != null) print('$message:  retry - ${numberOfRetries - retry}');
+    await Future.delayed(delayToRetry);
+  }
+
+  AggregatedException exception = AggregatedException(message, exceptions);
+  throw exception;
+}
+
+class AggregatedException implements Exception {
+  final String message;
+  AggregatedException(this.message, this.exceptions)
+      : lastException = exceptions.last,
+        numberOfExceptions = exceptions.length;
+
+  final List<Exception> exceptions;
+  final Exception lastException;
+  final int numberOfExceptions;
+
+  String toString() {
+    String result = '';
+    exceptions.forEach((e) => result += e.toString() + '\\');
+    return result;
   }
 }
