@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 
@@ -19,7 +20,8 @@ Widget buttonRounded(BuildContext context,
       height: height ?? 6.5.h,
       decoration: BoxDecoration(
           color: backgroudColor ?? blue,
-          borderRadius: BorderRadius.all(Radius.circular(40))),
+          borderRadius: BorderRadius.all(
+              Radius.circular(Device.get().isTablet ? 60 : 40))),
       child: Ink(
         child: Center(
           child: Stack(
@@ -28,7 +30,7 @@ Widget buttonRounded(BuildContext context,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
+                    padding: const EdgeInsets.only(left: 6.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -40,7 +42,7 @@ Widget buttonRounded(BuildContext context,
                                   Icon(
                                     Icons.arrow_forward_ios,
                                     color: blue,
-                                    size: 7.0.w,
+                                    size: Device.get().isTablet ? 6.0.w : 7.0.w,
                                   )),
                         )
                       ],
@@ -57,7 +59,7 @@ Widget buttonRounded(BuildContext context,
                       Text(
                         "$text",
                         style: textStyle ??
-                            TextStyle(color: Colors.white, fontSize: 5.5.w),
+                            TextStyle(color: Colors.white, fontSize: 12.0.sp),
                       )
                     ],
                   ),

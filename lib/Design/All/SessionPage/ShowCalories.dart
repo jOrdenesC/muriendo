@@ -107,18 +107,22 @@ class _ShowCaloriesState extends State<ShowCalories> {
                           idClass: widget.idClass,
                           phase: widget.phase,
                           isCustom: widget.isCustom);
-                }, text: "   CONTINUAR")
+                }, text: "   CONTINUAR", circleRadius: 3.5.w)
               ],
             ),
           ),
           appBar: AppBar(
+            toolbarHeight: 6.0.h,
             leading: SizedBox.shrink(),
             title: Column(
               children: [
                 SizedBox(
                   height: 2.0.h,
                 ),
-                FittedBox(fit: BoxFit.fitWidth, child: Text("FIN SESIÓN")),
+                FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text("FIN SESIÓN",
+                        style: TextStyle(fontSize: 12.0.sp))),
               ],
             ),
             centerTitle: true,

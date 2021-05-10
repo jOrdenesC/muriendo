@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
@@ -21,17 +22,23 @@ class _ReportsState extends State<Reports> {
       backgroundColor: Colors.white,
       appBar: widget.drawerMenu
           ? AppBar(
+              toolbarHeight: 6.0.h,
               backgroundColor: cyan,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+                icon: Icon(Icons.arrow_back,
+                    size: Device.get().isTablet ? 7.0.w : 9.0.w,
+                    color: Colors.white),
                 onPressed: () => Navigator.pop(context),
               ),
               title: Column(
                 children: [
                   SizedBox(
-                    height: 2.0.h,
+                    height: 1.0.h,
                   ),
-                  FittedBox(fit: BoxFit.fitWidth, child: Text("REPORTES")),
+                  FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text("REPORTES",
+                          style: TextStyle(fontSize: 13.0.sp))),
                 ],
               ),
               centerTitle: true,
@@ -54,11 +61,14 @@ class _ReportsState extends State<Reports> {
                     child: SvgPicture.asset("Assets/images/figure2.svg",
                         color: green, width: 45.0.w),
                   ),
+                  SizedBox(
+                    width: Device.get().isTablet ? 25.0.w : 10.0.w,
+                  ),
                   widget.drawerMenu
                       ? SizedBox.shrink()
                       : Image.asset(
                           "Assets/images/logo.png",
-                          width: 30.0.w,
+                          width: Device.get().isTablet ? 24.0.w : 30.0.w,
                         ),
                   SizedBox(
                     width: widget.drawerMenu ? 10.0.w : 0,
@@ -80,7 +90,7 @@ class _ReportsState extends State<Reports> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 17.0.h
+              SizedBox(height: Device.get().isTablet ? 19.0.h : 17.0.h
                   //  widget.drawerMenu ? 10.0.h : 0.0.h,
                   ),
               widget.drawerMenu
@@ -116,11 +126,11 @@ class _ReportsState extends State<Reports> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 5.5.w,
+                            radius: Device.get().isTablet ? 4.5.w : 5.5.w,
                             child: Image.asset(
                               "Assets/images/reportIcon.png",
                               color: blue,
-                              width: 6.0.w,
+                              width: Device.get().isTablet ? 5.0.w : 6.0.w,
                             ),
                           ),
                           SizedBox(
@@ -161,11 +171,11 @@ class _ReportsState extends State<Reports> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 5.5.w,
+                            radius: Device.get().isTablet ? 4.5.w : 5.5.w,
                             child: Image.asset(
                               "Assets/images/reportIcon.png",
                               color: blue,
-                              width: 6.0.w,
+                              width: Device.get().isTablet ? 5.0.w : 6.0.w,
                             ),
                           ),
                           SizedBox(

@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,8 +35,7 @@ class VideosToRecord extends StatefulWidget {
       this.number,
       this.uuidQuestionary,
       this.phase,
-      this.isCustom
-      });
+      this.isCustom});
   @override
   _VideosToRecordState createState() => _VideosToRecordState();
 }
@@ -89,6 +90,7 @@ class _VideosToRecordState extends State<VideosToRecord>
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
+              toolbarHeight: 6.0.h,
               centerTitle: true,
               backgroundColor: cyan,
               elevation: 0,
@@ -102,7 +104,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                       fit: BoxFit.fitWidth,
                       child: Text(
                         'Grabación de ejercicios'.toUpperCase(),
-                        style: TextStyle(fontSize: 5.0.w),
+                        style: TextStyle(fontSize: 15.0.sp),
                       )),
                 ],
               ),
@@ -123,14 +125,15 @@ class _VideosToRecordState extends State<VideosToRecord>
                               widget.number,
                               widget.exercises,
                               widget.phase,
-                              widget.isCustom
-                              );
+                              widget.isCustom);
                         },
+                          circleColor: Colors.transparent,
+                          circleRadius: 4.5.w,
                           text: "   GRABAR",
                           icon: Icon(
                             Icons.videocam_rounded,
-                            color: blue,
-                            size: 10.0.w,
+                            color: Colors.white,
+                            size: Device.get().isTablet ? 7.0.w : 9.0.w,
                           ))
                       : SizedBox.shrink()
                 ],
@@ -220,8 +223,13 @@ class _VideosToRecordState extends State<VideosToRecord>
                                               bottomRight:
                                                   Radius.circular(50))),
                                       child: Center(
-                                        child: Text(
+                                        child: AutoSizeText(
                                           "${widget.exercises[0]}",
+                                          maxLines: 1,
+                                          maxFontSize:
+                                              Device.get().isTablet ? 35 : 25,
+                                          minFontSize:
+                                              Device.get().isTablet ? 18 : 8,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 5.0.w),
@@ -236,10 +244,13 @@ class _VideosToRecordState extends State<VideosToRecord>
                                             border: Border.all(
                                                 color: red, width: 2)),
                                         width: 50.0.w,
-                                        height: 17.0.h,
-                                        child: Image.asset(
-                                          "Assets/thumbnails/${widget.exercises[0]}.jpeg",
-                                          fit: BoxFit.fill,
+                                        height: 20.0.h,
+                                        child: AspectRatio(
+                                          aspectRatio: 4 / 3,
+                                          child: Image.asset(
+                                            "Assets/thumbnails/${widget.exercises[0]}.jpeg",
+                                            fit: BoxFit.fill,
+                                          ),
                                         )
                                         // VideoPlayer(videoPlayerController1)
 
@@ -278,8 +289,13 @@ class _VideosToRecordState extends State<VideosToRecord>
                                               topLeft: Radius.circular(50),
                                               bottomLeft: Radius.circular(50))),
                                       child: Center(
-                                        child: Text(
+                                        child: AutoSizeText(
                                           "${widget.exercises[1]}",
+                                          maxLines: 1,
+                                          maxFontSize:
+                                              Device.get().isTablet ? 35 : 25,
+                                          minFontSize:
+                                              Device.get().isTablet ? 18 : 8,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 5.0.w),
@@ -294,7 +310,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                                             border: Border.all(
                                                 color: red, width: 3)),
                                         width: 50.0.w,
-                                        height: 17.0.h,
+                                        height: 20.0.h,
                                         child: Image.asset(
                                           "Assets/thumbnails/${widget.exercises[1]}.jpeg",
                                           fit: BoxFit.fill,
@@ -309,7 +325,7 @@ class _VideosToRecordState extends State<VideosToRecord>
                           ),
                           Text(
                             'Graba por 30 segundos estos dos ejercicios',
-                            style: TextStyle(fontSize: 6.0.w, color: blue),
+                            style: TextStyle(fontSize: 14.0.sp, color: blue),
                             textAlign: TextAlign.center,
                           ),
                         ])

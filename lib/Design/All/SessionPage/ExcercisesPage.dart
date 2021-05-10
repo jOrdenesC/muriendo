@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
@@ -53,20 +54,24 @@ class _ExcercisesPageState extends State<ExcercisesPage>
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 6.0.h,
         backgroundColor: cyan,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          icon: Device.get().isTablet
+              ? Icon(Icons.arrow_back, size: 8.0.w, color: Colors.white)
+              : Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
           children: [
             SizedBox(
-              height: 2.0.h,
+              height: 1.0.h,
             ),
             FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text("${name["name"].toUpperCase()}")),
+                child: Text("${name["name"].toUpperCase()}",
+                    style: TextStyle(fontSize: 14.0.sp))),
           ],
         ),
         centerTitle: true,
@@ -113,147 +118,146 @@ class _ExcercisesPageState extends State<ExcercisesPage>
               // ),
             ],
           ),
-          name["name"] == "calentamiento"
-              ? Scrollbar(
-                  child: ListView.builder(
-                      physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-                      itemCount: name["data"].length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: 5.0.h,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                var res = await excerciseDataRepository
-                                    .getExcerciseName(name["data"][index]);
-                                goToDetailsExcercises(
-                                    res[0].videoName,
-                                    "${name["data"][index]}",
-                                    "${res[0].mets}",
-                                    "${res[0].recommendation}",
-                                    name["isTeacher"]);
-                              },
-                              child: Container(
-                                color: Colors.white,
-                                width: w,
-                                child: Image.asset(
-                                    "Assets/thumbnails/${thumbnails[index]}.jpeg"),
+          Scrollbar(
+                      child: name["name"] == "calentamiento"
+                ? ListView.builder(
+                    physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+                    itemCount: name["data"].length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 5.0.h,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              var res = await excerciseDataRepository
+                                  .getExcerciseName(name["data"][index]);
+                              goToDetailsExcercises(
+                                  res[0].videoName,
+                                  "${name["data"][index]}",
+                                  "${res[0].mets}",
+                                  "${res[0].recommendation}",
+                                  name["isTeacher"]);
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              width: w,
+                              child: Image.asset(
+                                "Assets/thumbnails/${thumbnails[index]}.jpeg",
+                                fit: BoxFit.fill,
                               ),
                             ),
-                            Text(""),
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${name["data"][index]}",
-                                    style: TextStyle(
-                                        fontSize: w * 0.06,
-                                        color: Colors.white),
-                                  )
-                                ],
-                              ),
+                          ),
+                          Text(""),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${name["data"][index]}",
+                                  style: TextStyle(
+                                      fontSize: 15.0.sp, color: Colors.white),
+                                )
+                              ],
                             ),
-                          ],
-                        );
-                      }),
-                )
-              : name["name"] == "desarrollo"
-                  ? Scrollbar(
-                      child: ListView.builder(
-                          itemCount: name["data"].length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                SizedBox(
-                                  height: 4.0.h,
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    var res = await excerciseDataRepository
-                                        .getExcerciseName(name["data"][index]);
-                                    goToDetailsExcercises(
-                                        res[0].videoName,
-                                        "${name["data"][index]}",
-                                        "${res[0].mets}",
-                                        "${res[0].recommendation}",
-                                        name["isTeacher"]);
-                                  },
-                                  child: Container(
-                                    color: Colors.white,
-                                    width: w,
-                                    child: Image.asset(
-                                        "Assets/thumbnails/${thumbnails[index]}.jpeg"),
+                          ),
+                        ],
+                      );
+                    })
+                : name["name"] == "desarrollo"
+                    ? ListView.builder(
+                        itemCount: name["data"].length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 4.0.h,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  var res = await excerciseDataRepository
+                                      .getExcerciseName(name["data"][index]);
+                                  goToDetailsExcercises(
+                                      res[0].videoName,
+                                      "${name["data"][index]}",
+                                      "${res[0].mets}",
+                                      "${res[0].recommendation}",
+                                      name["isTeacher"]);
+                                },
+                                child: Container(
+                                  color: Colors.white,
+                                  width: w,
+                                  child: Image.asset(
+                                    "Assets/thumbnails/${thumbnails[index]}.jpeg",
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                                Text(""),
-                                FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "${name["data"][index]}",
-                                        style: TextStyle(
-                                            fontSize: w * 0.06,
-                                            color: Colors.white),
-                                      )
-                                    ],
+                              ),
+                              Text(""),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${name["data"][index]}",
+                                      style: TextStyle(
+                                          fontSize: 15.0.sp, color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        })
+                    : ListView.builder(
+                        itemCount: name["data"].length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 4.0.h,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  var res = await excerciseDataRepository
+                                      .getExcerciseName(name["data"][index]);
+                                  goToDetailsExcercises(
+                                      res[0].videoName,
+                                      "${name["data"][index]}",
+                                      "${res[0].mets}",
+                                      "${res[0].recommendation}",
+                                      name["isTeacher"]);
+                                },
+                                child: Container(
+                                  color: Colors.white,
+                                  width: w,
+                                  child: Image.asset(
+                                    "Assets/thumbnails/${thumbnails[index]}.jpeg",
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                              ],
-                            );
-                          }),
-                    )
-                  : Scrollbar(
-                      child: ListView.builder(
-                          itemCount: name["data"].length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                SizedBox(
-                                  height: 4.0.h,
+                              ),
+                              Text(""),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${name["data"][index]}",
+                                      style: TextStyle(
+                                          fontSize: 15.0.sp, color: Colors.white),
+                                    )
+                                  ],
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    var res = await excerciseDataRepository
-                                        .getExcerciseName(name["data"][index]);
-                                    goToDetailsExcercises(
-                                        res[0].videoName,
-                                        "${name["data"][index]}",
-                                        "${res[0].mets}",
-                                        "${res[0].recommendation}",
-                                        name["isTeacher"]);
-                                  },
-                                  child: Container(
-                                    color: Colors.white,
-                                    width: w,
-                                    child: Image.asset(
-                                        "Assets/thumbnails/${thumbnails[index]}.jpeg"),
-                                  ),
-                                ),
-                                Text(""),
-                                FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "${name["data"][index]}",
-                                        style: TextStyle(
-                                            fontSize: w * 0.06,
-                                            color: Colors.white),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-                    )
+                              ),
+                            ],
+                          );
+                        }),
+          )
         ],
       ),
     );

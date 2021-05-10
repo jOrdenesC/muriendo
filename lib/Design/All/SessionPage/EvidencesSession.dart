@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:movitronia/Utils/Colors.dart';
@@ -40,19 +41,26 @@ class _EvidencesSessionState extends State<EvidencesSession> {
       // ),
       backgroundColor: blue,
       appBar: AppBar(
+        toolbarHeight: 6.0.h,
         backgroundColor: cyan,
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back,
+              size: Device.get().isTablet ? 6.0.w : 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
           children: [
             SizedBox(
-              height: 2.0.h,
+              height: 1.0.h,
             ),
-            FittedBox(fit: BoxFit.fitWidth, child: Text("EVIDENCIAS")),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  "EVIDENCIAS",
+                  style: TextStyle(fontSize: 10.0.sp),
+                )),
           ],
         ),
       ),
@@ -105,7 +113,7 @@ class _EvidencesSessionState extends State<EvidencesSession> {
                         child: Icon(
                           Icons.camera_alt,
                           color: Colors.white,
-                          size: 25.0.w,
+                          size: Device.get().isTablet ? 20.0.w : 25.0.w,
                         ),
                       ),
                     ),
@@ -118,7 +126,7 @@ class _EvidencesSessionState extends State<EvidencesSession> {
                           child: Image.asset(
                         "Assets/images/docImage.png",
                         color: questionary ? Colors.white : red,
-                        width: 20.0.w,
+                        width: Device.get().isTablet ? 13.0.w : 20.0.w,
                       )),
                       height: 15.0.h,
                       decoration: BoxDecoration(
@@ -139,7 +147,7 @@ class _EvidencesSessionState extends State<EvidencesSession> {
                       child: Text(
                         "Ahora deberás responder un cuestionario y grabar un vídeo haciendo los ejercicios.",
                         style: TextStyle(
-                          fontSize: 8.0.w,
+                          fontSize: 20.0.sp,
                           color: Colors.white,
                         ),
                         textAlign: TextAlign.center,

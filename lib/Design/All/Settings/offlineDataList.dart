@@ -112,11 +112,13 @@ class _OfflineDataListState extends State<OfflineDataList> {
                   "Sin datos locales.",
                   style: TextStyle(color: Colors.white, fontSize: 6.0.w),
                 ))
-              : ListView.builder(
-                  itemCount: res.length,
-                  itemBuilder: (context, index) {
-                    return item(res[index], index);
-                  }),
+              : Scrollbar(
+                  child: ListView.builder(
+                      itemCount: res.length,
+                      itemBuilder: (context, index) {
+                        return item(res[index], index);
+                      }),
+                ),
     );
   }
 

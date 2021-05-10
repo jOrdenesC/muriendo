@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_restart/flutter_restart.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
@@ -42,6 +43,7 @@ class _SessionsState extends State<Sessions> {
   int phasePhone;
   List<bool> evidences = [];
   bool downloaded = false;
+  bool notaccepted = true;
   var progressVideos = "0.0";
   var progressAudios = "0.0";
   var progressTips = "0.0";
@@ -117,6 +119,8 @@ class _SessionsState extends State<Sessions> {
     var prefs = await SharedPreferences.getInstance();
     var down = prefs.getBool("downloaded" ?? false);
     var token = prefs.getString("token" ?? false);
+    notaccepted = prefs.getBool("notaccepted" ?? true);
+
     String level;
     CourseDataRepository courseDataRepository = GetIt.I.get();
 
@@ -141,41 +145,90 @@ class _SessionsState extends State<Sessions> {
         platform = "ios";
       });
     }
-
-    Response responseVideos = await dio.post(
-        "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
-        data: {"platform": platform});
-    print("RESPONSE VIDEOS " + responseVideos.data);
-    Response responseAudiosExercise = await dio.get(
-        "https://intranet.movitronia.com/api/mobile/audiosExercisesZip?token=$token");
-    print("RESPONSE AUDIOS EXERCISE " + responseAudiosExercise.data);
-    Response responseAudiosLevel = await dio.get(
-        "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
-    print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
+    Response responseVideos;
+    Response responseAudiosExercise;
+    Response responseAudiosLevel;
+    print("Value of Not Accepted ${notaccepted}");
+    if (Platform.isAndroid) {
+      prefs.setBool("downloaded", false);
+      downloaded = prefs.getBool("downloaded");
+      print("Value of Not Accepted Downloading Videos");
+      responseVideos = await Dio().post(
+          "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
+          data: {"platform": platform});
+      print("RESPONSE VIDEOS " + responseVideos.data);
+      responseAudiosExercise = await Dio().get(
+          "https://intranet.movitronia.com/api/mobile/audiosExercisesZip?token=$token");
+      print("RESPONSE AUDIOS EXERCISE " + responseAudiosExercise.data);
+      responseAudiosLevel = await Dio().get(
+          "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
+      print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
+    } else {
+      if (notaccepted != true && notaccepted != null) {
+        prefs.setBool("downloaded", false);
+        downloaded = prefs.getBool("downloaded");
+        print("Value of Not Accepted Downloading Videos");
+        responseVideos = await Dio().post(
+            "https://intranet.movitronia.com/api/mobile/videosZip?token=$token",
+            data: {"platform": platform});
+        print("RESPONSE VIDEOS " + responseVideos.data);
+        responseAudiosExercise = await Dio().get(
+            "https://intranet.movitronia.com/api/mobile/audiosExercisesZip?token=$token");
+        print("RESPONSE AUDIOS EXERCISE " + responseAudiosExercise.data);
+        responseAudiosLevel = await Dio().get(
+            "https://intranet.movitronia.com/api/mobile/audiosLevelZip/$level?token=$token");
+        print("RESPONSE AUDIOS TIPS ${responseAudiosLevel.data}");
+      }
+    }
 
     var downloadedVideo = prefs.getBool("downloadedVideo" ?? false);
     var downloadAudio = prefs.getBool("downloadedAudioExercises" ?? false);
-    if (downloaded == false || downloaded == null) {
-      prVideos.style(message: "Iniciando descarga de videos...");
-      if (downloadedVideo == false || downloadedVideo == null) {
-        await prVideos.show();
-        var res = await downloadVideos(responseVideos.data, "videos.zip",
-            context, "", "videos", platform, prVideos);
-        if (res == false) {
+
+    if (Platform.isIOS) {
+      if (downloaded == false && notaccepted != true ||
+          downloaded == null && notaccepted != null) {
+        print("Value of Not Downloading Message");
+        prVideos.style(message: "Iniciando descarga de videos...");
+        if (downloadedVideo == false || downloadedVideo == null) {
+          await prVideos.show();
           await downloadVideos(responseVideos.data, "videos.zip", context, "",
               "videos", platform, prVideos);
         }
+        if (downloadAudio == null || downloadAudio == false) {
+          await prAudios.show();
+          await downloadAudios(responseAudiosExercise.data,
+              "audiosExercise.zip", context, "", "audios", platform, prAudios);
+        }
+        await prTips.show();
+        await downloadTips(responseAudiosLevel.data, "audiosLevel.zip", context,
+            "", "audios", platform, prTips);
+      } else {
+        await DownloadData().downloadAll(context: context, level: level);
       }
-      if (downloadAudio == null || downloadAudio == false) {
-        await prAudios.show();
-        await downloadAudios(responseAudiosExercise.data, "audiosExercise.zip",
-            context, "", "audios", platform, prAudios);
+    } else {
+      if (downloaded == false || downloaded == null) {
+        prVideos.style(message: "Iniciando descarga de videos...");
+        if (downloadedVideo == false || downloadedVideo == null) {
+          await prVideos.show();
+          var res = await downloadVideos(responseVideos.data, "videos.zip",
+              context, "", "videos", platform, prVideos);
+          if (res == false) {
+            await downloadVideos(responseVideos.data, "videos.zip", context, "",
+                "videos", platform, prVideos);
+          }
+        }
+        if (downloadAudio == null || downloadAudio == false) {
+          await prAudios.show();
+          await downloadAudios(responseAudiosExercise.data,
+              "audiosExercise.zip", context, "", "audios", platform, prAudios);
+        }
+        await prTips.show();
+        await downloadTips(responseAudiosLevel.data, "audiosLevel.zip", context,
+            "", "audios", platform, prTips);
       }
-      await prTips.show();
-      await downloadTips(responseAudiosLevel.data, "audiosLevel.zip", context,
-          "", "audios", platform, prTips);
+      await DownloadData().downloadAll(context: context, level: level);
     }
-    await DownloadData().downloadAll(context: context, level: level);
+
     return true;
   }
 
@@ -189,7 +242,6 @@ class _SessionsState extends State<Sessions> {
       ProgressDialog pr) async {
     var prefs = await SharedPreferences.getInstance();
     var dir = await getApplicationDocumentsDirectory();
-
     setState(() {
       // ignore: deprecated_member_use
       dio.options.headers[HttpHeaders.connectionHeader] = "keep-alive";
@@ -359,7 +411,7 @@ class _SessionsState extends State<Sessions> {
   }
 
   void _restartApp() async {
-    FlutterRestart.restartApp();
+    FlutterRestart.restartApp(); //TODO FIX
   }
 
   @override
@@ -376,7 +428,12 @@ class _SessionsState extends State<Sessions> {
       ),
     );
 
-    getAll();
+    if (Platform.isAndroid) {
+      getAllAndroid();
+    } else if (Platform.isIOS) {
+      getAllIos();
+    }
+
     // getData();
     super.initState();
   }
@@ -452,7 +509,127 @@ class _SessionsState extends State<Sessions> {
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
-  getAll() async {
+  iosPopup() async {
+    var prefs = await SharedPreferences.getInstance();
+    showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+              title: Text(
+                "Descarga de datos adicionales",
+                style: TextStyle(fontSize: 10.0.sp),
+              ),
+              message: Text(
+                  "Para poder realizar las clases es necesario descargar los videos y audios correspondientes. Los datos pesan aproximadamente 300 Mb. (megabytes)",
+                  style: TextStyle(fontSize: 9.0.sp)),
+              actions: [
+                CupertinoButton(
+                  child: Text('Aceptar y Descargar',
+                      style: TextStyle(fontSize: 10.0.sp)),
+                  onPressed: () async {
+                    prefs.setBool("notaccepted", false);
+                    // Do something
+                    Navigator.of(context).pop();
+                    notaccepted = false;
+                    log("get evidence");
+                    await getEvidence();
+                    log("Get data");
+                    await getData();
+                    log("Get classes");
+                    await getClasses();
+                    log("get phase");
+                    await getPhase();
+                    print("Init clases custom");
+                    await DownloadData().downloadCustomClasses(context);
+                    setState(() {
+                      loaded = true;
+                    });
+                    prefs.setBool("downloaded", true);
+                    print('I agreed');
+                  },
+                )
+              ],
+              cancelButton: CupertinoButton(
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10.0.sp),
+                  ),
+                  onPressed: () {
+                    setState(() {});
+                    Navigator.of(context).pop();
+                  }),
+            ));
+  }
+
+  getAllIos() async {
+    var prefs = await SharedPreferences.getInstance();
+    var downloaded = prefs.getBool("downloaded" ?? false);
+    notaccepted = prefs.getBool("notaccepted" ?? true);
+    if (downloaded == null || downloaded == false) {
+      try {
+        if (Device.get().isIos) {
+          log("get evidence");
+          await getEvidence();
+
+          log("Get data");
+          await getData();
+          log("Get classes");
+          await getClasses();
+          log("get phase");
+          await getPhase();
+          print("Init clases custom");
+          await DownloadData().downloadCustomClasses(context);
+          setState(() {
+            loaded = true;
+          });
+          prefs.setBool("downloaded", true);
+          _restartApp();
+        } else {
+          log("get evidence");
+          await getEvidence();
+          log("Get data");
+          await getData();
+          log("Get classes");
+          await getClasses();
+          log("get phase");
+          await getPhase();
+          print("Init clases custom");
+          await DownloadData().downloadCustomClasses(context);
+          setState(() {
+            loaded = true;
+          });
+          prefs.setBool("downloaded", true);
+          _restartApp();
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      try {
+        CourseDataRepository courseDataRepository = GetIt.I.get();
+        var course = await courseDataRepository.getAllCourse();
+        print(course[0].courseId);
+        log("get evidence");
+        await getEvidence();
+        log("get classes");
+        await getClasses();
+        log("get phase");
+        await getPhase();
+        print("Init clases custom");
+        await DownloadData().downloadCustomClasses(context);
+        setState(() {
+          loaded = true;
+        });
+        //compareVersions();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  getAllAndroid() async {
     var prefs = await SharedPreferences.getInstance();
     var downloaded = prefs.getBool("downloaded" ?? false);
     if (downloaded == null || downloaded == false) {
@@ -508,13 +685,16 @@ class _SessionsState extends State<Sessions> {
           )
         : loaded
             ? body()
-            : Center(
-                child: Image.asset(
-                  "Assets/videos/loading.gif",
-                  fit: BoxFit.contain,
-                  width: 30.0.w,
-                ),
-              );
+            : notaccepted == false
+                ? body()
+                : Center(
+                    //TODO
+                    child: Image.asset(
+                      "Assets/videos/loading.gif",
+                      fit: BoxFit.contain,
+                      width: 30.0.w,
+                    ),
+                  );
   }
 
   Widget body() {
@@ -523,503 +703,546 @@ class _SessionsState extends State<Sessions> {
         Column(
           children: [
             SizedBox(
-              height: 2.0.h,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 5.0.w,
-                ),
-                Image.asset(
-                  "Assets/images/LogoCompleto.png",
-                  width: 18.0.w,
-                )
-              ],
+              height: 1.0.h,
             ),
             Flexible(
               flex: 1,
               child: Scrollbar(
-                radius: Radius.circular(10),
                 child: SingleChildScrollView(
                   physics: ScrollPhysics(parent: BouncingScrollPhysics()),
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 2.0.h,
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5.0.w,
+                          ),
+                          Image.asset(
+                            "Assets/images/LogoCompleto.png",
+                            width: 13.5.w,
+                          )
+                        ],
                       ),
-                      divider(yellow, "FASE 1"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 1
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 1 ? false : true,
-                            dataClasses[0],
-                            dataClasses[0].number,
-                            phasePhone >= 1 ? true : false,
-                            "1",
-                            dataClasses[0].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 1 && evidences[2]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 1 ? false : true,
-                            dataClasses[3],
-                            dataClasses[3].number,
-                            phasePhone >= 1 && evidences[2] == true
-                                ? true
-                                : false,
-                            "1",
-                            dataClasses[3].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 1 && evidences[0]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 1 ? false : true,
-                            dataClasses[1],
-                            dataClasses[1].number,
-                            phasePhone >= 1 && evidences[0] ? true : false,
-                            "1",
-                            dataClasses[1].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 1 && evidences[1]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 1 ? false : true,
-                            dataClasses[2],
-                            dataClasses[2].number,
-                            phasePhone >= 1 && evidences[1] ? true : false,
-                            "1",
-                            dataClasses[2].isCustom),
-                      ]),
-                      divider(green, "FASE 2"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 2 && evidences[3]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 2 ? false : true,
-                            dataClasses[4],
-                            dataClasses[4].number,
-                            phasePhone >= 2 && evidences[3] ? true : false,
-                            "2",
-                            dataClasses[4].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 2 && evidences[6]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 2 ? false : true,
-                            dataClasses[7],
-                            dataClasses[7].number,
-                            phasePhone >= 2 && evidences[6] ? true : false,
-                            "2",
-                            dataClasses[7].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 2 && evidences[4]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 2 ? false : true,
-                            dataClasses[5],
-                            dataClasses[5].number,
-                            phasePhone >= 2 && evidences[4] ? true : false,
-                            "2",
-                            dataClasses[5].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 2 && evidences[5]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 2 ? false : true,
-                            dataClasses[6],
-                            dataClasses[6].number,
-                            phasePhone >= 2 && evidences[5] ? true : false,
-                            "2",
-                            dataClasses[6].isCustom),
-                      ]),
-                      divider(red, "FASE 3"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 3 && evidences[7]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 3 ? false : true,
-                            dataClasses[8],
-                            dataClasses[8].number,
-                            phasePhone >= 3 && evidences[7] ? true : false,
-                            "3",
-                            dataClasses[8].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 3 && evidences[10]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 3 ? false : true,
-                            dataClasses[11],
-                            dataClasses[11].number,
-                            phasePhone >= 3 && evidences[10] ? true : false,
-                            "3",
-                            dataClasses[11].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 3 && evidences[8]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 3 ? false : true,
-                            dataClasses[9],
-                            dataClasses[9].number,
-                            phasePhone >= 3 && evidences[8] ? true : false,
-                            "3",
-                            dataClasses[9].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 3 && evidences[9]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 3 ? false : true,
-                            dataClasses[10],
-                            dataClasses[10].number,
-                            phasePhone >= 3 && evidences[9] ? true : false,
-                            "3",
-                            dataClasses[10].isCustom),
-                      ]),
-                      divider(yellow, "FASE 4"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 4 && evidences[11]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 4 ? false : true,
-                            dataClasses[12],
-                            dataClasses[12].number,
-                            phasePhone >= 4 && evidences[11] ? true : false,
-                            "4",
-                            dataClasses[12].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 4 && evidences[14]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 4 ? false : true,
-                            dataClasses[15],
-                            dataClasses[15].number,
-                            phasePhone >= 4 && evidences[14] ? true : false,
-                            "4",
-                            dataClasses[15].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 4 && evidences[12]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 4 ? false : true,
-                            dataClasses[13],
-                            dataClasses[13].number,
-                            phasePhone >= 4 && evidences[12] ? true : false,
-                            "4",
-                            dataClasses[13].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 4 && evidences[13]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 4 ? false : true,
-                            dataClasses[14],
-                            dataClasses[14].number,
-                            phasePhone >= 4 && evidences[13] ? true : false,
-                            "4",
-                            dataClasses[14].isCustom),
-                      ]),
-                      divider(green, "FASE 5"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 5 && evidences[15]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 5 ? false : true,
-                            dataClasses[16],
-                            dataClasses[16].number,
-                            phasePhone >= 5 && evidences[15] ? true : false,
-                            "5",
-                            dataClasses[16].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 5 && evidences[18]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 5 ? false : true,
-                            dataClasses[19],
-                            dataClasses[19].number,
-                            phasePhone >= 5 && evidences[18] ? true : false,
-                            "5",
-                            dataClasses[19].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 5 && evidences[16]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 5 ? false : true,
-                            dataClasses[17],
-                            dataClasses[17].number,
-                            phasePhone >= 5 && evidences[16] ? true : false,
-                            "5",
-                            dataClasses[17].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 5 && evidences[17]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 5 ? false : true,
-                            dataClasses[18],
-                            dataClasses[18].number,
-                            phasePhone >= 5 && evidences[17] ? true : false,
-                            "5",
-                            dataClasses[18].isCustom),
-                      ]),
-                      divider(red, "FASE 6"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 6 && evidences[19]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 6 ? false : true,
-                            dataClasses[20],
-                            dataClasses[20].number,
-                            phasePhone >= 6 && evidences[19] ? true : false,
-                            "6",
-                            dataClasses[20].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 6 && evidences[22]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 6 ? false : true,
-                            dataClasses[23],
-                            dataClasses[23].number,
-                            phasePhone >= 6 && evidences[22] ? true : false,
-                            "6",
-                            dataClasses[23].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 6 && evidences[20]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 6 ? false : true,
-                            dataClasses[21],
-                            dataClasses[21].number,
-                            phasePhone >= 6 && evidences[20] ? true : false,
-                            "6",
-                            dataClasses[21].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 6 && evidences[21]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 6 ? false : true,
-                            dataClasses[22],
-                            dataClasses[22].number,
-                            phasePhone >= 6 && evidences[21] ? true : false,
-                            "6",
-                            dataClasses[22].isCustom),
-                      ]),
-                      divider(yellow, "FASE 7"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 7 && evidences[23]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 7 ? false : true,
-                            dataClasses[24],
-                            dataClasses[24].number,
-                            phasePhone >= 7 && evidences[23] ? true : false,
-                            "7",
-                            dataClasses[24].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 7 && evidences[26]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 7 ? false : true,
-                            dataClasses[27],
-                            dataClasses[27].number,
-                            phasePhone >= 7 && evidences[26] ? true : false,
-                            "7",
-                            dataClasses[27].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 7 && evidences[24]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 7 ? false : true,
-                            dataClasses[25],
-                            dataClasses[25].number,
-                            phasePhone >= 7 && evidences[24] ? true : false,
-                            "7",
-                            dataClasses[25].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 7 && evidences[25]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 7 ? false : true,
-                            dataClasses[26],
-                            dataClasses[26].number,
-                            phasePhone >= 7 && evidences[25] ? true : false,
-                            "7",
-                            dataClasses[26].isCustom),
-                      ]),
-                      divider(green, "FASE 8"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 8 && evidences[27]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 8 ? false : true,
-                            dataClasses[28],
-                            dataClasses[28].number,
-                            phasePhone >= 8 && evidences[27] ? true : false,
-                            "8",
-                            dataClasses[28].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 8 && evidences[30]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 8 ? false : true,
-                            dataClasses[31],
-                            dataClasses[31].number,
-                            phasePhone >= 8 && evidences[30] ? true : false,
-                            "8",
-                            dataClasses[31].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 8 && evidences[28]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 8 ? false : true,
-                            dataClasses[29],
-                            dataClasses[29].number,
-                            phasePhone >= 8 && evidences[28] ? true : false,
-                            "8",
-                            dataClasses[29].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 8 && evidences[29]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 8 ? false : true,
-                            dataClasses[30],
-                            dataClasses[30].number,
-                            phasePhone >= 8 && evidences[29] ? true : false,
-                            "8",
-                            dataClasses[30].isCustom),
-                      ]),
-                      divider(red, "FASE 9"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 9 && evidences[31]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 9 ? false : true,
-                            dataClasses[32],
-                            dataClasses[32].number,
-                            phasePhone >= 9 && evidences[31] ? true : false,
-                            "9",
-                            dataClasses[32].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 9 && evidences[34]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 9 ? false : true,
-                            dataClasses[35],
-                            dataClasses[35].number,
-                            phasePhone >= 9 && evidences[34] ? true : false,
-                            "9",
-                            dataClasses[35].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 9 && evidences[32]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 9 ? false : true,
-                            dataClasses[33],
-                            dataClasses[33].number,
-                            phasePhone >= 9 && evidences[32] ? true : false,
-                            "9",
-                            dataClasses[33].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 9 && evidences[33]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 9 ? false : true,
-                            dataClasses[34],
-                            dataClasses[34].number,
-                            phasePhone >= 9 && evidences[33] ? true : false,
-                            "9",
-                            dataClasses[34].isCustom),
-                      ]),
-                      divider(yellow, "FASE 10"),
-                      createPhase([
-                        //first
-                        item(
-                            phasePhone >= 10 && evidences[35]
-                                ? "Assets/images/buttons/2unlock.png"
-                                : "Assets/images/buttons/2lock.png",
-                            phasePhone == 10 ? false : true,
-                            dataClasses[36],
-                            dataClasses[36].number,
-                            phasePhone >= 10 && evidences[35] ? true : false,
-                            "10",
-                            dataClasses[36].isCustom),
-                        //fourth
-                        item(
-                            phasePhone >= 10 && evidences[38]
-                                ? "Assets/images/buttons/3unlock.png"
-                                : "Assets/images/buttons/3lock.png",
-                            phasePhone == 10 ? false : true,
-                            dataClasses[39],
-                            dataClasses[39].number,
-                            phasePhone >= 10 && evidences[38] ? true : false,
-                            "10",
-                            dataClasses[39].isCustom),
-                        //second
-                        item(
-                            phasePhone >= 10 && evidences[36]
-                                ? "Assets/images/buttons/1unlock.png"
-                                : "Assets/images/buttons/1lock.png",
-                            phasePhone == 10 ? false : true,
-                            dataClasses[37],
-                            dataClasses[37].number,
-                            phasePhone >= 10 && evidences[36] ? true : false,
-                            "10",
-                            dataClasses[37].isCustom),
-                        //third
-                        item(
-                            phasePhone >= 10 && evidences[37]
-                                ? "Assets/images/buttons/4unlock.png"
-                                : "Assets/images/buttons/4lock.png",
-                            phasePhone == 10 ? false : true,
-                            dataClasses[38],
-                            dataClasses[38].number,
-                            phasePhone >= 10 && evidences[37] ? true : false,
-                            "10",
-                            dataClasses[38].isCustom),
-                      ]),
+                      SizedBox(
+                        height: 1.0.h,
+                      ),
+                      Stack(
+                        children: [
+                          InkWell(
+                              onTap: () async {
+                                // await DownloadData().downloadCustomClasses(context);
+                                // setState(() {});
+                                // getClasses();
+                              },
+                              child: divider(yellow, "FASE 1")),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 1
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 1 ? false : true,
+                                dataClasses[0],
+                                dataClasses[0].number,
+                                true,
+                                "1",
+                                dataClasses[0].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 1 && evidences[2]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 1 ? false : true,
+                                dataClasses[3],
+                                dataClasses[3].number,
+                                evidences[2] == true ? true : false,
+                                "1",
+                                dataClasses[3].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 1 && evidences[0]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 1 ? false : true,
+                                dataClasses[1],
+                                dataClasses[1].number,
+                                evidences[0] ? true : false,
+                                "1",
+                                dataClasses[1].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 1 && evidences[1]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 1 ? false : true,
+                                dataClasses[2],
+                                dataClasses[2].number,
+                                evidences[1] ? true : false,
+                                "1",
+                                dataClasses[2].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(green, "FASE 2"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 2 && evidences[3]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 2 ? false : true,
+                                dataClasses[4],
+                                dataClasses[4].number,
+                                evidences[3] ? true : false,
+                                "2",
+                                dataClasses[4].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 2 && evidences[6]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 2 ? false : true,
+                                dataClasses[7],
+                                dataClasses[7].number,
+                                evidences[6] ? true : false,
+                                "2",
+                                dataClasses[7].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 2 && evidences[4]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 2 ? false : true,
+                                dataClasses[5],
+                                dataClasses[5].number,
+                                evidences[4] ? true : false,
+                                "2",
+                                dataClasses[5].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 2 && evidences[5]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 2 ? false : true,
+                                dataClasses[6],
+                                dataClasses[6].number,
+                                evidences[5] ? true : false,
+                                "2",
+                                dataClasses[6].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(red, "FASE 3"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 3 && evidences[7]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 3 ? false : true,
+                                dataClasses[8],
+                                dataClasses[8].number,
+                                evidences[7] ? true : false,
+                                "3",
+                                dataClasses[8].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 3 && evidences[10]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 3 ? false : true,
+                                dataClasses[11],
+                                dataClasses[11].number,
+                                evidences[10] ? true : false,
+                                "3",
+                                dataClasses[11].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 3 && evidences[8]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 3 ? false : true,
+                                dataClasses[9],
+                                dataClasses[9].number,
+                                evidences[8] ? true : false,
+                                "3",
+                                dataClasses[9].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 3 && evidences[9]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 3 ? false : true,
+                                dataClasses[10],
+                                dataClasses[10].number,
+                                evidences[9] ? true : false,
+                                "3",
+                                dataClasses[10].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(yellow, "FASE 4"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 4 && evidences[11]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 4 ? false : true,
+                                dataClasses[12],
+                                dataClasses[12].number,
+                                evidences[11] ? true : false,
+                                "4",
+                                dataClasses[12].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 4 && evidences[14]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 4 ? false : true,
+                                dataClasses[15],
+                                dataClasses[15].number,
+                                evidences[14] ? true : false,
+                                "4",
+                                dataClasses[15].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 4 && evidences[12]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 4 ? false : true,
+                                dataClasses[13],
+                                dataClasses[13].number,
+                                evidences[12] ? true : false,
+                                "4",
+                                dataClasses[13].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 4 && evidences[13]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 4 ? false : true,
+                                dataClasses[14],
+                                dataClasses[14].number,
+                                evidences[13] ? true : false,
+                                "4",
+                                dataClasses[14].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(green, "FASE 5"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 5 && evidences[15]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 5 ? false : true,
+                                dataClasses[16],
+                                dataClasses[16].number,
+                                evidences[15] ? true : false,
+                                "5",
+                                dataClasses[16].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 5 && evidences[18]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 5 ? false : true,
+                                dataClasses[19],
+                                dataClasses[19].number,
+                                evidences[18] ? true : false,
+                                "5",
+                                dataClasses[19].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 5 && evidences[16]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 5 ? false : true,
+                                dataClasses[17],
+                                dataClasses[17].number,
+                                evidences[16] ? true : false,
+                                "5",
+                                dataClasses[17].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 5 && evidences[17]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 5 ? false : true,
+                                dataClasses[18],
+                                dataClasses[18].number,
+                                evidences[17] ? true : false,
+                                "5",
+                                dataClasses[18].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(red, "FASE 6"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 6 && evidences[19]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 6 ? false : true,
+                                dataClasses[20],
+                                dataClasses[20].number,
+                                evidences[19] ? true : false,
+                                "6",
+                                dataClasses[20].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 6 && evidences[22]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 6 ? false : true,
+                                dataClasses[23],
+                                dataClasses[23].number,
+                                evidences[22] ? true : false,
+                                "6",
+                                dataClasses[23].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 6 && evidences[20]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 6 ? false : true,
+                                dataClasses[21],
+                                dataClasses[21].number,
+                                evidences[20] ? true : false,
+                                "6",
+                                dataClasses[21].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 6 && evidences[21]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 6 ? false : true,
+                                dataClasses[22],
+                                dataClasses[22].number,
+                                evidences[21] ? true : false,
+                                "6",
+                                dataClasses[22].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(yellow, "FASE 7"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 7 && evidences[23]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 7 ? false : true,
+                                dataClasses[24],
+                                dataClasses[24].number,
+                                evidences[23] ? true : false,
+                                "7",
+                                dataClasses[24].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 7 && evidences[26]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 7 ? false : true,
+                                dataClasses[27],
+                                dataClasses[27].number,
+                                evidences[26] ? true : false,
+                                "7",
+                                dataClasses[27].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 7 && evidences[24]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 7 ? false : true,
+                                dataClasses[25],
+                                dataClasses[25].number,
+                                evidences[24] ? true : false,
+                                "7",
+                                dataClasses[25].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 7 && evidences[25]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 7 ? false : true,
+                                dataClasses[26],
+                                dataClasses[26].number,
+                                evidences[25] ? true : false,
+                                "7",
+                                dataClasses[26].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(green, "FASE 8"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 8 && evidences[27]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 8 ? false : true,
+                                dataClasses[28],
+                                dataClasses[28].number,
+                                evidences[27] ? true : false,
+                                "8",
+                                dataClasses[28].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 8 && evidences[30]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 8 ? false : true,
+                                dataClasses[31],
+                                dataClasses[31].number,
+                                evidences[30] ? true : false,
+                                "8",
+                                dataClasses[31].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 8 && evidences[28]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 8 ? false : true,
+                                dataClasses[29],
+                                dataClasses[29].number,
+                                evidences[28] ? true : false,
+                                "8",
+                                dataClasses[29].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 8 && evidences[29]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 8 ? false : true,
+                                dataClasses[30],
+                                dataClasses[30].number,
+                                evidences[29] ? true : false,
+                                "8",
+                                dataClasses[30].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(red, "FASE 9"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 9 && evidences[31]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 9 ? false : true,
+                                dataClasses[32],
+                                dataClasses[32].number,
+                                evidences[31] ? true : false,
+                                "9",
+                                dataClasses[32].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 9 && evidences[34]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 9 ? false : true,
+                                dataClasses[35],
+                                dataClasses[35].number,
+                                evidences[34] ? true : false,
+                                "9",
+                                dataClasses[35].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 9 && evidences[32]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 9 ? false : true,
+                                dataClasses[33],
+                                dataClasses[33].number,
+                                evidences[32] ? true : false,
+                                "9",
+                                dataClasses[33].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 9 && evidences[33]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 9 ? false : true,
+                                dataClasses[34],
+                                dataClasses[34].number,
+                                evidences[33] ? true : false,
+                                "9",
+                                dataClasses[34].isCustom),
+                          ]),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          divider(yellow, "FASE 10"),
+                          createPhase([
+                            //first
+                            item(
+                                phasePhone >= 10 && evidences[35]
+                                    ? "Assets/images/buttons/2unlock.png"
+                                    : "Assets/images/buttons/2lock.png",
+                                phasePhone == 10 ? false : true,
+                                dataClasses[36],
+                                dataClasses[36].number,
+                                evidences[35] ? true : false,
+                                "10",
+                                dataClasses[36].isCustom),
+                            //fourth
+                            item(
+                                phasePhone >= 10 && evidences[38]
+                                    ? "Assets/images/buttons/3unlock.png"
+                                    : "Assets/images/buttons/3lock.png",
+                                phasePhone == 10 ? false : true,
+                                dataClasses[39],
+                                dataClasses[39].number,
+                                evidences[38] ? true : false,
+                                "10",
+                                dataClasses[39].isCustom),
+                            //second
+                            item(
+                                phasePhone >= 10 && evidences[36]
+                                    ? "Assets/images/buttons/1unlock.png"
+                                    : "Assets/images/buttons/1lock.png",
+                                phasePhone == 10 ? false : true,
+                                dataClasses[37],
+                                dataClasses[37].number,
+                                evidences[36] ? true : false,
+                                "10",
+                                dataClasses[37].isCustom),
+                            //third
+                            item(
+                                phasePhone >= 10 && evidences[37]
+                                    ? "Assets/images/buttons/4unlock.png"
+                                    : "Assets/images/buttons/4lock.png",
+                                phasePhone == 10 ? false : true,
+                                dataClasses[38],
+                                dataClasses[38].number,
+                                evidences[37] ? true : false,
+                                "10",
+                                dataClasses[38].isCustom),
+                          ])
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -1037,7 +1260,7 @@ class _SessionsState extends State<Sessions> {
       children: [
         Container(
           width: 25.0.w,
-          height: 10.0.h,
+          height: 9.0.h,
           decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: 3),
               color: color,
@@ -1058,24 +1281,42 @@ class _SessionsState extends State<Sessions> {
       String phaseNumber, bool isCustom) {
     return InkWell(
       onTap: () {
-        print(evidences.toString());
-        print(lock);
-        if (lock == true) {
-          goToPlanification(data, number, false, null, phaseNumber, isCustom);
+        if (Platform.isIOS && notaccepted == true ||
+            Platform.isIOS && notaccepted == null) {
+          iosPopup(); //TODO
         } else {
+          print(evidences.toString());
           print(lock);
-          Toast.show("Debes completar las clases anteriores.", context,
-              duration: Toast.LENGTH_LONG,
-              gravity: Toast.CENTER,
-              backgroundColor: red);
+          //TODO add notaccepted boolean and call the download menu on click
+          if (lock == true) {
+            goToPlanification(data, number, false, null, phaseNumber, isCustom);
+          } else {
+            print(lock);
+            Toast.show("Debes completar las clases anteriores.", context,
+                duration: Toast.LENGTH_LONG,
+                gravity: Toast.CENTER,
+                backgroundColor: red);
+          }
         }
       },
-      child: Container(
-        child: Image.asset(
-          route,
-          width: 28.0.w,
-        ),
-      ),
+      child: Device.get().isTablet
+          ? Container(
+              //Tablet
+              height: 25.0.h,
+              width: 40.0.w,
+              child: Image.asset(
+                route,
+                fit: BoxFit.contain,
+              ),
+            )
+          : Container(
+              height: 25.0.h,
+              width: 40.0.w,
+              child: Image.asset(
+                route,
+                fit: BoxFit.contain,
+              ),
+            ),
     );
   }
 
@@ -1150,44 +1391,46 @@ class _SessionsState extends State<Sessions> {
 
   Widget createPhase(List sessions) {
     return Container(
-      // color: red,
-      height: 40.0.h,
+      height: Device.get().isTablet ? 60.0.h : 57.0.h,
       child: Stack(
         alignment: Alignment.center,
         children: [
           Column(
             children: [
-              // SizedBox(
-              //   height: 5.0.h,
-              // ),
+              SizedBox(
+                height: 0.5.h,
+              ),
               sessions[0],
               // item("Assets/images/buttons/2unlock.png"),
               SizedBox(
-                height: 7.0.h,
+                height: Device.get().isTablet ? 9.5.h : 6.0.h,
               ),
               sessions[1],
               // item("Assets/images/buttons/2lock.png"),
             ],
           ),
-          Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 10.0.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  sessions[2],
-                  // item("Assets/images/buttons/1lock.png"),
-                  SizedBox(
-                    width: 35.0.w,
-                  ),
-                  sessions[3],
-                  // item("Assets/images/buttons/4lock.png"),
-                ],
-              ),
-            ],
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    sessions[2],
+                    // item("Assets/images/buttons/1lock.png"),
+                    Device.get().isTablet
+                        ? SizedBox(
+                            width: 20.0.w,
+                          )
+                        : SizedBox(
+                            width: 20.0.w,
+                          ),
+                    sessions[3],
+                    // item("Assets/images/buttons/4lock.png"),
+                  ],
+                ),
+              ],
+            ),
           )
         ],
       ),

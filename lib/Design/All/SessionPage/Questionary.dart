@@ -4,6 +4,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRepository.dart';
 import 'package:movitronia/Database/Repository/QuestionDataRepository/QuestionDataRepository.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
@@ -217,28 +218,30 @@ class _QuestionaryState extends State<Questionary> {
       child: Scaffold(
           bottomNavigationBar: Container(
             width: 100.0.w,
-            height: 10.0.h,
+            height: Device.get().isTablet ? 11.0.h : 10.0.h,
             color: cyan,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buttonRounded(context,
                     width: 70.0.w,
-                    circleRadius: 6.0.w,
+                    circleRadius: Device.get().isTablet ? 4.0.w : 6.0.w,
                     height: 7.0.h,
                     func: () => validate(),
-                    text: "FINALIZAR",
-                    textStyle: TextStyle(fontSize: 7.0.w, color: Colors.white),
+                    text: "Finalizar",
+                    textStyle:
+                        TextStyle(fontSize: 16.0.sp, color: Colors.white),
                     icon: Icon(
                       Icons.arrow_forward_ios_rounded,
                       color: blue,
-                      size: 9.0.w,
+                      size: Device.get().isTablet ? 7.5.w : 9.0.w,
                     ))
               ],
             ),
           ),
           backgroundColor: Colors.white,
           appBar: AppBar(
+            toolbarHeight: 6.0.h,
             backgroundColor: cyan,
             leading: SizedBox.shrink(),
             elevation: 0,
@@ -251,7 +254,9 @@ class _QuestionaryState extends State<Questionary> {
                 FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(
-                        "CUESTIONARIO SESIÓN ${widget.number}".toUpperCase())),
+                      "CUESTIONARIO SESIÓN ${widget.number}".toUpperCase(),
+                      style: TextStyle(fontSize: 12.0.sp),
+                    )),
               ],
             ),
           ),
@@ -294,7 +299,7 @@ class _QuestionaryState extends State<Questionary> {
                               InkWell(
                                 onTap: () {
                                   pageController.previousPage(
-                                      duration: Duration(seconds: 1),
+                                      duration: Duration(milliseconds: 300),
                                       curve: Curves.linear);
                                 },
                                 child: Center(
@@ -316,7 +321,7 @@ class _QuestionaryState extends State<Questionary> {
                               InkWell(
                                 onTap: () {
                                   pageController.nextPage(
-                                      duration: Duration(seconds: 1),
+                                      duration: Duration(milliseconds: 300),
                                       curve: Curves.linear);
                                 },
                                 child: Center(
@@ -628,16 +633,16 @@ class _QuestionaryState extends State<Questionary> {
                                             width: 1.0.w,
                                           ),
                                           Flexible(
-                                                                                      child: Text(
+                                            child: Text(
                                                 questions[number - 1]
                                                         ["alternatives"]
                                                     .values
                                                     .toList()[index]
                                                     .toString()
                                                     .toUpperCase(),
-                                                
                                                 style: TextStyle(
-                                                    fontSize: 6.0.w, color: blue)),
+                                                    fontSize: 20.0.sp,
+                                                    color: blue)),
                                           )
                                         ],
                                       ),

@@ -117,8 +117,8 @@ class Mp4Controller extends GetxController {
         ..setLooping(true)
         ..play();
     } else if (Platform.isIOS) {
-      videoPlayerController1 = VideoPlayerController.file(
-          File('${dir.path}/videos/${videoName.value}.mp4'));
+      videoPlayerController1 = VideoPlayerController.file(File(
+          '${dir.path}/videos/${videoName.value.replaceAll(" ", "")}.mp4'));
 
       await videoPlayerController1
         ..initialize().then((value) => null)
@@ -253,7 +253,6 @@ class Mp4Controller extends GetxController {
   }
 
   gettingdatabase(String id) async {
-    print("THis is iddd $id");
     //Obtain ID from external page when selecting class
     excerciseCalentamientoList.clear();
     excerciseFlexibilidadList.clear();
@@ -262,7 +261,6 @@ class Mp4Controller extends GetxController {
     var obj = {};
     final responseclass =
         await _classRepository.getClassID(id); //Get Class Index
-    log(responseclass[0].toMap().toString());
     print(responseclass);
     pauses = responseclass[0].pauses;
     times = responseclass[0].macropause;
@@ -392,15 +390,6 @@ class Mp4Controller extends GetxController {
     print("TIP tipID: ${tipsID.length}");
     print("TIP macroList: $macroList ");
 /** */
-
-    print("""DATAAAAAAAAAAAAAAAA
-${excerciseCalentamientoList.length},
-${excerciseFlexibilidadList.length},
-${excerciseDesarrolloList.length},
-${excerciseVcalmaList.length}
-${microTime.length}
-${macroList.length}
-""");
     documentIds = responseclass[0].tips;
     //Making MicroTimes
     macroTime.add(pauses[excerciseCalentamientoList.length - 1]);
@@ -594,11 +583,11 @@ ${macroList.length}
     //Remove Video Controller and reload video
     if (Platform.isIOS) {
       videoPlayerController1.dispose();
-      videoPlayerController1 =
-          VideoPlayerController.file(File('${dir.path}/${videoName.value}.mp4'))
-            ..setLooping(true)
-            ..initialize().then((value) => null)
-            ..play();
+      videoPlayerController1 = VideoPlayerController.file(
+          File('${dir.path}/videos/${videoName.value.replaceAll(" ", "")}.mp4'))
+        ..setLooping(true)
+        ..initialize().then((value) => null)
+        ..play();
 
       update();
     } else if (Platform.isAndroid) {

@@ -6,6 +6,7 @@ import 'package:movitronia/Database/Repository/ClassLevelRepository/ClassDataRep
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Database/Repository/OfflineRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:movitronia/Utils/retryDioDialog.dart';
 import '../HomePage/HomepageUser.dart';
@@ -71,10 +72,8 @@ class _UploadDataState extends State<UploadData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               buttonRounded(context, func: () async {
-                log("IS CUSTOOOM questionary : ${args["isCustom"]}");
+                // createEvidence(args);
                 uploadVideo(args);
-                // uploadQuestionary(args, "");
-                // goToFinalPage();
               }, text: "   SUBE AQUÍ")
             ],
           ),
@@ -130,10 +129,11 @@ class _UploadDataState extends State<UploadData> {
     return false;
   }
 
-  uploadQuestionary(args, videoData) async {
+  Future uploadQuestionary(args, videoData) async {
     CourseDataRepository courseDataRepository = GetIt.I.get();
     var course = await courseDataRepository.getAllCourse();
     var prefs = await SharedPreferences.getInstance();
+    Response evidence;
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
     var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
@@ -166,18 +166,74 @@ class _UploadDataState extends State<UploadData> {
               "Enviando cuestionario...",
               textAlign: TextAlign.center,
             ));
-        var response = await dio
-            .post("$urlServer/api/mobile/evidence?token=$token", data: data,
-                onSendProgress: (sent, total) {
-          setState(() {
-            progressQuestionary = sent / total * 100;
-            print(progressVideo.floor());
+        try {
+          await retry(function: () async {
+            evidence = await dio
+                .post("$urlServer/api/mobile/evidence?token=$token", data: data,
+                    onSendProgress: (sent, total) {
+              setState(() {
+                progressQuestionary = sent / total * 100;
+                print(progressVideo.floor());
+              });
+            });
           });
-        });
-        print(response);
-        print(response.data);
+        } catch (e) {
+          var uuidDevice = prefs.getString("uuid");
+          var nameUser = prefs.getString("name");
+          var uuidUser = uuidDevice + nameUser;
+          var actualVideo = prefs.getString("actualVideo");
+          EvidencesRepository evidencesRepository = GetIt.I.get();
+          ClassDataRepository classDataRepository = GetIt.I.get();
+          var classObj = await classDataRepository.getClassID(args["idClass"]);
+          saveOffline(
+              Uuid().v4().toString(),
+              args["phase"].toString(),
+              args["idClass"].toString(),
+              args["mets"],
+              course[0].courseId,
+              res[0].questionary,
+              actualVideo,
+              args["exercises"],
+              args["isCustom"] ? "customClass" : "normalClass",
+              uuidUser);
+
+          EvidencesSend evidencesSend = EvidencesSend(
+              number: args["number"],
+              idEvidence: "evidencia${args["number"]}$uuidUser",
+              phase: args["phase"].toString(),
+              classObject: {
+                "times": {
+                  "calentamiento": classObj[0].timeCalentamiento,
+                  "desarrollo": classObj[0].timeDesarrollo,
+                  "vcalma": classObj[0].timeVcalma,
+                  "flexibilidad": classObj[0].timeFlexibilidad
+                },
+                "students": [],
+                "exercisesCalentamiento": classObj[0].excerciseCalentamiento,
+                "exercisesFlexibilidad": classObj[0].excerciseFlexibilidad,
+                "exercisesDesarrollo": classObj[0].excerciseDesarrollo,
+                "exercisesVueltaCalma": classObj[0].excerciseVueltaCalma,
+                "tips": classObj[0].tips,
+                "_id": classObj[0].classID,
+                "course": "",
+                "questionnaire": classObj[0].questionnaire,
+                "number": classObj[0].number,
+                "level": classObj[0].level,
+                "pauses": classObj[0].pauses
+              },
+              finished: true,
+              kilocalories: args["mets"].toString(),
+              questionnaire: res[0].questionary);
+          await evidencesRepository.updateEvidence(evidencesSend);
+
+          toast(
+              context,
+              "Tu conexión a internet no es estable. Se guardaron los datos localmente para ser subidos automáticamente cuando te conectes nuevamente.",
+              green);
+          GET.Get.offAll(HomePageUser());
+        }
         // goToFinalPage();
-        if (response.statusCode == 201) {
+        if (evidence.statusCode == 201) {
           List corrects = [];
           int total = res[0].questionary.length;
           var quest = res[0].questionary;
@@ -203,14 +259,6 @@ class _UploadDataState extends State<UploadData> {
           await DownloadData().downloadEvidencesData(context);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePageUser()));
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Navigator.pop(context);
           GET.Get.offAll(HomePageUser());
         }
       } catch (e) {
@@ -246,7 +294,7 @@ class _UploadDataState extends State<UploadData> {
         EvidencesSend evidencesSend = EvidencesSend(
             number: args["number"],
             idEvidence: "evidencia${args["number"]}$uuidUser",
-            phase: args["phase"],
+            phase: args["phase"].toString(),
             classObject: {
               "times": {
                 "calentamiento": classObj[0].timeCalentamiento,
@@ -268,9 +316,9 @@ class _UploadDataState extends State<UploadData> {
               "pauses": classObj[0].pauses
             },
             finished: true,
-            kilocalories: args["mets"],
+            kilocalories: args["mets"].toString(),
             questionnaire: res[0].questionary);
-        await evidencesRepository.insertEvidence(evidencesSend);
+        await evidencesRepository.updateEvidence(evidencesSend);
       } catch (e) {
         print(e.toString());
       }
@@ -280,6 +328,7 @@ class _UploadDataState extends State<UploadData> {
           green);
       GET.Get.offAll(HomePageUser());
     }
+    return true;
   }
 
   Future saveOffline(
@@ -332,60 +381,203 @@ class _UploadDataState extends State<UploadData> {
       var prefs = await SharedPreferences.getInstance();
       var actualVideo = prefs.getString("actualVideo");
       var uuid = Uuid().v4();
+      bool videoUploaded = false;
       File file = File("$actualVideo");
       //Create Multipart form for cloudflare with video, they key is file
       FormData data = FormData.fromMap(
           {"file": await MultipartFile.fromFile(file.path, filename: uuid)});
+      Response tokenGenerator;
+      Response videoSend;
+      var token = prefs.getString("token");
+      var videoData;
+      //First call api for generate token in cloudflare
       try {
-        var token = prefs.getString("token");
-        //First call api for generate token in cloudflare
-        Response response = await dio
-            .get("$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
-        print(response.data);
-        Navigator.pop(context);
-        loading(context,
-            content: Center(
-              child: Image.asset(
-                "Assets/videos/loading.gif",
-                width: 70.0.w,
-                height: 15.0.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            title: Text(
-              "Enviando video...",
-              textAlign: TextAlign.center,
-            ));
-        //Second call cloudflare api with account id and send multipart form and bearer token in headers
-        Response response2 = await dio.post(
-          "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
-          data: data,
-          options: Options(headers: {
-            HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
-          }),
-          onSendProgress: (int sent, int total) {
-            setState(() {
-              progressVideo = sent / total * 100;
-              print(progressVideo.floor());
+        await retry(
+            numberOfRetries: 2,
+            function: () async {
+              tokenGenerator = await dio.get(
+                  "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
             });
-          },
-        );
-        print(response2.data);
-        // prefs.setString("actualVideo", null);
-        // await file.delete();
-        var videoData = {
-          "uuid": uuid,
-          "exercises": args["exercises"],
-          "cloudflareId": response2.data["result"]["uid"]
-        };
-        //Call API for send data of video in cloudflare
-        // Response response3 = await dio.post("path?token=$token", data: dataSend);
-        uploadQuestionary(args, videoData);
       } catch (e) {
-        toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
-        Navigator.pop(context);
-        print("EO " + e.toString());
+        CourseDataRepository courseDataRepository = GetIt.I.get();
+        var course = await courseDataRepository.getAllCourse();
+        QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
+        var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
+        var uuidDevice = prefs.getString("uuid");
+        var nameUser = prefs.getString("name");
+        var uuidUser = uuidDevice + nameUser;
+        var actualVideo = prefs.getString("actualVideo");
+        EvidencesRepository evidencesRepository = GetIt.I.get();
+        ClassDataRepository classDataRepository = GetIt.I.get();
+        var classObj = await classDataRepository.getClassID(args["idClass"]);
+        saveOffline(
+            Uuid().v4().toString(),
+            args["phase"].toString(),
+            args["idClass"].toString(),
+            args["mets"],
+            course[0].courseId,
+            res[0].questionary,
+            actualVideo,
+            args["exercises"],
+            args["isCustom"] ? "customClass" : "normalClass",
+            uuidUser);
+
+        EvidencesSend evidencesSend = EvidencesSend(
+            number: args["number"],
+            idEvidence: "evidencia${args["number"]}$uuidUser",
+            phase: args["phase"].toString(),
+            classObject: {
+              "times": {
+                "calentamiento": classObj[0].timeCalentamiento,
+                "desarrollo": classObj[0].timeDesarrollo,
+                "vcalma": classObj[0].timeVcalma,
+                "flexibilidad": classObj[0].timeFlexibilidad
+              },
+              "students": [],
+              "exercisesCalentamiento": classObj[0].excerciseCalentamiento,
+              "exercisesFlexibilidad": classObj[0].excerciseFlexibilidad,
+              "exercisesDesarrollo": classObj[0].excerciseDesarrollo,
+              "exercisesVueltaCalma": classObj[0].excerciseVueltaCalma,
+              "tips": classObj[0].tips,
+              "_id": classObj[0].classID,
+              "course": "",
+              "questionnaire": classObj[0].questionnaire,
+              "number": classObj[0].number,
+              "level": classObj[0].level,
+              "pauses": classObj[0].pauses
+            },
+            finished: true,
+            kilocalories: args["mets"].toString(),
+            questionnaire: res[0].questionary);
+        await evidencesRepository.updateEvidence(evidencesSend);
+
+        toast(
+            context,
+            "Tu conexión a internet no es estable. Se guardaron los datos localmente para ser subidos automáticamente cuando te conectes nuevamente.",
+            green);
+        GET.Get.offAll(HomePageUser());
+        CreateError()
+            .createError(dio, e.toString(), "get token generator uploadData");
       }
+      Navigator.pop(context);
+      loading(context,
+          content: Center(
+            child: Image.asset(
+              "Assets/videos/loading.gif",
+              width: 70.0.w,
+              height: 15.0.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+          title: Text(
+            "Enviando video...",
+            textAlign: TextAlign.center,
+          ));
+      //Second call cloudflare api with account id and send multipart form and bearer token in headers
+      if (videoUploaded == false) {
+        try {
+          await retry(
+              numberOfRetries: 2,
+              function: () async {
+                videoSend = await dio.post(
+                  "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
+                  data: data,
+                  options: Options(headers: {
+                    HttpHeaders.authorizationHeader:
+                        'Bearer ${tokenGenerator.data}'
+                  }),
+                  onSendProgress: (int sent, int total) {
+                    setState(() {
+                      progressVideo = sent / total * 100;
+                      print(progressVideo.floor());
+                    });
+                    if (sent == total) {
+                      setState(() {
+                        videoUploaded = true;
+                      });
+                    }
+                  },
+                );
+              });
+          setState(() {
+            videoData = {
+              "uuid": uuid,
+              "exercises": args["exercises"],
+              "cloudflareId": videoSend.data["result"]["uid"]
+            };
+          });
+          await uploadQuestionary(args, videoData);
+          return true;
+        } catch (e) {
+          CourseDataRepository courseDataRepository = GetIt.I.get();
+          var course = await courseDataRepository.getAllCourse();
+          QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
+          var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
+          var uuidDevice = prefs.getString("uuid");
+          var nameUser = prefs.getString("name");
+          var uuidUser = uuidDevice + nameUser;
+          var actualVideo = prefs.getString("actualVideo");
+          EvidencesRepository evidencesRepository = GetIt.I.get();
+          ClassDataRepository classDataRepository = GetIt.I.get();
+          var classObj = await classDataRepository.getClassID(args["idClass"]);
+          saveOffline(
+              Uuid().v4().toString(),
+              args["phase"].toString(),
+              args["idClass"].toString(),
+              args["mets"],
+              course[0].courseId,
+              res[0].questionary,
+              actualVideo,
+              args["exercises"],
+              args["isCustom"] ? "customClass" : "normalClass",
+              uuidUser);
+
+          EvidencesSend evidencesSend = EvidencesSend(
+              number: args["number"],
+              idEvidence: "evidencia${args["number"]}$uuidUser",
+              phase: args["phase"].toString(),
+              classObject: {
+                "times": {
+                  "calentamiento": classObj[0].timeCalentamiento,
+                  "desarrollo": classObj[0].timeDesarrollo,
+                  "vcalma": classObj[0].timeVcalma,
+                  "flexibilidad": classObj[0].timeFlexibilidad
+                },
+                "students": [],
+                "exercisesCalentamiento": classObj[0].excerciseCalentamiento,
+                "exercisesFlexibilidad": classObj[0].excerciseFlexibilidad,
+                "exercisesDesarrollo": classObj[0].excerciseDesarrollo,
+                "exercisesVueltaCalma": classObj[0].excerciseVueltaCalma,
+                "tips": classObj[0].tips,
+                "_id": classObj[0].classID,
+                "course": "",
+                "questionnaire": classObj[0].questionnaire,
+                "number": classObj[0].number,
+                "level": classObj[0].level,
+                "pauses": classObj[0].pauses
+              },
+              finished: true,
+              kilocalories: args["mets"].toString(),
+              questionnaire: res[0].questionary);
+          await evidencesRepository.updateEvidence(evidencesSend);
+
+          toast(
+              context,
+              "Tu conexión a internet no es estable. Se guardaron los datos localmente para ser subidos automáticamente cuando te conectes nuevamente.",
+              green);
+          GET.Get.offAll(HomePageUser());
+          print(e);
+          CreateError()
+              .createError(dio, e.toString(), "upload video / uploadData");
+        }
+      }
+
+      // prefs.setString("actualVideo", null);
+      // await file.delete();
+
+      //Call API for send data of video in cloudflare
+      // Response response3 = await dio.post("path?token=$token", data: dataSend);
+
     } else {
       var prefs = await SharedPreferences.getInstance();
       CourseDataRepository courseDataRepository = GetIt.I.get();
@@ -409,12 +601,85 @@ class _UploadDataState extends State<UploadData> {
           args["isCustom"] ? "customClass" : "normalClass",
           uuidUser);
       var resOffline = await offlineRepository.getAll();
+      EvidencesRepository evidencesRepository = GetIt.I.get();
+      ClassDataRepository classDataRepository = GetIt.I.get();
+      var classObj = await classDataRepository.getClassID(args["idClass"]);
       log(resOffline.toString());
-      GET.Get.offAll(HomePageUser());
+
+      EvidencesSend evidencesSend = EvidencesSend(
+          number: args["number"],
+          idEvidence: "evidencia${args["number"]}$uuidUser",
+          phase: args["phase"].toString(),
+          classObject: {
+            "times": {
+              "calentamiento": classObj[0].timeCalentamiento,
+              "desarrollo": classObj[0].timeDesarrollo,
+              "vcalma": classObj[0].timeVcalma,
+              "flexibilidad": classObj[0].timeFlexibilidad
+            },
+            "students": [],
+            "exercisesCalentamiento": classObj[0].excerciseCalentamiento,
+            "exercisesFlexibilidad": classObj[0].excerciseFlexibilidad,
+            "exercisesDesarrollo": classObj[0].excerciseDesarrollo,
+            "exercisesVueltaCalma": classObj[0].excerciseVueltaCalma,
+            "tips": classObj[0].tips,
+            "_id": classObj[0].classID,
+            "course": "",
+            "questionnaire": classObj[0].questionnaire,
+            "number": classObj[0].number,
+            "level": classObj[0].level,
+            "pauses": classObj[0].pauses
+          },
+          finished: true,
+          kilocalories: args["mets"].toString(),
+          questionnaire: res[0].questionary);
+      await evidencesRepository.updateEvidence(evidencesSend);
       toast(
           context,
           "Se guardaron los datos localmente. Deberás conectarte a internet para subir tus evidencias.",
           green);
+      GET.Get.offAll(HomePageUser());
+
+      return true;
     }
+  }
+}
+
+Future retry<T>(
+    {Future<T> Function() function,
+    int numberOfRetries = 3,
+    Duration delayToRetry = const Duration(milliseconds: 500),
+    String message = ''}) async {
+  int retry = numberOfRetries;
+  List<Exception> exceptions = [];
+
+  while (retry-- > 0) {
+    try {
+      return await function();
+    } catch (e) {
+      exceptions.add(e);
+    }
+    if (message != null) print('$message:  retry - ${numberOfRetries - retry}');
+    await Future.delayed(delayToRetry);
+  }
+
+  AggregatedException exception = AggregatedException(message, exceptions);
+  throw exception;
+}
+
+class AggregatedException implements Exception {
+  final String message;
+  AggregatedException(this.message, this.exceptions)
+      : lastException = exceptions.last,
+        numberOfExceptions = exceptions.length;
+
+  final List<Exception> exceptions;
+  final Exception lastException;
+  final int numberOfExceptions;
+
+  String toString() {
+    String result = '';
+    exceptions.forEach((e) => result += e.toString() + '\\');
+    return result;
   }
 }

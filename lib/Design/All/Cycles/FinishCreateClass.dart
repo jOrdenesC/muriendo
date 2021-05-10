@@ -18,6 +18,7 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () {
       setState(() {
         args =
@@ -208,7 +209,8 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
       "exercisesDesarrollo": finalListDesarrollo,
       "exercisesVueltaCalma": finalListVueltaCalma
     };
-    goToPlanification(null, int.parse(args["number"]), true, dataClass, null, false);
+    goToPlanification(
+        null, int.parse(args["number"]), true, dataClass, null, false);
   }
 
   Future addAll(List exercisesLocal, List exercisesAdd, int total) {

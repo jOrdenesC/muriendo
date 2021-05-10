@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
@@ -12,7 +13,6 @@ import 'package:dio/dio.dart';
 import '../../../Utils/UrlServer.dart';
 import 'dart:developer';
 import '../../../Database/Models/evidencesSend.dart';
-import '../../../Utils/Colors.dart';
 
 class CaloricExpenditure extends StatefulWidget {
   final bool isTeacher;
@@ -41,17 +41,24 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 6.0.h,
         backgroundColor: cyan,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back,
+              size: Device.get().isTablet ? 7.0.w : 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
           children: [
             SizedBox(
-              height: 2.0.h,
+              height: 1.0.h,
             ),
-            FittedBox(fit: BoxFit.fitWidth, child: Text("REPORTES")),
+            FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  "REPORTES",
+                  style: TextStyle(fontSize: 13.0.sp),
+                )),
           ],
         ),
         centerTitle: true,
@@ -60,7 +67,7 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
       body: errorServer
           ? Center(
               child: Text(
-                "Ha ocurrido un error. Inténtalo más tarde.",
+                "Ha ocurrido un error en el servidor. Inténtalo más tarde.",
                 style: TextStyle(color: blue, fontSize: 6.0.w),
                 textAlign: TextAlign.center,
               ),
@@ -91,8 +98,8 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                           height: 5.0.h,
                         ),
                         Text(
-                          "GASTO CALÓRICO",
-                          style: TextStyle(color: blue, fontSize: 7.0.w),
+                          "GASTO CALÓRICO (KCal)",
+                          style: TextStyle(color: blue, fontSize: 18.0.sp),
                         ),
                         Expanded(
                           flex: 30,
@@ -107,24 +114,6 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               // border: Border.all(color: blue, width: 2),
                             ),
                             child: BarChart(
-                              // child: Padding(
-                              //     padding: EdgeInsets.only(
-                              //         left: 7,
-                              //         right: 7,
-                              //         bottom: 10.0.h,
-                              //         top: 7),
-                              // child: //widget.child,
-                              //     Container(
-                              //   height: 10.0.h,
-                              //   decoration: BoxDecoration(
-                              //       color: Colors.white,
-                              //       borderRadius: BorderRadius.all(
-                              //           Radius.circular(20))),
-                              //   child: Center(
-                              //       child: Transform.rotate(
-                              //           angle: -math.pi / 2,
-                              //           child: Text("$data"))),
-                              // )),
                               data: data,
                               labels: labels,
                               labelStyle: TextStyle(
@@ -158,15 +147,14 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  " Total ".toUpperCase(),
+                                  "Total".toUpperCase(),
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 6.0.w),
+                                      color: Colors.white, fontSize: 18.0.sp),
                                 ),
                                 Container(
                                   child: Center(
                                     child: Text(
-                                      totalKcal.toInt().toString() + " KCal",
-                                      // "${totalKcal.roundToDouble().toString().length > 5 ? totalKcal.roundToDouble().toString().substring(0, 4) : totalKcal.roundToDouble().toString()} KCal",
+                                      "${totalKcal.toInt()} KCal",
                                       style: TextStyle(
                                           fontSize: 5.0.w, color: blue),
                                     ),
@@ -214,13 +202,13 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
       });
       toast(context, "Cargando datos locales...", green);
       var res = await evidencesRepository.getAllEvidences();
-      log(res.toList()[1].toMap().toString());
       if (res.isEmpty) {
         setState(() {
           noData = true;
         });
       } else {
         for (var i = 0; i < res.length; i++) {
+          log(res[i].toMap().toString());
           namesClass.add("Sesión ${res[i].number}".toString());
           kCal.add(double.parse(res[i].kilocalories.toString()));
         }

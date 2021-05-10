@@ -1,12 +1,9 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
-import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Utils/Colors.dart';
-import 'package:movitronia/Utils/retryDio.dart';
-import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +20,7 @@ class ApplicationUse extends StatefulWidget {
 
 class _ApplicationUseState extends State<ApplicationUse> {
   bool loaded = false;
-  var dio = Dio();
+
   double phase1Value = 0;
   double phase2Value = 0;
   double phase3Value = 0;
@@ -38,14 +35,6 @@ class _ApplicationUseState extends State<ApplicationUse> {
   @override
   void initState() {
     super.initState();
-    dio.interceptors.add(
-      RetryOnConnectionChangeInterceptor(
-        requestRetrier: DioConnectivityRequestRetrier(
-          dio: dio,
-          connectivity: Connectivity(),
-        ),
-      ),
-    );
     getDataForPhase();
   }
 
@@ -53,19 +42,22 @@ class _ApplicationUseState extends State<ApplicationUse> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 6.0.h,
         backgroundColor: cyan,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
+          icon: Icon(Icons.arrow_back,
+              size: Device.get().isTablet ? 7.0.w : 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Column(
           children: [
             SizedBox(
-              height: 2.0.h,
+              height: 1.0.h,
             ),
             FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text("Uso de aplicación".toUpperCase())),
+                child: Text("Uso de aplicación",
+                    style: TextStyle(fontSize: 14.0.sp))),
           ],
         ),
         centerTitle: true,
@@ -179,6 +171,7 @@ class _ApplicationUseState extends State<ApplicationUse> {
       } else {
         var prefs = await SharedPreferences.getInstance();
         String token = prefs.getString("token");
+        var dio = Dio();
 
         try {
           Response res =
@@ -225,7 +218,6 @@ class _ApplicationUseState extends State<ApplicationUse> {
             });
           }
         } catch (e) {
-          CreateError().createError(dio, e.toString(), "ApplicationUse");
           print(e);
         }
       }
@@ -279,7 +271,7 @@ class _ApplicationUseState extends State<ApplicationUse> {
       child: Container(
         decoration: BoxDecoration(
             color: cyan, borderRadius: BorderRadius.all(Radius.circular(10))),
-        height: 4.0.h,
+        height: Device.get().isTablet ? 6.0.h : 4.0.h,
         width: 90.0.w,
         child: Stack(
           children: [
@@ -293,13 +285,14 @@ class _ApplicationUseState extends State<ApplicationUse> {
                         child: Center(
                             child: Text(
                           month,
-                          style: TextStyle(color: Colors.white),
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 7.0.sp),
                         )),
                         decoration: BoxDecoration(
                             color: blue,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        height: 4.0.h,
+                        height: Device.get().isTablet ? 6.0.h : 4.0.h,
                         width: 30.0.w,
                       ),
                     ),
@@ -308,14 +301,15 @@ class _ApplicationUseState extends State<ApplicationUse> {
                           child: Center(
                               child: Text(
                             percentage.toInt().toString() + "%",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 7.0.sp),
                           )),
                           decoration: BoxDecoration(
                               color: red,
                               borderRadius: BorderRadius.only(
                                   bottomRight: Radius.circular(30),
                                   topRight: Radius.circular(30))),
-                          height: 3.0.h,
+                          height: Device.get().isTablet ? 4.0.h : 3.0.h,
                           width: percentage == 0
                               ? 0.1.w
                               : percentage == 25
@@ -324,7 +318,9 @@ class _ApplicationUseState extends State<ApplicationUse> {
                                       ? 20.0.w
                                       : percentage == 75
                                           ? 30.0.w
-                                          : 40.0.w),
+                                          : Device.get().isTablet
+                                              ? 52.0.w
+                                              : 40.0.w),
                     )
                   ],
                 ),
@@ -332,7 +328,8 @@ class _ApplicationUseState extends State<ApplicationUse> {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
                     "100%",
-                    style: TextStyle(color: blue.withOpacity(0.7)),
+                    style: TextStyle(
+                        color: blue.withOpacity(0.7), fontSize: 7.0.sp),
                   ),
                 ),
               ],

@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_time_button/flutter_time_button.dart';
 import 'package:get/get.dart';
@@ -180,12 +182,14 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
               appBar: orientation == Orientation.landscape
                   ? null
                   : AppBar(
+                      toolbarHeight: 6.0.h,
                       backgroundColor: cyan,
                       elevation: 0,
                       leading: IconButton(
                         icon: Icon(Icons.arrow_back,
-                            size: 9.0.w, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
+                            size: Device.get().isTablet ? 7.0.w : 9.0.w,
+                            color: Colors.white),
+                        onPressed: () => pop(),
                       ),
                       title: Column(
                         children: [
@@ -386,6 +390,168 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                   Column(
                     children: [
                       SizedBox(
+                        height: Device.get().isTablet ? 3.0.h : 2.0.h,
+                      ),
+                      Container(
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                              Colors.grey, BlendMode.saturation),
+                          child: AspectRatio(
+                            aspectRatio: 4 / 3,
+                            child: webpVideo(_),
+                          ),
+                        ),
+                        color: Colors.white,
+                        width: Device.get().isTablet ? 40.0.w : 50.0.w,
+                        //height: Device.get().isTablet ? 20.0.h : 15.0.h,
+                      ),
+                      FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Container(
+                          width: Device.get().isTablet ? 50.0.w : 70.0.w,
+                          child: Text(
+                            " " + _.excerciseNames[_.globalindex.value] + " ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize:
+                                    Device.get().isTablet ? 13.0.sp : 10.0.sp,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 3.0.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Transform.rotate(
+                  angle: pi / -45,
+                  child: Text(
+                    "¿Sabias que ...",
+                    style: TextStyle(
+                      fontSize: 5.0.w,
+                      color: Colors.white,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(1, 1),
+                          blurRadius: 3.0,
+                          color: blue,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 15.0.w,
+                ),
+              ],
+            ),
+            Stack(
+              children: [
+                Container(
+                  width: Device.get().isTablet ? 80.0.w : 99.0.w,
+                  height: Device.get().isTablet ? 42.0.h : 40.0.h,
+                  child: SvgPicture.asset("Assets/figures/micro.svg",
+                      fit: BoxFit.contain),
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: Device.get().isTablet ? 65.0.w : 80.0.w,
+                        height: Device.get().isTablet ? 30.0.h : 25.0.h,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(""),
+                            Text(""),
+                            Text(""),
+                            Text(""),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 16.0.w,
+                                ),
+                                Flexible(
+                                  flex: 2,
+                                  child: Transform.rotate(
+                                    angle: pi / -45,
+                                    child: AutoSizeText(
+                                      _.tipsData[_.globalindex.value - 1]
+                                          .toUpperCase(),
+                                      maxLines: 10,
+                                      maxFontSize:
+                                          Device.get().isTablet ? 20 : 15,
+                                      minFontSize:
+                                          Device.get().isTablet ? 18 : 8,
+                                      style: TextStyle(
+                                          fontSize: 20.0.sp, color: blue),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(child: circTimer(_))
+          ],
+        ),
+      ],
+    );
+  }
+/*
+  Widget pausePortrait(Mp4Controller _) {
+    return Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Transform.rotate(
+                  origin: Offset(-3.0.w, -3.0.w),
+                  angle: pi * 1,
+                  child: SvgPicture.asset("Assets/images/figure2.svg",
+                      color: blue, width: 50.0.w),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SvgPicture.asset("Assets/images/figure2.svg",
+                    color: blue, width: 50.0.w),
+              ],
+            ),
+          ],
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
                         height: 5.0.h,
                       ),
                       Container(
@@ -511,7 +677,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         ),
       ],
     );
-  }
+  }*/
 
   Widget landscapeDesign(Mp4Controller _) {
     var w = MediaQuery.of(context).size.width;
@@ -534,33 +700,33 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
               SizedBox(
                 height: 2.0.w,
               ),
-              // Container(
-              //   decoration: BoxDecoration(
-              //       color: cyan,
-              //       borderRadius: BorderRadius.only(
-              //           topRight: Radius.circular(80),
-              //           bottomRight: Radius.circular(80))),
-              //   width: 10.0.h,
-              //   child: Row(
-              //     children: [
-              //       InkWell(
-              //         onTap: () {
-              //           print("Button pressed");
-              //           _.controllTimer(widget.id, widget.questionnaire,
-              //               widget.number, widget.phase,widget.isCustom);
-              //         },
-              //         child: Icon(
-              //           Icons.volume_up_rounded,
-              //           color: Colors.white,
-              //           size: w * 0.08,
-              //         ),
-              //       ),
-              //       SizedBox(
-              //         width: w * 0.015,
-              //       )
-              //     ],
-              //   ),
-              // ),
+              Container(
+                decoration: BoxDecoration(
+                    color: cyan,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(80),
+                        bottomRight: Radius.circular(80))),
+                width: 10.0.h,
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        print("Button pressed");
+                        _.controllTimer(widget.id, widget.questionnaire,
+                            widget.number, widget.phase, widget.isCustom);
+                      },
+                      child: Icon(
+                        Icons.volume_up_rounded,
+                        color: Colors.white,
+                        size: w * 0.08,
+                      ),
+                    ),
+                    SizedBox(
+                      width: w * 0.015,
+                    )
+                  ],
+                ),
+              ),
               SizedBox(
                 height: 2.0.w,
               ),
@@ -608,37 +774,14 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     return Column(
       children: [
         SizedBox(
-          height: 10.0.h,
-        ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     Container(
-        //       child: Row(
-        //         mainAxisAlignment: MainAxisAlignment.end,
-        //         children: [
-        //           // Icon(
-        //           //   Icons.volume_up_outlined,
-        //           //   color: Colors.white,
-        //           //   size: 15.0.w,
-        //           // ),
-        //           SizedBox(
-        //             width: 2.0.w,
-        //           )
-        //         ],
-        //       ),
-        //       width: 25.0.w,
-        //       height: 10.0.h,
-        //       decoration: BoxDecoration(
-        //           color: cyan,
-        //           borderRadius: BorderRadius.only(
-        //               topLeft: Radius.circular(80),
-        //               bottomLeft: Radius.circular(80))),
-        //     )
-        //   ],
-        // ),
-        SizedBox(
           height: 2.0.h,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [],
+        ),
+        SizedBox(
+          height: 1.0.h,
         ),
         //GIF HERE ⬇⬇⬇⬇
         Container(
@@ -656,19 +799,20 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
           ),
         ),
         SizedBox(
-          height: 2.0.h,
+          height: Device.get().isTablet ? 4.0.h : 14.0.h,
         ),
         Container(
-            width: w,
-            height: 40.0.h,
             color: Colors.white,
-            child: Center(child: webpVideo(_))),
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: Center(child: webpVideo(_)),
+            )),
         SizedBox(
           height: 2.0.h,
         ),
 
         SizedBox(
-          height: 2.0.h,
+          height: Device.get().isTablet ? 1.0.h : 5.0.h,
         ),
 
         Row(
@@ -679,8 +823,8 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
               child: Center(
                 child: circTimer(_),
               ),
-              width: 40.0.w,
-              height: 16.0.h,
+              width: Device.get().isTablet ? 36.0.w : 40.0.w,
+              height: 14.0.h,
             )
           ],
         ),
@@ -733,7 +877,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                   children: [
                     Container(
                       width: 90.0.w,
-                      height: 55.0.h,
+                      height: 60.0.h,
                       child: SvgPicture.asset(
                         "Assets/figures/macro.svg",
                         fit: BoxFit.contain,
@@ -743,25 +887,48 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              height: 15.0.h,
+                              height: Device.get().isTablet ? 9.0.h : 10.0.h,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 21.0),
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Container(
-                                    width: 80.0.w,
-                                    child: Obx(() => Text(
-                                          "${mp4Controller.macroTip}"
-                                              .toUpperCase(),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 5.0.w),
-                                          textAlign: TextAlign.center,
-                                        ))),
-                              ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: Device.get().isTablet ? 12.0.w : 5.0.w,
+                                ),
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Container(
+                                      width: Device.get().isTablet
+                                          ? 65.0.w
+                                          : 80.0.w,
+                                      height: Device.get().isTablet
+                                          ? 40.0.h
+                                          : 30.0.h,
+                                      child: Transform.rotate(
+                                          angle: pi / -55,
+                                          child: Center(
+                                            child: Obx(() => AutoSizeText(
+                                                  "${mp4Controller.macroTip}"
+                                                      .toUpperCase(),
+                                                  maxLines: 13,
+                                                  maxFontSize:
+                                                      Device.get().isTablet
+                                                          ? 35
+                                                          : 25,
+                                                  minFontSize:
+                                                      Device.get().isTablet
+                                                          ? 18
+                                                          : 8,
+                                                  style: TextStyle(
+                                                      fontSize: 20.0.sp,
+                                                      color: Colors.white),
+                                                  textAlign: TextAlign.center,
+                                                )),
+                                          ))),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -785,31 +952,6 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                         )
                       ], color: yellow, fontSize: 6.5.w)),
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                // Container(
-                //   decoration: BoxDecoration(
-                //       color: cyan,
-                //       borderRadius: BorderRadius.only(
-                //           topRight: Radius.circular(80),
-                //           bottomRight: Radius.circular(80))),
-                //   width: 15.0.w,
-                //   height: 6.0.h,
-                //   child: Row(
-                //     children: [
-                //       Icon(
-                //         Icons.volume_up_rounded,
-                //         color: Colors.white,
-                //         size: 10.0.w,
-                //       ),
-                //       SizedBox(
-                //         width: 0.15.w,
-                //       )
-                //     ],
-                //   ),
-                // ),
               ],
             ),
             Expanded(
@@ -942,29 +1084,29 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                       ),
                     ],
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: [
-                  //     Container(
-                  //       decoration: BoxDecoration(
-                  //           color: cyan,
-                  //           borderRadius: BorderRadius.only(
-                  //               topLeft: Radius.circular(80),
-                  //               bottomLeft: Radius.circular(80))),
-                  //       width: 25.0.w,
-                  //       height: 10.0.h,
-                  //       child: Row(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.volume_up_rounded,
-                  //             color: Colors.white,
-                  //             size: 20.0.w,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: cyan,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(80),
+                                bottomLeft: Radius.circular(80))),
+                        width: 25.0.w,
+                        height: 10.0.h,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.volume_up_rounded,
+                              color: Colors.white,
+                              size: 20.0.w,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -1069,7 +1211,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 children: [
                   Image.asset(
                     "Assets/images/LogoCompleto.png",
-                    width: 20.0.w,
+                    width: Device.get().isTablet ? 10.0.w : 20.0.w,
                   ),
                   SizedBox(
                     width: 10.0.w,
@@ -1249,32 +1391,34 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 children: [
                   Image.asset(
                     "Assets/images/LogoCompleto.png",
-                    width: 20.0.w,
+                    width: Device.get().isTablet ? 7.0.w : 15.0.w,
                   ),
                   SizedBox(
-                    width: 10.0.w,
+                    width: Device.get().isTablet ? 3.0.w : 5.0.w,
                   ),
                 ],
               ),
               SizedBox(
-                height: 5.0.h,
+                height: Device.get().isTablet ? 1.0.h : 4.0.h,
               ),
               Container(
-                  width: 100.0.w,
-                  height: 34.0.h,
                   color: blue,
-                  child: Center(child: webpVideo(_))),
+                  child: Center(
+                      child: AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: webpVideo(_),
+                  ) /*webpVideo(_)*/)),
               SizedBox(
-                height: 3.0.h,
+                height: Device.get().isTablet ? 2.0.h : 3.0.h,
               ),
               Text("Observa y aprende el ejercicio",
                   style: TextStyle(color: blue, fontSize: 5.0.w)),
               SizedBox(
-                height: 3.0.h,
+                height: Device.get().isTablet ? 1.0.h : 5.0.h,
               ),
               Container(
                 width: 40.0.w,
-                height: 17.0.h,
+                height: 15.0.h,
                 child: Center(
                   child: circTimerDemostration(_),
                 ),
@@ -1358,7 +1502,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                     children: [
                       Image.asset(
                         "Assets/images/LogoCompleto.png",
-                        width: 20.0.w,
+                        width: Device.get().isTablet ? 15.0.w : 20.0.w,
                       ),
                       SizedBox(
                         width: 10.0.w,

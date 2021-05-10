@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:connectivity/connectivity.dart';
@@ -13,6 +14,7 @@ import 'package:movitronia/Design/All/Sessions/Sessions.dart';
 import 'package:movitronia/Design/All/Settings/ProfilePage.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Design/Widgets/Loading.dart';
+import 'package:movitronia/Functions/createError.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:movitronia/Utils/ConnectionState.dart';
@@ -49,6 +51,9 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   void initState() {
     super.initState();
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      uploadData();
+    });
     dio.interceptors.add(
       RetryOnConnectionChangeInterceptorDialog(
         context: context,
@@ -59,7 +64,6 @@ class _HomePageUserState extends State<HomePageUser> {
         ),
       ),
     );
-    getDataOffline();
     _screens.add(Sessions());
     _screens.add(Reports(drawerMenu: false, isTeacher: false, data: null));
     _screens.add(ProfilePage(isMenu: true));
@@ -548,21 +552,24 @@ class _HomePageUserState extends State<HomePageUser> {
   }
 
   uploadData() async {
+    dataOfflineList.clear();
+    OfflineRepository offlineRepository = GetIt.I.get();
+    var res = await offlineRepository.getAll();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
-    if (hasInternet) {
-      loading(context,
-          content: Center(
-            child: Image.asset(
-              "Assets/videos/loading.gif",
-              width: 70.0.w,
-              height: 15.0.h,
-              fit: BoxFit.contain,
-            ),
-          ),
-          title: Text(
-            "Enviando evidencia...",
-            textAlign: TextAlign.center,
-          ));
+    bool videoUploaded = false;
+    setState(() {
+      dataOffline = res.length;
+    });
+    if (res.isNotEmpty) {
+      dev.log(res[0].exercises.toString());
+      for (var i = 0; i < res.length; i++) {
+        setState(() {
+          dataOfflineList.add(res[i]);
+        });
+      }
+    }
+    if (hasInternet && res.length != 0) {
+      Response response2;
       var prefs = await SharedPreferences.getInstance();
       for (var i = 0; i < dataOfflineList.length; i++) {
         try {
@@ -577,68 +584,49 @@ class _HomePageUserState extends State<HomePageUser> {
             Response response = await dio.get(
                 "$urlServer/api/mobile/cfStreamTokenGenerator?token=$token");
             //First call api for generate token in cloudflare
-            Navigator.pop(context);
-            loading(context,
-                content: Center(
-                  child: Image.asset(
-                    "Assets/videos/loading.gif",
-                    width: 70.0.w,
-                    height: 15.0.h,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                title: Text(
-                  "Enviando video...",
-                  textAlign: TextAlign.center,
-                ));
             //Second call cloudflare api with account id and send multipart form and bearer token in headers
-            Response response2 = await dio.post(
-              "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
-              data: data,
-              options: Options(headers: {
-                HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
-              }),
-              onSendProgress: (int sent, int total) {
-                setState(() {
-                  progressVideo = sent / total * 100;
-                  print(progressVideo.floor());
-                });
-              },
-            );
+            if (videoUploaded == false) {
+              response2 = await dio.post(
+                "https://api.cloudflare.com/client/v4/accounts/cd249e709572d743280abfc7f2cc8af6/stream",
+                data: data,
+                options: Options(headers: {
+                  HttpHeaders.authorizationHeader: 'Bearer ${response.data}'
+                }),
+                onSendProgress: (int sent, int total) {
+                  setState(() {
+                    progressVideo = sent / total * 100;
+                    print(progressVideo.floor());
+                  });
+                },
+              );
+            }
             print(response2.data);
             var videoData = {
               "uuid": uuid,
               "exercises": dataOfflineList[i].exercises, //args["exercises"],
               "cloudflareId": response2.data["result"]["uid"]
             };
-            dev.log(videoData.toString());
-            toast(context, "Video subido con éxito.", green);
             // Navigator.pop(context);
             //Call API for send data of video in cloudflare
             // Response response3 = await dio.post("path?token=$token", data: dataSend);
             uploadQuestionary(dataOfflineList[i], videoData);
           } catch (e) {
-            Navigator.pop(context);
-            toast(
-                context,
-                "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
-                red);
+            CreateError().createError(
+                dio, e.toString(), "upload Data first catch homePage");
+            print(
+                "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.");
             print("EO " + e.toString());
           }
         } catch (e) {
-          Navigator.pop(context);
-          toast(
-              context,
-              "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.",
-              red);
+          print(
+              "Ha ocurrido un error al subir evidencias, inténtalo nuevamente.");
+          CreateError()
+              .createError(dio, e.toString(), "upload Data catch homePage");
           print(e.response);
         }
       }
     } else {
-      toast(
-          context,
-          "No cuentas con conexión a internet. Por favor conéctate a una red estable.",
-          red);
+      print("sin internet o sin datos ${dataOfflineList.length}");
     }
   }
 
@@ -659,69 +647,25 @@ class _HomePageUserState extends State<HomePageUser> {
           "videoData": videoData,
           "course": offlineData.course
         };
-
-        Navigator.pop(context);
-        loading(context,
-            content: Center(
-              child: Image.asset(
-                "Assets/videos/loading.gif",
-                width: 70.0.w,
-                height: 15.0.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            title: Text(
-              "Enviando cuestionario...",
-              textAlign: TextAlign.center,
-            ));
         var response = await dio
             .post("$urlServer/api/mobile/evidence?token=$token", data: data);
         print(response);
         print(response.data);
         // goToFinalPage();
         if (response.statusCode == 201) {
-          List corrects = [];
-          int total = offlineData.questionary.length;
-          var quest = offlineData.questionary;
-          for (var i = 0; i < quest.length; i++) {
-            if (quest[i]["type"] == "vf") {
-              if (quest[i]["correctVf"] == quest[i]["studentResponseVf"]) {
-                setState(() {
-                  corrects.add(quest[i]);
-                });
-              }
-            } else {
-              if (quest[i]["correctAl"] == quest[i]["studentResponseAl"]) {
-                setState(() {
-                  corrects.add(quest[i]);
-                });
-              }
-            }
-          }
-          toast(
-              context,
-              "Se han subido los datos correctamente.\n\nTuviste ${corrects.length} correctas de $total en este cuestionario.",
-              green);
+          toast(context, "Se han subido una evidencia automáticamente.", green);
           await DownloadData().downloadEvidencesData(context);
           OfflineRepository offlineRepository = GetIt.I.get();
           await offlineRepository.deleteElement(offlineData.uuid);
-          GET.Get.offAll(HomePageUser());
         }
       } catch (e) {
         if (e is DioError) {
           print("EEEEEEEEEEEEEERROR " + e.response.data.toString());
-          Navigator.pop(context);
-          toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
         }
         print("EEEEEEEEEEEEEEEEEERRRROR " + e.toString());
-        Navigator.pop(context);
-        toast(context, "Ha ocurrido un error, inténtalo nuevamente.", red);
       }
     } else {
-      toast(
-          context,
-          "No tienes conexión a internet. Se guardaron los datos localmente para ser subidos cuando tengas conexión a internet.",
-          green);
+      print("sin internet");
     }
   }
 
