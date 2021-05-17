@@ -320,16 +320,21 @@ goToManuals(bool isFull) {
 }
 
 closeSession() async {
+  var prefs = await SharedPreferences.getInstance();
+  
   CourseDataRepository courseDataRepository = GetIt.I.get();
   TipsDataRepository tipsDataRepository = GetIt.I.get();
-  await courseDataRepository.deleteAll();
+  ClassDataRepository classDataRepository = GetIt.I.get();
   EvidencesRepository evidencesRepository = GetIt.I.get();
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
+
+
+  await courseDataRepository.deleteAll();
   await evidencesRepository.deleteAll();
   await excerciseDataRepository.deleteAll();
-  ClassDataRepository classDataRepository = GetIt.I.get();
   await classDataRepository.deleteAll();
   await tipsDataRepository.deleteAll();
+
   var resCourse = await courseDataRepository.getAllCourse();
   var resTips = await tipsDataRepository.getAllTips();
   var resEvidence = await evidencesRepository.getAllEvidences();
@@ -345,7 +350,8 @@ closeSession() async {
     exercises ${resExercises.toList()}
     classes ${resClass.toList()}
     """);
-  var prefs = await SharedPreferences.getInstance();
+  
+
   prefs.setInt("phase", null);
   prefs.setString("rut", null);
   prefs.setString("name", null);

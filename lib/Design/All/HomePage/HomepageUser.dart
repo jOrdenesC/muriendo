@@ -51,19 +51,19 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(seconds: 60), (timer) {
+    Timer.periodic(Duration(seconds: 300), (timer) {
       uploadData();
     });
-    dio.interceptors.add(
-      RetryOnConnectionChangeInterceptorDialog(
-        context: context,
-        function: () => {print("Testing")},
-        requestRetrier: DioConnectivityRequestRetrier(
-          dio: dio2,
-          connectivity: Connectivity(),
-        ),
-      ),
-    );
+    // dio.interceptors.add(
+    //   RetryOnConnectionChangeInterceptorDialog(
+    //     context: context,
+    //     function: () => {print("Testing")},
+    //     requestRetrier: DioConnectivityRequestRetrier(
+    //       dio: dio2,
+    //       connectivity: Connectivity(),
+    //     ),
+    //   ),
+    // );
     _screens.add(Sessions());
     _screens.add(Reports(drawerMenu: false, isTeacher: false, data: null));
     _screens.add(ProfilePage(isMenu: true));

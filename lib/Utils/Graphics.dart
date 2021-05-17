@@ -309,20 +309,6 @@ class _BarItemState extends AnimatedWidgetBaseState<_BarItem> {
               ? null
               : widget.getIcon(widget.value),
         ),
-        // SizedBox(
-        //   height: widget.headerValueHeight,
-        //   width: widget.width,
-        //   child: Text(
-        //     widget.hideValue || !widget.dislplayValue
-        //         ? ''
-        //         : (widget.roundValuesOnText
-        //             ? widget.value.toString() + " KCal"
-        //             : widget.value.toString() + " KCal"),
-        //     textAlign: TextAlign.center,
-        //     softWrap: false,
-        //     style: widget.valueStyle ?? Theme.of(context).textTheme.caption,
-        //   ),
-        // ),
         Flexible(
           flex: 10,
           child: FractionallySizedBox(
@@ -464,4 +450,3 @@ class _FollowTheGridLines extends MultiChildLayoutDelegate {
   @override
   bool shouldRelayout(MultiChildLayoutDelegate oldDelegate) => false;
 }
-
