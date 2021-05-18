@@ -8,7 +8,6 @@ class SembastCourseRepository extends CourseDataRepository {
   final StoreRef _store = intMapStoreFactory.store("course_store");
 
   Future<int> insertCourse(CourseData courseData) async {
-    print(courseData.toMap());
     return await _store.add(_database, courseData.toMap());
   }
 

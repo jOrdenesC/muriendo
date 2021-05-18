@@ -258,9 +258,6 @@ class DownloadData {
           );
 
           Navigator.pop(context);
-          //getExercises();
-          //await getClass(response);
-          //testDownload();
           List<num> indexes = [];
           List<TipsData> tipsList = [];
           List<QuestionData> questionList = [];
@@ -286,20 +283,12 @@ class DownloadData {
               ],
             ),
           );
-          // print("LENGTH " + responseClasses.data.length.toString());
-          // print("CLASSSSSSSSSSSSEES ${responseClasses.data}");
-          // var responsess = ResultModel.fromJson(responseClasses.data[0]);
           for (int i = 0; i < responseClasses.data.length; i++) {
-            print(i.toString() + " DATA DATA");
-            Map responseBody =
-                responseClasses.data[i]; //Loop through all objects
-            print("PASÓ RESPONSEBODY");
+            Map responseBody = responseClasses.data[i];
             ResultModel jsonResponse = ResultModel.fromJson(responseBody);
             log(jsonResponse.toJson().toString());
             for (int i = 0; i < jsonResponse.tips.length; i++) {
-              print("json RESPONSE $i");
               var tipsResponse = jsonResponse.tips[i];
-              // print(tipsResponse.toJson().toString());
               if (indexes.contains(int.parse(tipsResponse.tipId))) {
                 print("Repetido");
               } else {
@@ -321,8 +310,6 @@ class DownloadData {
                   audioTips = "[]";
                   audioVF = "[]";
                 }
-
-                print("#ENRTA A TIPS DATA");
 
                 TipsData tipsData = TipsData(
                     audioQuestion: audioQuestion,
@@ -348,8 +335,6 @@ class DownloadData {
                   print("ya existe");
                   await _tipsDataRepository.updateTips(tipsData);
                 }
-
-                print("ENRTA A QUESTION DATA");
                 QuestionData questionData = QuestionData(
                     tipID: tipsResponse.sId,
                     questionVf: tipsResponse.questions.questionVf,
@@ -366,59 +351,28 @@ class DownloadData {
               }
             }
 
-            print("ENtra primer for");
-            for (int i = 0; i < tipsList.length; i++) {
-              final result = await _tipsDataRepository
-                  .getTips(tipsList[i].tipsID.toString());
-              if (result.isEmpty) {
-                await _tipsDataRepository.insertTips(tipsList[i]);
-                //  print("Insert Data");
-              }
-              //print("Result: ${result}");
-              //_tipsDataRepository.insertTips(tipsList[i]);
-            }
+            // for (int i = 0; i < tipsList.length; i++) {
+            //   final result = await _tipsDataRepository
+            //       .getTips(tipsList[i].tipsID.toString());
+            //   if (result.isEmpty) {
+            //     await _tipsDataRepository.insertTips(tipsList[i]);
+            //     //  print("Insert Data");
+            //   }
+            // }
 
-            print("ENtra 2do for");
+
             for (int i = 0; i < questionList.length; i++) {
               final result = await _questionDataRepository
                   .getQuestion(questionList[i].tipID.toString());
               if (result.isEmpty) {
                 await _questionDataRepository.insertQuestion(questionList[i]);
-                //  print("Insert Data");
+       
               }
-              //print("Result: ${result}");
-              //_tipsDataRepository.insertTips(tipsList[i]);
             }
           }
-          // Navigator.pop(context);
-          //print(indexes);
-          // loading(
-          //   context,
-          //   title: Text(
-          //     "Descargando audios...",
-          //     style: TextStyle(color: blue, fontSize: 6.0.w),
-          //     textAlign: TextAlign.center,
-          //   ),
-          //   content: Column(
-          //     children: [
-          //       Center(
-          //         child: Image.asset(
-          //           "Assets/videos/loading.gif",
-          //           width: 70.0.w,
-          //           height: 15.0.h,
-          //           fit: BoxFit.contain,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // );
-          // await audioDownload(audioNames, "tip");
-          // await downloadAudiosTest(audioNames, "tip");
           Navigator.pop(context);
           print("Total Tips: ${tipsList.length}");
           print("Total Questions: ${questionList.length}");
-          // var res = await _questionDataRepository.getAllQuestions();
-          // print(res.length);
           print("DESCARGANDO DATOS DE CLASES");
           getClass(responseClasses, context);
         } catch (e) {

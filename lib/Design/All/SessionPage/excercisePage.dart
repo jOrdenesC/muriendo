@@ -770,7 +770,6 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
   }
 
   Widget portraitDesign(Mp4Controller _) {
-    var w = MediaQuery.of(context).size.width;
     return Column(
       children: [
         SizedBox(

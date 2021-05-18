@@ -8,7 +8,6 @@ class SembastQuestionaryRepository extends QuestionaryRepository{
   final StoreRef _store = intMapStoreFactory.store("questionary_store");
 
   Future<int> insert(QuestionaryData gifData) async {
-    print('inside insertGif');
     print(gifData.toMap());
     return await _store.add(_database, gifData.toMap());
   }

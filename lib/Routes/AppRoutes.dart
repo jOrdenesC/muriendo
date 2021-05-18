@@ -22,9 +22,9 @@ import 'package:movitronia/Design/All/Manuals/Manuals.dart';
 import 'package:movitronia/Design/All/Reports/ApplicationUse.dart';
 import 'package:movitronia/Design/All/Reports/CaloricExpenditure.dart';
 import 'package:movitronia/Design/All/Reports/reports.dart';
+import 'package:movitronia/Design/All/SessionPage/ExercisesPage.dart';
 import 'package:movitronia/Design/All/SessionPage/FinalPage.dart';
 import 'package:movitronia/Design/All/SessionPage/Questionary.dart';
-import 'package:movitronia/Design/All/SessionPage/ExcercisesPage.dart';
 import 'package:movitronia/Design/All/SessionPage/Planification.dart';
 import 'package:movitronia/Design/All/SessionPage/ShowCalories.dart';
 import 'package:movitronia/Design/All/SessionPage/EvidencesSession.dart';
@@ -95,11 +95,6 @@ class AppRoutes {
     orientation: ScreenOrientation.portraitOnly,
   );
 
-  static var excercisesPage = RouteDetails(
-    name: '/excercisesPage',
-    page: ExcercisesPage(),
-    orientation: ScreenOrientation.portraitOnly,
-  );
 
   // static var sessionPage = RouteDetails(
   //   name: '/sessionPage',
@@ -116,6 +111,12 @@ class AppRoutes {
   static var evidencesSession = RouteDetails(
     name: '/evidencesSession',
     page: EvidencesSession(),
+    orientation: ScreenOrientation.portraitOnly,
+  );
+
+  static var excercisesPage = RouteDetails(
+    name: '/excercisesPage',
+    page: ExcercisesPage(),
     orientation: ScreenOrientation.portraitOnly,
   );
 

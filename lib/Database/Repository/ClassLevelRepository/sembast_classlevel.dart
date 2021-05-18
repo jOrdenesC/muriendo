@@ -93,6 +93,7 @@ class SembastClassDataRepository extends ClassDataRepository {
   @override
   Future deleteAll() async {
     await _store.delete(_database);
+    print("eliminadas todas las clases");
   }
 
   _parseInt(List<dynamic> data) {

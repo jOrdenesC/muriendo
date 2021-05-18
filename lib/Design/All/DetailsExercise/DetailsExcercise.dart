@@ -34,18 +34,12 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
   var audioRecommendation;
   @override
   void initState() {
-    print("""
-    Data
-    ${widget.isTeacher},
-    ${widget.name}
-    """);
     super.initState();
     getWeight();
   }
 
   @override
   void dispose() {
-    //webmController.controller.dispose();
     if (widget.isTeacher == false) {
       audioPlayer.dispose();
     }

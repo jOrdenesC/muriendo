@@ -8,7 +8,6 @@ class SembastOfflineRepository extends OfflineRepository {
   final StoreRef _store = intMapStoreFactory.store("offline_store");
 
   Future<int> insert(OfflineData gifData) async {
-    print('inside insertGif');
     print(gifData.toMap());
     return await _store.add(_database, gifData.toMap());
   }

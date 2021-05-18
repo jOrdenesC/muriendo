@@ -210,7 +210,7 @@ class Mp4Controller extends GetxController {
       }
       /**Setting Counter for MacroTimer */
       double getTime = macroTime[index] / macroList[index].length;
-      print("MacroResult: ${tips}");
+      print("MacroResult: $tips");
       macrocounter.value = getTime.floor();
       int loops = macroList[index].length;
       macroTimer(tips, loops, getTime.floor(), audioTip);

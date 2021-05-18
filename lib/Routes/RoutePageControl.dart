@@ -18,6 +18,7 @@ import '../Design/All/Reports/CaloricExpenditure.dart';
 import '../Design/All/Reports/reports.dart';
 import 'dart:developer';
 import '../Design/All/Reports/ApplicationUse.dart';
+import '../Database/Repository/QuestionDataRepository/QuestionDataRepository.dart';
 
 goToLogin() {
   Get.toNamed(AppRoutes.login.name);
@@ -67,10 +68,6 @@ goToExcercisesPage(String name, List data, bool isTeacher) {
   Get.toNamed(AppRoutes.excercisesPage.name,
       arguments: {"data": data, "name": name, "isTeacher": isTeacher});
 }
-
-// goToSessionPage(String id) {
-//   Get.toNamed(AppRoutes.sessionPage.name, arguments: id);
-// }
 
 goToShowCalories(
     {String idClass,
@@ -321,36 +318,39 @@ goToManuals(bool isFull) {
 
 closeSession() async {
   var prefs = await SharedPreferences.getInstance();
-  
+
+  QuestionDataRepository questionDataRepository = GetIt.I.get();
   CourseDataRepository courseDataRepository = GetIt.I.get();
   TipsDataRepository tipsDataRepository = GetIt.I.get();
   ClassDataRepository classDataRepository = GetIt.I.get();
   EvidencesRepository evidencesRepository = GetIt.I.get();
   ExcerciseDataRepository excerciseDataRepository = GetIt.I.get();
 
-
   await courseDataRepository.deleteAll();
   await evidencesRepository.deleteAll();
   await excerciseDataRepository.deleteAll();
   await classDataRepository.deleteAll();
   await tipsDataRepository.deleteAll();
+  await questionDataRepository.deleteAll();
 
   var resCourse = await courseDataRepository.getAllCourse();
   var resTips = await tipsDataRepository.getAllTips();
   var resEvidence = await evidencesRepository.getAllEvidences();
   var resExercises = await excerciseDataRepository.getAllExcercise();
   var resClass = await classDataRepository.getAllClassLevel();
+  var resQuestions = await questionDataRepository.getAllQuestions();
   print(resClass.length);
   print(resEvidence.length);
   print(resExercises.length);
   print(resTips.length);
   print("""
-    course ${resCourse.toList()}
-    evidence ${resEvidence.toList()}
-    exercises ${resExercises.toList()}
-    classes ${resClass.toList()}
+    course ${resCourse.length}
+    evidence ${resEvidence.length}
+    exercises ${resExercises.length}
+    classes ${resClass.length}
+    tips ${resTips.length}
+    questions ${resQuestions.length}
     """);
-  
 
   prefs.setInt("phase", null);
   prefs.setString("rut", null);

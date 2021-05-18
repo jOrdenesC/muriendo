@@ -7,6 +7,8 @@ abstract class QuestionDataRepository {
 
   Future deleteQuestion(int gifDataId);
 
+  Future deleteAll();
+
   Future<List<QuestionData>> getAllQuestions();
 
   Future<List<QuestionData>> getQuestion(String id);

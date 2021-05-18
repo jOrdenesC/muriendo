@@ -148,7 +148,7 @@ class _SessionsState extends State<Sessions> {
     Response responseVideos;
     Response responseAudiosExercise;
     Response responseAudiosLevel;
-    print("Value of Not Accepted ${notaccepted}");
+    print("Value of Not Accepted $notaccepted");
     if (Platform.isAndroid) {
       prefs.setBool("downloaded", false);
       downloaded = prefs.getBool("downloaded");
@@ -411,7 +411,7 @@ class _SessionsState extends State<Sessions> {
   }
 
   void _restartApp() async {
-    FlutterRestart.restartApp(); //TODO FIX
+    FlutterRestart.restartApp();
   }
 
   @override
@@ -688,7 +688,6 @@ class _SessionsState extends State<Sessions> {
             : notaccepted == false
                 ? body()
                 : Center(
-                    //TODO
                     child: Image.asset(
                       "Assets/videos/loading.gif",
                       fit: BoxFit.contain,
@@ -1283,11 +1282,10 @@ class _SessionsState extends State<Sessions> {
       onTap: () {
         if (Platform.isIOS && notaccepted == true ||
             Platform.isIOS && notaccepted == null) {
-          iosPopup(); //TODO
+          iosPopup();
         } else {
           print(evidences.toString());
           print(lock);
-          //TODO add notaccepted boolean and call the download menu on click
           if (lock == true) {
             goToPlanification(data, number, false, null, phaseNumber, isCustom);
           } else {
