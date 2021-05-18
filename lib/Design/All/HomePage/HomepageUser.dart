@@ -48,7 +48,7 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(Duration(seconds: 300), (timer) {
       uploadData();
     });
     _screens.add(Sessions());
@@ -543,9 +543,7 @@ class _HomePageUserState extends State<HomePageUser> {
     var prefs = await SharedPreferences.getInstance();
     var uploading = prefs.getBool("uploading" ?? false);
     if (uploading == null) {
-      setState(() {
-        prefs.setBool("uploading", false);
-      });
+      prefs.setBool("uploading", false);
     }
     print(uploading);
     dataOfflineList.clear();
@@ -610,7 +608,8 @@ class _HomePageUserState extends State<HomePageUser> {
       }
       prefs.setBool("uploading", false);
     } else {
-      print("sin internet o sin datos ${dataOfflineList.length}");
+      print(
+          "sin internet o sin datos ${dataOfflineList.length} o ya está subiendo datos");
     }
   }
 
