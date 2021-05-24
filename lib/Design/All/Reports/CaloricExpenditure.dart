@@ -117,16 +117,18 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
                               data: data,
                               labels: labels,
                               labelStyle: TextStyle(
-                                  fontSize: 3.2.w, color: Colors.white),
+                                  fontSize:
+                                      Device.get().isTablet ? 6.0.sp : 9.0.sp,
+                                  color: Colors.white),
                               valueStyle: TextStyle(
-                                  fontSize: 5.0.w,
+                                  fontSize: 10.0.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                               displayValue: true,
                               reverse: true,
                               getColor: DataRepository.getColor,
                               // getIcon: DataRepository.getIcon,
-                              barWidth: 15.0.w,
+                              barWidth: Device.get().isTablet ? 10.0.w : 15.0.w,
                               barSeparation: 7.0.w,
                               animationDuration: Duration(milliseconds: 1000),
                               animationCurve: Curves.easeInOutSine,

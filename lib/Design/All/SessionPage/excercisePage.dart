@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
@@ -158,6 +159,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                                   //   isPause = !isPause;
                                   // });
                                 },
+                                circleRadius: 4.0.w,
                                 icon: Icon(
                                   _.isPause.value == false
                                       ? Icons.pause
@@ -773,7 +775,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
     return Column(
       children: [
         SizedBox(
-          height: 2.0.h,
+          height: 1.0.h,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -798,7 +800,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
           ),
         ),
         SizedBox(
-          height: Device.get().isTablet ? 4.0.h : 14.0.h,
+          height: Device.get().isTablet ? 1.0.h : 14.0.h,
         ),
         Container(
             color: Colors.white,
@@ -844,7 +846,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Transform.rotate(
-                      origin: Offset(-10, -10),
+                      origin: Offset(-10, Device.get().isTablet ? -45 : -10),
                       angle: pi / -2,
                       child: SvgPicture.asset(
                         "Assets/images/figure2.svg",
@@ -1210,7 +1212,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 children: [
                   Image.asset(
                     "Assets/images/LogoCompleto.png",
-                    width: Device.get().isTablet ? 10.0.w : 20.0.w,
+                    width: Device.get().isTablet ? 7.5.w : 20.0.w,
                   ),
                   SizedBox(
                     width: 10.0.w,
@@ -1390,10 +1392,10 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
                 children: [
                   Image.asset(
                     "Assets/images/LogoCompleto.png",
-                    width: Device.get().isTablet ? 7.0.w : 15.0.w,
+                    width: Device.get().isTablet ? 5.0.w : 15.0.w,
                   ),
                   SizedBox(
-                    width: Device.get().isTablet ? 3.0.w : 5.0.w,
+                    width: Device.get().isTablet ? 2.0.w : 5.0.w,
                   ),
                 ],
               ),
@@ -1417,7 +1419,7 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
               ),
               Container(
                 width: 40.0.w,
-                height: 15.0.h,
+                height: Device.get().isTablet ? 12.0.h : 15.0.h,
                 child: Center(
                   child: circTimerDemostration(_),
                 ),
@@ -1528,12 +1530,41 @@ class _ExcerciseVideoState extends State<ExcerciseVideo>
         }
       });
     });
-    if (count == 2) {
-      Navigator.pop(context);
-    } else if (count <= 1) {
-      toast(context, "Presiona nuevamente para salir de la clase.", red);
+    if (Device.get().isAndroid) {
+      if (count == 2) {
+        Navigator.pop(context);
+      } else if (count <= 1) {
+        toast(context, "Presiona nuevamente para salir de la clase.", red);
+      }
+    } else {
+      showAlertDialog(context);
     }
 
     return false;
+  }
+
+  void showAlertDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        child: CupertinoAlertDialog(
+          title: Text("Salir de la clase"),
+          content: Text("¿Estas Seguro que desas salir?"),
+          actions: <Widget>[
+            CupertinoDialogAction(
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cancelar")),
+            CupertinoDialogAction(
+                textStyle: TextStyle(color: Colors.red),
+                isDefaultAction: true,
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text("Salir")),
+          ],
+        ));
   }
 }
