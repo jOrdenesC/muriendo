@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'dart:math' as math;
 
@@ -336,12 +337,13 @@ class _BarItemState extends AnimatedWidgetBaseState<_BarItem> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                            height: 100,
+                            height: Device.get().isTablet ? 150 : 100,
+                            width: Device.get().isTablet ? 100 : 100,
                             margin: EdgeInsets.all(4),
                             decoration: BoxDecoration(
                                 color: blue,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30))),
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    Device.get().isTablet ? 90 : 30))),
                             child: Transform.rotate(
                               angle: math.pi / 2,
                               child: FittedBox(
@@ -464,4 +466,3 @@ class _FollowTheGridLines extends MultiChildLayoutDelegate {
   @override
   bool shouldRelayout(MultiChildLayoutDelegate oldDelegate) => false;
 }
-

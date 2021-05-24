@@ -42,7 +42,7 @@ Widget buttonRounded(BuildContext context,
                                   Icon(
                                     Icons.arrow_forward_ios,
                                     color: blue,
-                                    size: Device.get().isTablet ? 6.0.w : 7.0.w,
+                                    size: Device.get().isTablet ? 5.0.w : 7.0.w,
                                   )),
                         )
                       ],

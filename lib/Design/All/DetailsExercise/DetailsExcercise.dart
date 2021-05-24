@@ -72,11 +72,13 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
     var format;
     if (Platform.isAndroid) {
       format = ".webm";
+      videoPlayerController1 = VideoPlayerController.file(
+          File('${dir.path}/videos/${widget.nameVideo}$format'));
     } else if (Platform.isIOS) {
       format = ".mp4";
+      videoPlayerController1 = VideoPlayerController.file(File(
+          '${dir.path}/videos/${widget.nameVideo.replaceAll(" ", "")}.mp4'));
     }
-    videoPlayerController1 = VideoPlayerController.file(
-        File('${dir.path}/videos/${widget.nameVideo}$format'));
 
     await videoPlayerController1
       ..initialize().then((value) => null)
@@ -189,8 +191,8 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 43.0.h,
-                  width: 100.0.w,
+                  height: Device.get().isTablet ? 50.0.h : 35.0.h,
+                  width: Device.get().isTablet ? 85.0.w : 95.0.w,
                   child: VideoPlayer(videoPlayerController1),
                 )
                 /*Image(

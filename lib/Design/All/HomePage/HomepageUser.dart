@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart' as GET;
 import 'package:get_it/get_it.dart';
@@ -107,10 +108,11 @@ class _HomePageUserState extends State<HomePageUser> {
         key: _scaffoldKey,
         drawer: _drawerUser(),
         appBar: AppBar(
+          toolbarHeight: 6.0.h,
           leading: IconButton(
             icon: Icon(
               Icons.menu,
-              size: 9.0.w,
+              size: 8.0.w,
             ),
             onPressed: () => _scaffoldKey.currentState.openDrawer(),
           ),
@@ -199,9 +201,10 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonSessions.png",
-                  width: 14.0.w,
+                  width: Device.get().isTablet ? 12.0.w : 14.0.w,
                 ),
-                Text("SESIONES", style: TextStyle(color: blue, fontSize: 4.0.w))
+                Text("SESIONES",
+                    style: TextStyle(color: blue, fontSize: 10.0.sp))
               ],
             ),
           ),
@@ -216,9 +219,10 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonReports.png",
-                  width: 14.0.w,
+                  width: Device.get().isTablet ? 12.0.w : 14.0.w,
                 ),
-                Text("REPORTES", style: TextStyle(color: blue, fontSize: 4.0.w))
+                Text("REPORTES",
+                    style: TextStyle(color: blue, fontSize: 10.0.sp))
               ],
             ),
           ),
@@ -233,9 +237,9 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 Image.asset(
                   "Assets/images/buttonProfile.png",
-                  width: 14.0.w,
+                  width: Device.get().isTablet ? 12.0.w : 14.0.w,
                 ),
-                Text("PERFIL", style: TextStyle(color: blue, fontSize: 4.0.w))
+                Text("PERFIL", style: TextStyle(color: blue, fontSize: 10.0.sp))
               ],
             ),
           )
@@ -265,16 +269,16 @@ class _HomePageUserState extends State<HomePageUser> {
             InkWell(
               child: Text(
                 "MENÚ",
-                style: TextStyle(color: Colors.white, fontSize: 10.0.w),
+                style: TextStyle(color: Colors.white, fontSize: 20.0.sp),
               ),
             ),
             SizedBox(
               height: 5.0.h,
             ),
             buttonRounded(context,
-                icon:
-                    Image.asset("Assets/images/sessionIcon.png", width: 8.0.w),
-                circleRadius: 6.0.w, func: () {
+                icon: Image.asset("Assets/images/sessionIcon.png",
+                    width: Device.get().isTablet ? 7.0.w : 8.0.w),
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               Navigator.pop(context);
               setState(() async {
                 CourseDataRepository courseDataRepository = GetIt.I.get();
@@ -286,9 +290,9 @@ class _HomePageUserState extends State<HomePageUser> {
                 _currentIndex = 0;
               });
             },
-                height: 8.0.h,
+                height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
-                textStyle: TextStyle(color: blue, fontSize: 6.0.w),
+                textStyle: TextStyle(color: blue, fontSize: 18.0.sp),
                 text: "SESIONES",
                 circleColor: blue,
                 backgroudColor: Colors.white),
@@ -296,14 +300,15 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 2.0.h,
             ),
             buttonRounded(context,
-                icon: Image.asset("Assets/images/reportIcon.png", width: 7.0.w),
-                circleRadius: 6.0.w, func: () {
+                icon: Image.asset("Assets/images/reportIcon.png",
+                    width: Device.get().isTablet ? 6.0.w : 8.0.w),
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               GET.Get.to(Reports(
                 isTeacher: false,
                 drawerMenu: true,
               ));
             },
-                height: 8.0.h,
+                height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "REPORTES",
@@ -341,11 +346,11 @@ class _HomePageUserState extends State<HomePageUser> {
             // ),
             buttonRounded(context,
                 icon: Image.asset("Assets/images/evidenciaIcon.png",
-                    width: 8.0.w),
-                circleRadius: 6.0.w, func: () {
+                    width: Device.get().isTablet ? 7.0.w : 8.0.w),
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               goToAllEvidences();
             },
-                height: 8.0.h,
+                height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "EVIDENCIAS",
@@ -358,7 +363,7 @@ class _HomePageUserState extends State<HomePageUser> {
                 icon: Icon(
                   Icons.settings,
                   color: Colors.white,
-                  size: 8.0.w,
+                  size: Device.get().isTablet ? 7.0.w : 8.0.w,
                 ),
                 // dataOffline == 0
                 //     ? Icon(
@@ -373,7 +378,7 @@ class _HomePageUserState extends State<HomePageUser> {
                 //               TextStyle(color: Colors.white, fontSize: 7.0.w),
                 //         ),
                 //       ),
-                circleRadius: 6.0.w, func: () {
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               goToSettingsPage("user");
               // if (dataOffline == 0) {
               //   toast(context, "No hay datos guardados localmente.", red);
@@ -382,7 +387,7 @@ class _HomePageUserState extends State<HomePageUser> {
               //   // dev.log(dataOfflineList[2].toMap().toString());
               // }
             },
-                height: 8.0.h,
+                height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "AJUSTES",
@@ -394,13 +399,13 @@ class _HomePageUserState extends State<HomePageUser> {
             buttonRounded(context,
                 icon: Icon(
                   Icons.help,
-                  size: 10.0.w,
+                  size: Device.get().isTablet ? 9.0.w : 10.0.w,
                   color: Colors.white,
                 ),
-                circleRadius: 6.0.w, func: () {
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               goToSupport(true);
             },
-                height: 8.0.h,
+                height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 6.0.w),
                 text: "AYUDA",
@@ -506,7 +511,7 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 3.0.h,
             ),
             SizedBox(
-              height: 3.0.h,
+              height: Device.get().isTablet ? 1.0.h : 3.0.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

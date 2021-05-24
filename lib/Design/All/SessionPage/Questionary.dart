@@ -383,11 +383,11 @@ class _QuestionaryState extends State<Questionary> {
                           ),
                           Text(
                             "$number.- $question".toUpperCase(),
-                            style: TextStyle(color: blue, fontSize: 6.0.w),
+                            style: TextStyle(color: blue, fontSize: 14.0.sp),
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(
-                            height: 2.0.h,
+                            height: 3.0.h,
                           ),
                           InkWell(
                             onTap: () {
@@ -438,15 +438,23 @@ class _QuestionaryState extends State<Questionary> {
                                               topRight: Radius.circular(90),
                                               bottomRight:
                                                   Radius.circular(90))),
-                                      width: 45.0.w,
-                                      height: 15.0.h,
+                                      width: 40.0.w,
+                                      height: Device.get().isTablet
+                                          ? 15.0.h
+                                          : 15.0.h,
                                       child: Center(
-                                        child: Icon(
-                                          Icons.check_circle_outline_outlined,
-                                          color: Colors.white,
-                                          size: 25.0.w,
-                                        ),
-                                      ),
+                                          child: Image(
+                                        height:
+                                            Device.get().isTablet ? 129 : 100,
+                                        image: AssetImage(
+                                            'Assets/images/True.png'),
+                                      )
+                                          //Icon(
+                                          //   Icons.check_circle_outline_outlined,
+                                          //   color: Colors.white,
+                                          //   size: 25.0.w,
+                                          // ),
+                                          ),
                                     ),
                                     Text(
                                       " Verdadero",
@@ -500,15 +508,17 @@ class _QuestionaryState extends State<Questionary> {
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(90),
                                               bottomLeft: Radius.circular(90))),
-                                      width: 45.0.w,
-                                      height: 15.0.h,
+                                      width: 40.0.w,
+                                      height: Device.get().isTablet
+                                          ? 15.0.h
+                                          : 15.0.h,
                                       child: Center(
-                                        child: Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                          size: 25.0.w,
-                                        ),
-                                      ),
+                                          child: Image(
+                                        height:
+                                            Device.get().isTablet ? 129 : 100,
+                                        image: AssetImage(
+                                            'Assets/images/False.png'),
+                                      )),
                                     ),
                                     Text(
                                       " Falso",
