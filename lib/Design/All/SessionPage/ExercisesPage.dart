@@ -119,7 +119,7 @@ class _ExcercisesPageState extends State<ExcercisesPage>
             ],
           ),
           Scrollbar(
-                      child: name["name"] == "calentamiento"
+            child: name["name"] == "calentamiento"
                 ? ListView.builder(
                     physics: ScrollPhysics(parent: BouncingScrollPhysics()),
                     itemCount: name["data"].length,
@@ -204,7 +204,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                     Text(
                                       "${name["data"][index]}",
                                       style: TextStyle(
-                                          fontSize: 15.0.sp, color: Colors.white),
+                                          fontSize: 15.0.sp,
+                                          color: Colors.white),
                                     )
                                   ],
                                 ),
@@ -249,7 +250,8 @@ class _ExcercisesPageState extends State<ExcercisesPage>
                                     Text(
                                       "${name["data"][index]}",
                                       style: TextStyle(
-                                          fontSize: 15.0.sp, color: Colors.white),
+                                          fontSize: 15.0.sp,
+                                          color: Colors.white),
                                     )
                                   ],
                                 ),
