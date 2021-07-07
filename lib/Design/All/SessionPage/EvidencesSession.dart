@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
-import 'package:toast/toast.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'Questionary.dart';
-import 'dart:developer' as dev;
 
 class EvidencesSession extends StatefulWidget {
   @override
@@ -211,7 +210,6 @@ class _EvidencesSessionState extends State<EvidencesSession> {
 
   void navigate(var args) {
     print("AAAAAAAAAAAAAA " + args.toString());
-    dev.log("IS CUSTOOOM go to questionary : ${args["isCustom"]}");
     Get.to(Questionary(
       number: args["number"],
       classId: args["idClass"],
@@ -224,11 +222,8 @@ class _EvidencesSessionState extends State<EvidencesSession> {
 
   void navigateVideo(var args) {
     if (questionary == false) {
-      Toast.show(
-          "Debes responder el cuestionario antes de grabar tu video", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
-          backgroundColor: red);
+      toast(context, "Debes responder el cuestionario antes de grabar tu video",
+          red);
     }
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
 import 'package:movitronia/Routes/RoutePageControl.dart';
@@ -45,7 +43,6 @@ class _ShowCaloriesState extends State<ShowCalories> {
   double total = 0;
   @override
   void initState() {
-    log("IS CUSTOOOM SHOW CALORIES : ${widget.isCustom}");
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,

@@ -479,13 +479,11 @@ class _LoginState extends State<Login> {
                       phase: res[0].phase,
                       classObject: res[0].classObject,
                       finished: res[0].finished);
-                  print("Se actualizó una evidencia");
                   await evidencesRepository.updateEvidence(evidencesSend);
                 }
               }
               goToHome("user", {});
             } else {
-              print("TOKEEEEEEEEEEN $token");
               var resProfessorData = await dio
                   .get("$urlServer/api/mobile/user/course?token=$token");
               log(resProfessorData.data.toString());

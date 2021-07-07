@@ -36,7 +36,6 @@ class VideoController extends GetxController {
   //Get Controller over here and send it to another class so we can easily change it as an observable??
   recordMovie(String uuid, String idClass, double kCal, int number,
       List exercises, String phase, bool isCustom) async {
-        log("IS CUSTOOOM record movie : $isCustom");
     var prefs = await SharedPreferences.getInstance();
     loading.value = true;
     final file = await ImagePicker().getVideo(

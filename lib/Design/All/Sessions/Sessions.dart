@@ -14,13 +14,11 @@ import 'package:movitronia/Utils/retryDio.dart';
 import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sizer/sizer.dart';
-import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:movitronia/Functions/downloadData.dart';
 import 'package:movitronia/Database/Repository/CourseRepository.dart';
-import 'dart:developer';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -48,8 +46,10 @@ class _SessionsState extends State<Sessions> {
   var progressAudios = "0.0";
   var progressTips = "0.0";
   var totalMax = "100.0";
-  var _url =
+  var _urlAndroid =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
+
+  var _urlIphone = "https://apps.apple.com/cl/app/movitronia/id1557150292";
 
   Future getEvidence() async {
     var all = await evidencesRepository.getAllEvidences();
@@ -419,6 +419,7 @@ class _SessionsState extends State<Sessions> {
     setState(() {
       loaded = false;
     });
+
     dio.interceptors.add(
       RetryOnConnectionChangeInterceptor(
         requestRetrier: DioConnectivityRequestRetrier(
@@ -505,9 +506,17 @@ class _SessionsState extends State<Sessions> {
     return false;
   }
 
-  void _launchURL() async => await canLaunch(_url)
-      ? await launch(_url)
-      : throw 'Could not launch $_url';
+  void _launchURL() async => await canLaunch(Platform.isAndroid
+          ? _urlAndroid
+          : Platform.isIOS
+              ? _urlIphone
+              : null)
+      ? await launch(Platform.isAndroid
+          ? _urlAndroid
+          : Platform.isIOS
+              ? _urlIphone
+              : null)
+      : throw 'Could not launch';
 
   iosPopup() async {
     var prefs = await SharedPreferences.getInstance();
@@ -530,15 +539,10 @@ class _SessionsState extends State<Sessions> {
                     // Do something
                     Navigator.of(context).pop();
                     notaccepted = false;
-                    log("get evidence");
                     await getEvidence();
-                    log("Get data");
                     await getData();
-                    log("Get classes");
                     await getClasses();
-                    log("get phase");
                     await getPhase();
-                    print("Init clases custom");
                     await DownloadData().downloadCustomClasses(context);
                     setState(() {
                       loaded = true;
@@ -570,16 +574,10 @@ class _SessionsState extends State<Sessions> {
     if (downloaded == null || downloaded == false) {
       try {
         if (Device.get().isIos) {
-          log("get evidence");
           await getEvidence();
-
-          log("Get data");
           await getData();
-          log("Get classes");
           await getClasses();
-          log("get phase");
           await getPhase();
-          print("Init clases custom");
           await DownloadData().downloadCustomClasses(context);
           setState(() {
             loaded = true;
@@ -587,15 +585,10 @@ class _SessionsState extends State<Sessions> {
           prefs.setBool("downloaded", true);
           _restartApp();
         } else {
-          log("get evidence");
           await getEvidence();
-          log("Get data");
           await getData();
-          log("Get classes");
           await getClasses();
-          log("get phase");
           await getPhase();
-          print("Init clases custom");
           await DownloadData().downloadCustomClasses(context);
           setState(() {
             loaded = true;
@@ -611,13 +604,9 @@ class _SessionsState extends State<Sessions> {
         CourseDataRepository courseDataRepository = GetIt.I.get();
         var course = await courseDataRepository.getAllCourse();
         print(course[0].courseId);
-        log("get evidence");
         await getEvidence();
-        log("get classes");
         await getClasses();
-        log("get phase");
         await getPhase();
-        print("Init clases custom");
         await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;
@@ -630,19 +619,15 @@ class _SessionsState extends State<Sessions> {
   }
 
   getAllAndroid() async {
+    await DownloadData().downloadEvidencesData(context);
     var prefs = await SharedPreferences.getInstance();
     var downloaded = prefs.getBool("downloaded" ?? false);
     if (downloaded == null || downloaded == false) {
       try {
-        log("get evidence");
         await getEvidence();
-        log("Get data");
         await getData();
-        log("Get classes");
         await getClasses();
-        log("get phase");
         await getPhase();
-        print("Init clases custom");
         await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;
@@ -657,13 +642,9 @@ class _SessionsState extends State<Sessions> {
         CourseDataRepository courseDataRepository = GetIt.I.get();
         var course = await courseDataRepository.getAllCourse();
         print(course[0].courseId);
-        log("get evidence");
         await getEvidence();
-        log("get classes");
         await getClasses();
-        log("get phase");
         await getPhase();
-        print("Init clases custom");
         await DownloadData().downloadCustomClasses(context);
         setState(() {
           loaded = true;
@@ -1290,10 +1271,7 @@ class _SessionsState extends State<Sessions> {
             goToPlanification(data, number, false, null, phaseNumber, isCustom);
           } else {
             print(lock);
-            Toast.show("Debes completar las clases anteriores.", context,
-                duration: Toast.LENGTH_LONG,
-                gravity: Toast.CENTER,
-                backgroundColor: red);
+            toast(context, "Debes completar las clases anteriores.", red);
           }
         }
       },

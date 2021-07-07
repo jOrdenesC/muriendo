@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:movitronia/Database/Models/ExcerciseData.dart';
 import 'package:sembast/sembast.dart';
-import 'dart:developer';
 import 'ExcerciseDataRepository.dart';
 
 class SembastExcerciseDataRepository extends ExcerciseDataRepository {
@@ -10,8 +9,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
 
   @override
   Future<int> insertExcercise(ExcerciseData gifData) async {
-    print('inside insertExcercise');
-    print(gifData.toMap());
     return await _store.add(_database, gifData.toMap());
   }
 
@@ -38,9 +35,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
     final finder = Finder(filter: Filter.equals('excerciseID', id));
 
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
@@ -51,28 +45,14 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
     final finder = Finder(filter: Filter.equals('idMongo', id));
 
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
   }
 
-  // @override
-  // Future<List<ExcerciseData>> getNameExercise(String name) async {
-  //   print("name buscado $name");
-  //   final finder = Finder(filter: Filter.equals('nameExcercise', name));
-
-  //   final snapshots = await _store.find(_database, finder: finder);
-  //   return snapshots
-  //       .map((snapshot) => ExcerciseData.fromMap(snapshot.key, snapshot.value))
-  //       .toList(growable: false);
-  // }
 
   @override
   Future<List<ExcerciseData>> getExcerciseName(String name) async {
-    print("name buscado $name");
     final finder = Finder(filter: Filter.equals('videoName', name));
 
     final snapshots = await _store.find(_database, finder: finder);
@@ -83,7 +63,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
 
   @override
   Future<List<ExcerciseData>> getExcerciseVideoName(String name) async {
-    print("name buscado $name");
     final finder = Finder(filter: Filter.equals('nameExcercise', name));
 
     final snapshots = await _store.find(_database, finder: finder);
@@ -94,8 +73,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
 
   @override
   Future<List<ExcerciseData>> getExcerciseByLevelAndStage(int level, String stage) async {
-    print("level $level");
-    print("stage $stage");
     final finder = Finder(
       filter: Filter.and([
         Filter.equals('level', level, anyInList: true),
@@ -111,11 +88,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
 
   Future<List<ExcerciseData>> getExercisesByCategories(
       String stage, String category, String subCategory, String level) async {
-    log("""
-        stage: $stage
-        category: $category
-        subCategory: $subCategory
-        """);
     final finder = Finder(
         filter: Filter.and([
       Filter.equals('stages', stage, anyInList: true),
@@ -145,7 +117,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
     List<ExcerciseData> listGifs = [];
     for (var i = 0; i < listId.length; i++) {
       final gifs = await getExcerciseID(listId[i]);
-      print(gifs[0].videoName);
       listGifs.add(gifs[0]);
     }
 
@@ -153,7 +124,6 @@ class SembastExcerciseDataRepository extends ExcerciseDataRepository {
   }
 
   Future deleteAll() async {
-    print("eliminados los ejercicios");
     await _store.delete(_database);
     return null;
   }

@@ -18,6 +18,8 @@ import 'package:movitronia/Utils/retryDioConnectivity.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_rut_validator/dart_rut_validator.dart';
+import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
+import 'package:flutter/services.dart';
 
 class BasalUser extends StatefulWidget {
   @override
@@ -26,12 +28,12 @@ class BasalUser extends StatefulWidget {
 
 class _BasalUserState extends State<BasalUser> {
   DateTime birthday;
-  String gender;
+  String gender = "";
   TextEditingController rut = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController height = TextEditingController();
   TextEditingController weight = TextEditingController();
-  String frequentlyActivity;
+  String frequentlyActivity = "";
   TextEditingController phone = TextEditingController();
   TextEditingController mail = TextEditingController();
   final f = new DateFormat('yyyy-MM-dd');
@@ -71,8 +73,6 @@ class _BasalUserState extends State<BasalUser> {
           children: [
             buttonRounded(context, func: () {
               validate();
-              // goToBasal(widget.role);
-              //Get.to(Terms(role: widget.role));
             }, text: "   ENVIAR")
           ],
         ),
@@ -140,7 +140,7 @@ class _BasalUserState extends State<BasalUser> {
                             child: DropdownButton<String>(
                               iconEnabledColor: Colors.white,
                               underline: SizedBox.shrink(),
-                              hint: gender == null
+                              hint: gender.isEmpty
                                   ? Text(
                                       "Selecciona tu sexo",
                                       style: TextStyle(color: Colors.white),
@@ -170,7 +170,8 @@ class _BasalUserState extends State<BasalUser> {
                         item(
                             child: InkWell(
                               onTap: () {
-                                datePicker();
+                                // datePicker();
+                                modDate();
                               },
                               child: Container(
                                 child: Row(
@@ -197,6 +198,9 @@ class _BasalUserState extends State<BasalUser> {
                             name: "Fecha de nacimiento"),
                         item(
                             child: TextField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 maxLength: 3,
                                 style: TextStyle(color: Colors.white),
                                 controller: height,
@@ -206,10 +210,13 @@ class _BasalUserState extends State<BasalUser> {
                                     border: InputBorder.none,
                                     hintStyle: TextStyle(color: Colors.white),
                                     hintText:
-                                        'Ingresa tu estatura (ej: 120 cm.)')),
+                                        'Ingresa tu estatura en cm.(ej: 120)')),
                             name: "Estatura"),
                         item(
                             child: TextField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 maxLength: 2,
                                 style: TextStyle(color: Colors.white),
                                 controller: weight,
@@ -224,7 +231,7 @@ class _BasalUserState extends State<BasalUser> {
                             child: DropdownButton<String>(
                               iconEnabledColor: Colors.white,
                               underline: SizedBox.shrink(),
-                              hint: frequentlyActivity == null
+                              hint: frequentlyActivity.isEmpty
                                   ? Text(
                                       "Frecuencia de actividad física",
                                       style: TextStyle(color: Colors.white),
@@ -286,6 +293,17 @@ class _BasalUserState extends State<BasalUser> {
     );
   }
 
+  modDate() async {
+    return DatePicker.showDatePicker(context,
+        locale: DateTimePickerLocale.es,
+        maxDateTime: DateTime.now(),
+        dateFormat: "yyyy-MMMM-dd", onConfirm: (date, list) {
+      setState(() {
+        birthday = date;
+      });
+    });
+  }
+
   datePicker() async {
     final DateTime picked = await showDatePicker(
       cancelText: "CANCELAR",
@@ -335,19 +353,21 @@ class _BasalUserState extends State<BasalUser> {
       toast(context, "No puedes dejar el rut vacío.", red);
     } else if (name.text.isEmpty) {
       toast(context, "No puedes dejar el nombre vacío.", red);
-    } else if (height.text.isEmpty) {
-      toast(context, "No puedes dejar tu altura vacía.", red);
-    } else if (birthday.toString().isEmpty) {
-      toast(context, "Debes indicar tu fecha de nacimiento.", red);
-    } else if (mail.text.isEmpty) {
-      toast(context, "No puedes dejar el correo vacío.", red);
-    } else if (weight.text.isEmpty) {
-      toast(context, "No puedes dejar tu peso vacío.", red);
-    } else if (frequentlyActivity.isEmpty) {
-      toast(context, "Debes indicar tu actividad física.", red);
     } else if (gender.isEmpty) {
       toast(context, "Debes indicar tu sexo.", red);
+    } else if (birthday.toString().isEmpty) {
+      toast(context, "Debes indicar tu fecha de nacimiento.", red);
+    } else if (height.text.isEmpty) {
+      toast(context, "No puedes dejar tu altura vacía.", red);
+    } else if (weight.text.isEmpty) {
+      toast(context, "No puedes dejar tu peso vacío.", red);
+    } else if (frequentlyActivity.isEmpty || frequentlyActivity == null) {
+      toast(context, "Debes indicar tu actividad física.", red);
+    } else if (mail.text.isEmpty) {
+      toast(context, "No puedes dejar el correo vacío.", red);
     } else if (int.parse(height.text) >= 300) {
+      toast(context, "La altura indicada debe ser menor a 300 cm.", red);
+    } else if (int.parse(weight.text) >= 300) {
       toast(context, "El peso indicado debe ser menor a 300 kg.", red);
     } else {
       finishData();

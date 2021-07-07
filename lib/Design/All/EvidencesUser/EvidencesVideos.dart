@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:movitronia/Design/Widgets/Toast.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:sizer/sizer.dart';
-import 'package:toast/toast.dart';
 import '../../../Database/Repository/EvidencesSentRepository.dart';
 import 'package:get_it/get_it.dart';
 
@@ -762,10 +762,7 @@ class _EvidencesVideosState extends State<EvidencesVideos> {
             if (lock == true) {
               // goToPlanification();
             } else {
-              Toast.show("No has subido evidencias de esta sesión.", context,
-                  duration: Toast.LENGTH_LONG,
-                  gravity: Toast.CENTER,
-                  backgroundColor: red);
+              toast(context, "No has subido evidencias de esta sesión.", red);
             }
           },
           child: Stack(

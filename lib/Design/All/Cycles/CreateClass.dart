@@ -195,7 +195,6 @@ class _CreateClassState extends State<CreateClass>
           Response response = await dio.post(
               "$urlServer/api/mobile/professor/customClasses?token=$token",
               data: [args["idCourse"]]);
-          log("CLASS CREATED " + response.data.toString());
           for (var i = 0; i < response.data.length; i++) {
             if (response.data[i]["number"].toString() ==
                 args["number"].toString()) {

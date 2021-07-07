@@ -67,7 +67,6 @@ class _QuestionaryState extends State<Questionary> {
 
   @override
   void initState() {
-    log("IS CUSTOOOM questionary : ${widget.isCustom}");
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
@@ -106,8 +105,11 @@ class _QuestionaryState extends State<Questionary> {
         idTips.add(questionary[i]["id"]);
         type.add(questionary[i]["type"]);
       }
+      log(idTips.toString());
       for (var i = 0; i < idTips.length; i++) {
         var res = await tipsDataRepository.getTips(idTips[i]);
+        print("id:" + "${idTips[i]}");
+        log(res.toString());
         print("Type of Question ${type[i]}");
         if (type[i].contains("VF")) {
           print("Type Inside VF");

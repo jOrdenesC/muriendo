@@ -12,11 +12,8 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
 
   @override
   Future onError(DioError err) async {
-    print("entra al onError $err");
-    print(err.type);
     if (_shouldRetry(err)) {
       try {
-        print("retry init");
         return requestRetrier.scheduleRequestRetry(err.request);
       } catch (e) {
         print("return error $e");

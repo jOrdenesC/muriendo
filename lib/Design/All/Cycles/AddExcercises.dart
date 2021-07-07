@@ -5,7 +5,6 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 import 'package:get_it/get_it.dart';
-import 'dart:developer';
 import '../../../Database/Models/ExcerciseData.dart';
 import '../../Widgets/Toast.dart';
 import '../../../Functions/Controllers/ListsController.dart';
@@ -261,12 +260,9 @@ class _AddExcercisesState extends State<AddExcercises> {
 
                             if (actualList.toString() != "[]" &&
                                 actualList != null) {
-                              print("Lista de calentamiento no vacía");
                               if (maxStatic == actualList.length) {
-                                log(actualList.toString());
-                                print("max static = list");
+                               
                                 if (value) {
-                                  print("value true");
                                   toast(
                                       context,
                                       "Ya no puedes agregar más ejercicios.",
@@ -282,7 +278,7 @@ class _AddExcercisesState extends State<AddExcercises> {
                               } else {
                                 bools[index]["status"] = value;
                                 if (bools[index]["status"]) {
-                                  print("add 1");
+                                
                                   setState(() {
                                     listController
                                         .addCalentamiento(codeExercise);
@@ -295,10 +291,8 @@ class _AddExcercisesState extends State<AddExcercises> {
                                 }
                               }
                             } else {
-                              print("list vacía");
                               bools[index]["status"] = value;
                               if (bools[index]["status"]) {
-                                print("add 2");
                                 setState(() {
                                   listController.addCalentamiento(codeExercise);
                                 });
@@ -467,7 +461,7 @@ class _AddExcercisesState extends State<AddExcercises> {
 
     if (widget.stage == "CALENTAMIENTO") {
       for (var i = 0; i < bools.length; i++) {
-        if (listCalentamiento.isNotEmpty) {
+        if (listCalentamiento.isNotEmpty || listCalentamiento != null) {
           for (var j = 0; j < listCalentamiento.length; j++) {
             if (bools[i]["id"] == listCalentamiento[j]) {
               print(bools[i]["id"]);

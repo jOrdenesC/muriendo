@@ -10,8 +10,6 @@ class SembastQuestionDataRepository extends QuestionDataRepository {
 
   @override
   Future<int> insertQuestion(QuestionData gifData) async {
-    print(gifData.toMap().toString());
-    print(gifData.toMap());
     return await _store.add(_database, gifData.toMap());
   }
 
@@ -38,16 +36,12 @@ class SembastQuestionDataRepository extends QuestionDataRepository {
     final finder = Finder(filter: Filter.equals('tipID', id));
 
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => QuestionData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
   }
 
   Future deleteAll() async {
-    print("eliminadas todas las questions");
     await _store.delete(_database);
     return null;
   }

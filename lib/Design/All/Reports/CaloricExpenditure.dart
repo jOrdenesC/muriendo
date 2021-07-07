@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import '../../../Utils/UrlServer.dart';
-import 'dart:developer';
 import '../../../Database/Models/evidencesSend.dart';
 
 class CaloricExpenditure extends StatefulWidget {
@@ -210,7 +209,6 @@ class _CaloricExpenditureState extends State<CaloricExpenditure> {
         });
       } else {
         for (var i = 0; i < res.length; i++) {
-          log(res[i].toMap().toString());
           namesClass.add("Sesión ${res[i].number}".toString());
           kCal.add(double.parse(res[i].kilocalories.toString()));
         }

@@ -10,7 +10,6 @@ import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Utils/UrlServer.dart';
 import 'package:dio/dio.dart';
-import 'dart:developer';
 import '../../Widgets/Toast.dart';
 import '../../Widgets/Loading.dart' as load;
 import '../../../Utils/ConnectionState.dart';
@@ -41,7 +40,6 @@ class _SearchEvidencesState extends State<SearchEvidences> {
     var token = prefs.getString("token");
     var resProfessorData =
         await dio.get("$urlServer/api/mobile/user/course?token=$token");
-    log(resProfessorData.data.toString());
     for (var i = 0; i < resProfessorData.data.length; i++) {
       if (colleges
           .toString()
@@ -137,7 +135,6 @@ class _SearchEvidencesState extends State<SearchEvidences> {
         CreateError().createError(dio, e.toString(), "SearchEvidences");
         Navigator.pop(context);
         toast(context, "Ha ocurrido un error, inténtalo más tarde", red);
-        log(e.toString());
       }
     } else {
       toast(context, "Debes contar con conexión a internet.", red);

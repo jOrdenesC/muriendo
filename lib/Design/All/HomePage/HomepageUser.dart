@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:badges/badges.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
@@ -21,13 +22,14 @@ import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:movitronia/Design/Widgets/Toast.dart';
-import 'package:movitronia/Database/Repository/CourseRepository.dart';
+import './../MailBox/Mailbox.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 import '../../../Database/Repository/OfflineRepository.dart';
-import 'dart:developer' as dev;
 import '../../../Functions/downloadData.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../../Database/Repository/CourseRepository.dart';
+import '../../../Utils/ConnectionState.dart';
 
 class HomePageUser extends StatefulWidget {
   @override
@@ -38,18 +40,23 @@ class _HomePageUserState extends State<HomePageUser> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var dio = Dio();
   var dio2 = Dio();
+  List newEvidencesList = [];
+  int newEvidences = 0;
   int _currentIndex = 0;
   List<Widget> _screens = [];
-  int count = 0;
+  String idCourse;
+  int counter = 0;
   int dataOffline = 0;
   var progressVideo = 0.0;
   List dataClasses = [];
   List<OfflineData> dataOfflineList = [];
+  int count = 0;
 
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(seconds: 300), (timer) {
+    getMailBoxitems();
+    Timer.periodic(Duration(seconds: 600), (timer) {
       uploadData();
     });
     _screens.add(Sessions());
@@ -57,20 +64,51 @@ class _HomePageUserState extends State<HomePageUser> {
     _screens.add(ProfilePage(isMenu: true));
   }
 
-  getDataOffline() async {
-    OfflineRepository offlineRepository = GetIt.I.get();
-    var res = await offlineRepository.getAll();
+  getValueBox() async {
+    await DownloadData().downloadEvidencesData(context);
+    final box = GetStorage();
     setState(() {
-      dataOffline = res.length;
+      counter = box.read("evidencesNumber");
     });
-    if (res.isNotEmpty) {
-      dev.log(res[0].exercises.toString());
-      for (var i = 0; i < res.length; i++) {
-        setState(() {
-          dataOfflineList.add(res[i]);
-        });
-      }
+    box.listenKey("evidencesNumber", (val) {
+      print("listen value $val");
+      counter = val;
+    });
+  }
+
+  getMailBoxitems() async {
+    final box = GetStorage();
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    box.write("evidencesNumber", 0);
+    CourseDataRepository courseDataRepository = GetIt.I.get();
+    var course = await courseDataRepository.getAllCourse();
+    if (course.isNotEmpty) {
+      setState(() {
+        idCourse = course[0].courseId;
+      });
     }
+    bool hasInternet = await ConnectionStateClass().comprobationInternet();
+
+    if (hasInternet) {
+      try {
+        Response response = await dio.get(
+            "$urlServer/api/mobile/evidence/getNotStudentReviewed/$idCourse?token=$token");
+        setState(() {
+          newEvidences = response.data.length;
+        });
+        for (var i = 0; i < response.data.length; i++) {
+          newEvidencesList.add(response.data[i]);
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      toast(context, "Debes tener conexión a internet para actualizar datos.",
+          red);
+    }
+    box.write("evidencesNumber", newEvidencesList.length);
+    getValueBox();
   }
 
   getClasses() async {
@@ -97,9 +135,21 @@ class _HomePageUserState extends State<HomePageUser> {
         appBar: AppBar(
           toolbarHeight: 6.0.h,
           leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              size: 8.0.w,
+            icon: Stack(
+              children: [
+                Icon(
+                  Icons.menu,
+                  size: 8.0.w,
+                ),
+                counter == 0
+                    ? SizedBox.shrink()
+                    : Badge(
+                        badgeContent: Text(
+                          "$counter",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        badgeColor: Colors.red)
+              ],
             ),
             onPressed: () => _scaffoldKey.currentState.openDrawer(),
           ),
@@ -237,6 +287,7 @@ class _HomePageUserState extends State<HomePageUser> {
   }
 
   Widget _drawerUser() {
+    final box = GetStorage();
     var h = MediaQuery.of(context).size.height;
     return Container(
       width: 100.0.w,
@@ -263,24 +314,32 @@ class _HomePageUserState extends State<HomePageUser> {
               height: 5.0.h,
             ),
             buttonRounded(context,
-                icon: Image.asset("Assets/images/sessionIcon.png",
-                    width: Device.get().isTablet ? 7.0.w : 8.0.w),
+                icon: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                      size: Device.get().isTablet ? 7.0.h : 5.0.h,
+                    ),
+                    counter == 0
+                        ? SizedBox.shrink()
+                        : Badge(
+                            badgeContent: Text(
+                              "$counter",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            badgeColor: Colors.red)
+                  ],
+                ),
                 circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
-              Navigator.pop(context);
-              setState(() async {
-                CourseDataRepository courseDataRepository = GetIt.I.get();
-                var resCourse = await courseDataRepository.getAllCourse();
-                var prefs = await SharedPreferences.getInstance();
-                var res1 = prefs.getString("token");
-                print(res1);
-                print(resCourse[0].toMap().toString());
-                _currentIndex = 0;
-              });
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (ctx) => MailBox()));
             },
                 height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
                 textStyle: TextStyle(color: blue, fontSize: 18.0.sp),
-                text: "SESIONES",
+                text: "REVISIONES",
                 circleColor: blue,
                 backgroudColor: Colors.white),
             SizedBox(
@@ -288,7 +347,7 @@ class _HomePageUserState extends State<HomePageUser> {
             ),
             buttonRounded(context,
                 icon: Image.asset("Assets/images/reportIcon.png",
-                    width: Device.get().isTablet ? 6.0.w : 8.0.w),
+                    width: Device.get().isTablet ? 6.0.w : 7.0.w),
                 circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               GET.Get.to(Reports(
                 isTeacher: false,
@@ -304,33 +363,6 @@ class _HomePageUserState extends State<HomePageUser> {
             SizedBox(
               height: 2.0.h,
             ),
-
-            // buttonRounded(context,
-            //     icon: Image.asset("Assets/images/reportIcon.png", width: 7.5.w),
-            //     circleRadius: 6.0.w, func: () async {
-            //   String level;
-            //   CourseDataRepository courseDataRepository = GetIt.I.get();
-            //   var course = await courseDataRepository.getAllCourse();
-            //   if (course.isNotEmpty) {
-            //     setState(() {
-            //       level = course[0].number;
-            //     });
-            //   }
-            //   await DownloadData().downloadAll(context, level);
-            //   // await DownloadData().getHttp(context, level);
-            //   setState(() {
-            //     _currentIndex = 0;
-            //   });
-            // },
-            //     height: 8.0.h,
-            //     width: 80.0.w,
-            //     textStyle: TextStyle(color: blue, fontSize: 6.0.w),
-            //     text: "      DESCARGAR DATOS",
-            //     circleColor: blue,
-            //     backgroudColor: Colors.white),
-            // SizedBox(
-            //   height: 2.0.h,
-            // ),
             buttonRounded(context,
                 icon: Image.asset("Assets/images/evidenciaIcon.png",
                     width: Device.get().isTablet ? 7.0.w : 8.0.w),
@@ -367,12 +399,6 @@ class _HomePageUserState extends State<HomePageUser> {
                 //       ),
                 circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
               goToSettingsPage("user");
-              // if (dataOffline == 0) {
-              //   toast(context, "No hay datos guardados localmente.", red);
-              // } else {
-              //   uploadData();
-              //   // dev.log(dataOfflineList[2].toMap().toString());
-              // }
             },
                 height: Device.get().isTablet ? 8.0.h : 8.0.h,
                 width: 80.0.w,
@@ -389,7 +415,8 @@ class _HomePageUserState extends State<HomePageUser> {
                   size: Device.get().isTablet ? 9.0.w : 10.0.w,
                   color: Colors.white,
                 ),
-                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w, func: () {
+                circleRadius: Device.get().isTablet ? 5.0.w : 6.0.w,
+                func: () async {
               goToSupport(true);
             },
                 height: Device.get().isTablet ? 8.0.h : 8.0.h,
@@ -505,6 +532,12 @@ class _HomePageUserState extends State<HomePageUser> {
               children: [
                 InkWell(
                   onTap: () async {
+                    final box = GetStorage();
+                    var res = box.read("evidencesNumber");
+                    print("resss: $res");
+                    setState(() {
+                      counter = res;
+                    });
                     Navigator.pop(context);
                   },
                   child: CircleAvatar(
@@ -550,13 +583,11 @@ class _HomePageUserState extends State<HomePageUser> {
     if (uploading == null) {
       prefs.setBool("uploading", false);
     }
-    print(uploading);
     dataOfflineList.clear();
     OfflineRepository offlineRepository = GetIt.I.get();
     var res = await offlineRepository.getAll();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (res.isNotEmpty) {
-      dev.log(res[0].exercises.toString());
       for (var i = 0; i < res.length; i++) {
         dataOfflineList.add(res[i]);
       }
@@ -637,8 +668,6 @@ class _HomePageUserState extends State<HomePageUser> {
         };
         var response = await dio
             .post("$urlServer/api/mobile/evidence?token=$token", data: data);
-        print(response);
-        print(response.data);
         if (response.statusCode == 201) {
           toast(context, "Se han subido una evidencia automáticamente.", green);
           await DownloadData().downloadEvidencesData(context);

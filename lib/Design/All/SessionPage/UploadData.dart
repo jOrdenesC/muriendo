@@ -12,7 +12,6 @@ import 'package:movitronia/Utils/retryDioDialog.dart';
 import '../HomePage/HomepageUser.dart';
 import 'package:get/get.dart' as GET;
 import 'package:movitronia/Utils/ConnectionState.dart';
-import 'dart:developer';
 import '../../Widgets/Loading.dart';
 import 'package:flutter/material.dart';
 import 'package:movitronia/Design/Widgets/Button.dart';
@@ -354,7 +353,6 @@ class _UploadDataState extends State<UploadData> {
         totalKilocalories: totalKilocalories,
         type: type,
         uuidUser: uuidUser);
-    log(questionaryData.toMap().toString());
     await offlineRepository.insert(questionaryData);
     return true;
   }
@@ -585,7 +583,7 @@ class _UploadDataState extends State<UploadData> {
       var uuidDevice = prefs.getString("uuid");
       var nameUser = prefs.getString("name");
       var uuidUser = uuidDevice + nameUser;
-      OfflineRepository offlineRepository = GetIt.I.get();
+      // OfflineRepository offlineRepository = GetIt.I.get();
       QuestionaryRepository offlineQuestionaryRepository = GetIt.I.get();
       var res = await offlineQuestionaryRepository.getForId(args["uuid"]);
       var actualVideo = prefs.getString("actualVideo");
@@ -600,11 +598,11 @@ class _UploadDataState extends State<UploadData> {
           args["exercises"],
           args["isCustom"] ? "customClass" : "normalClass",
           uuidUser);
-      var resOffline = await offlineRepository.getAll();
+      // var resOffline = await offlineRepository.getAll();
       EvidencesRepository evidencesRepository = GetIt.I.get();
       ClassDataRepository classDataRepository = GetIt.I.get();
       var classObj = await classDataRepository.getClassID(args["idClass"]);
-      log(resOffline.toString());
+      // log(resOffline.toString());
 
       EvidencesSend evidencesSend = EvidencesSend(
           number: args["number"],

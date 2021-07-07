@@ -17,7 +17,6 @@ import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import '../DetailsExercise/DetailsExcercise.dart';
 import 'package:get_it/get_it.dart';
-import 'dart:developer' as dev;
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
 
 class VideosToRecord extends StatefulWidget {
@@ -53,7 +52,6 @@ class _VideosToRecordState extends State<VideosToRecord>
 
   @override
   void initState() {
-    dev.log("IS CUSTOOOM videos to record: ${widget.isCustom}");
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,

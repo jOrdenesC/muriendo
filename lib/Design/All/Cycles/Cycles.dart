@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Utils/UrlServer.dart';
 import '../../Widgets/Toast.dart';
-import 'dart:developer';
 import 'package:archive/archive.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,8 +31,9 @@ class _CyclesState extends State<Cycles> {
   List coursesNumber = [];
   var progress = "0.0";
   var maxTotal = 100.0;
-  var _url =
+  var _urlPlayStore =
       'https://play.google.com/store/apps/details?id=com.movitronia.michcom';
+  var _urlAppStore = "https://apps.apple.com/cl/app/movitronia/id1557150292";
 
   downloadAll() async {
     ProgressDialog prInfo;
@@ -72,9 +72,6 @@ class _CyclesState extends State<Cycles> {
             context: context,
             messageAlert: "Descargando vídeos...",
             route: "videos");
-
-        // await downloadFiles(response.data, "videos.zip");
-        // downloadFiles(url, filenames)
       } else {
         print("Ya descargados los videos");
       }
@@ -94,12 +91,9 @@ class _CyclesState extends State<Cycles> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     var dio = Dio();
-    log("TESTING " +
-        "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
     try {
       Response responseCourses = await dio.get(
           "$urlServer/api/mobile/professor/course/${widget.courseId}?token=$token");
-      log(responseCourses.data.toString());
       for (var i = 0; i < responseCourses.data.length; i++) {
         setState(() {
           courses.add(responseCourses.data[i]);
@@ -111,7 +105,6 @@ class _CyclesState extends State<Cycles> {
       });
     } catch (e) {
       CreateError().createError(dio, e.response.toString(), "Cycles");
-      log(e.response.toString());
     }
   }
 
@@ -173,9 +166,10 @@ class _CyclesState extends State<Cycles> {
     }
   }
 
-  void _launchURL() async => await canLaunch(_url)
-      ? await launch(_url)
-      : throw 'Could not launch $_url';
+  void _launchURL() async => await canLaunch(
+          Platform.isAndroid ? _urlPlayStore : _urlAppStore)
+      ? await launch(Platform.isAndroid ? _urlPlayStore : _urlAppStore)
+      : throw 'Could not launch ${Platform.isAndroid ? _urlPlayStore : _urlAppStore}';
 
   Future<bool> pop() async {
     print("back");

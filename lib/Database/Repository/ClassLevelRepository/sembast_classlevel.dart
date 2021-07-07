@@ -10,14 +10,11 @@ class SembastClassDataRepository extends ClassDataRepository {
 
   @override
   Future<int> insertClass(ClassLevel classData) async {
-    print('inside insertGif');
-    print(classData.toMap());
     return await _store.add(_database, classData.toMap());
   }
 
   @override
   Future updateClass(ClassLevel classData, int level, int number) async {
-    print("level: $level number: $number");
     final finder = Finder(filter: Filter.equals("number", number));
     // final snapshots = await _store.find(_database, finder: finder);
     final res1 =
@@ -47,9 +44,6 @@ class SembastClassDataRepository extends ClassDataRepository {
     //final finder = Finder(filter: Filter.byKey(id));
     final finder = Finder(filter: Filter.equals('classID', id));
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => ClassLevel.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
@@ -60,9 +54,6 @@ class SembastClassDataRepository extends ClassDataRepository {
     //final finder = Finder(filter: Filter.byKey(id));
     final finder = Finder(filter: Filter.equals('number', number));
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => ClassLevel.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
@@ -85,15 +76,12 @@ class SembastClassDataRepository extends ClassDataRepository {
         timeVcalma: resultModel.times.vcalma,
         classID: resultModel.sId);
 
-    print('inside insertGif');
-    print(classData.toMap());
     return await _store.add(_database, classData.toMap());
   }
 
   @override
   Future deleteAll() async {
     await _store.delete(_database);
-    print("eliminadas todas las clases");
   }
 
   _parseInt(List<dynamic> data) {

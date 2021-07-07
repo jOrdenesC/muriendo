@@ -16,7 +16,6 @@ import '../Design/All/Support/Support.dart';
 import '../Design/All/EvidencesTeacher/MenuEvidences.dart';
 import '../Design/All/Reports/CaloricExpenditure.dart';
 import '../Design/All/Reports/reports.dart';
-import 'dart:developer';
 import '../Design/All/Reports/ApplicationUse.dart';
 import '../Database/Repository/QuestionDataRepository/QuestionDataRepository.dart';
 
@@ -53,7 +52,6 @@ goToWelcome(String role) {
 
 goToPlanification(ClassLevel data, int number, bool isTeacher, Map dataClass,
     String phase, bool isCustom) {
-  log("IS CUSTOOOM : $isCustom");
   Get.toNamed(AppRoutes.planification.name, arguments: {
     "data": data,
     "number": number,
@@ -92,7 +90,6 @@ goToEvidencesSession(
     List exercises,
     String phase,
     bool isCustom}) {
-  log("IS CUSTOOOM go to evidences : $isCustom");
   Get.toNamed(AppRoutes.evidencesSession.name, arguments: {
     "questionnaire": questionnaire,
     "idClass": idClass,
@@ -112,7 +109,6 @@ goToUploadData(
     List exercises,
     String phase,
     bool isCustom}) {
-  log("IS CUSTOOOM go to uploaddata : $isCustom");
   Get.toNamed(AppRoutes.uploadData.name, arguments: {
     "uuid": uuidQuestionary,
     "idClass": idClass,
@@ -183,7 +179,6 @@ goToAllEvidences() {
 goToReports(bool drawer, bool isTeacher, List data) {
   // Get.toNamed(AppRoutes.reports.name,
   //     arguments: {"drawer": drawer, "isTeacher": isTeacher, "data": data});
-  log(data.toString());
   Get.to(Reports(
     isTeacher: isTeacher,
     drawerMenu: drawer,
@@ -332,26 +327,7 @@ closeSession() async {
   await classDataRepository.deleteAll();
   await tipsDataRepository.deleteAll();
   await questionDataRepository.deleteAll();
-
-  var resCourse = await courseDataRepository.getAllCourse();
-  var resTips = await tipsDataRepository.getAllTips();
-  var resEvidence = await evidencesRepository.getAllEvidences();
-  var resExercises = await excerciseDataRepository.getAllExcercise();
-  var resClass = await classDataRepository.getAllClassLevel();
-  var resQuestions = await questionDataRepository.getAllQuestions();
-  print(resClass.length);
-  print(resEvidence.length);
-  print(resExercises.length);
-  print(resTips.length);
-  print("""
-    course ${resCourse.length}
-    evidence ${resEvidence.length}
-    exercises ${resExercises.length}
-    classes ${resClass.length}
-    tips ${resTips.length}
-    questions ${resQuestions.length}
-    """);
-
+  
   prefs.setInt("phase", null);
   prefs.setString("rut", null);
   prefs.setString("name", null);

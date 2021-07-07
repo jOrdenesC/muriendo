@@ -19,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Design/Widgets/Toast.dart';
 import 'package:flutter/material.dart';
 import '../Utils/Colors.dart';
-import 'dart:developer';
 import 'package:archive/archive.dart';
 import '../Database/Models/courseModel.dart';
 import '../Utils/UrlServer.dart';
@@ -75,147 +74,6 @@ class DownloadData {
           "Necesitas estar conectado a internet. Verifica tu conexión", red);
     }
   }
-
-  // downloadVideosTest(List videoList) async {
-  //   log(videoList.toString());
-  //   List<Future> listDio = [];
-  //   List dataDownloaded = [];
-  //   var prefs = await SharedPreferences.getInstance();
-  //   var token = prefs.getString("token");
-  //   var dir = await getApplicationDocumentsDirectory();
-  //   var format = "";
-  //   var platform = "";
-  //   // String path = p.join("/storage/emulated/0/Movitronia/videos/");
-  //   if (Platform.isAndroid) {
-  //     format = ".webm";
-  //     platform = "android";
-  //     print("${dir.path}/videos/${videoList[0]}$format");
-  //   } else if (Platform.isIOS) {
-  //     format = ".mp4";
-  //     platform = "ios";
-  //     print("${dir.path}/videos/${videoList[0]}$format");
-  //   }
-  //   Response response2 = await dio.post(
-  //       "https://intranet.movitronia.com/api/mobile/videos?token=$token",
-  //       data: {"platform": platform, "videoList": videoList});
-
-  //   print("Response Video List: ${response2.data.length}");
-
-  //   for (int i = 0; i < response2.data.length; i++) {
-  //     print(response2.data[i] + "  ${i.toString()}");
-  //     //Try Catch
-  //     try {
-  //       // data.add({
-  //       //   "link": response2.data[i].toString(),
-  //       //   "route": "$path/${videoList[i]}$format",
-  //       //   "index": i.toString()
-  //       // });
-
-  //       listDio.add(dio.download(
-  //           response2.data[i], '${dir.path}/videos/${videoList[i]}$format',
-  //           onReceiveProgress: (rec, total) {
-  //         if (rec == total) {
-  //           print(i.toString() + " descargado");
-  //           dataDownloaded.add(response2.data[i]);
-  //         }
-  //       }));
-  //     } catch (e) {
-  //       log(e);
-  //     }
-  //   }
-
-  //   // print(listDio[282].toString());
-  //   // log(data.toList().toString());
-  //   try {
-  //     await Future.wait(listDio, eagerError: true);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   List<Future> noExists = [];
-
-  //   getDownloaded(response2, videoList) {
-  //     response2.data.forEach((element) {
-  //       if (!dataDownloaded.contains(element)) {
-  //         noExists = response2.data
-  //             .toSet()
-  //             .difference(dataDownloaded.toSet())
-  //             .toList();
-  //         print("No descargado $element");
-  //         noExists.add(dio.download(response2[element],
-  //             '${dir.path}/videos/${videoList[element]}$format'));
-  //       }
-  //     });
-
-  //     // for (var i = 0; i < videoList.length; i++) {
-  //     //   if (videoList[i].contains(dataDownloaded[i])) {
-  //     //     print("descargado $i");
-  //     //   } else {
-  //     //     print("no descargado");
-  //     //     noExists.add(dio.download(
-  //     //         videoList[i], '${dir.path}/videos/${videoList[i]}$format',
-  //     //         onReceiveProgress: (rec, total) {
-  //     //       if (rec == total) {
-  //     //         print(i.toString() + " descargado");
-  //     //         dataDownloaded.add(response2.data[i]);
-  //     //       }
-  //     //     }));
-  //     //   }
-  //     // }
-
-  //     return true;
-  //   }
-
-  // if (videoList != dataDownloaded) {
-  //   print("descargando los que no se descargaron");
-  //   getDownloaded(response2, videoList);
-  //   await Future.wait(noExists);
-  // }
-
-  //   print(dataDownloaded.toList().toString());
-  //   // for (var i = 0; i < res.length; i++) {
-  //   //   print(i);
-  //   //   print(res[i].toString());
-  //   // }
-  //   // print(res[0]);
-  //   print("ok");
-  // }
-
-  // downloadAudiosTest(List audioList, String type) async {
-  //   log(audioList.toList().toString());
-  //   var dir = await getApplicationDocumentsDirectory();
-  //   var prefs = await SharedPreferences.getInstance();
-  //   var token = prefs.getString("token");
-  //   List<Future> listDio = [];
-  //   int downloaded = 0;
-  //   // String path = p.join("/storage/emulated/0/Movitronia/audios/$type/");
-  //   Response response2 = await Dio().post(
-  //       "https://intranet.movitronia.com/api/mobile/audios?token=$token",
-  //       data: {"type": "$type", "audioList": audioList});
-  //   for (int i = 0; i < response2.data.length; i++) {
-  //     print("${i.toString()} ${response2.data[i]}");
-  //     try {
-  //       // ${audioList[i]}
-  //       listDio.add(Dio().download(
-  //           response2.data[i], '${dir.path}/audios/${audioList[i]}.mp3',
-  //           onReceiveProgress: (rec, total) {
-  //         if (rec == total) {
-  //           // print(i.toString() + " Descargado");
-  //           downloaded++;
-  //           print(downloaded);
-  //         }
-  //       }));
-  //     } catch (e) {
-  //       print(e.toString());
-  //     }
-  //   }
-  //   print(listDio.toString());
-  //   try {
-  //     await Future.wait(listDio);
-  //   } catch (e) {
-  //     print("ERRORRR $e");
-  //   }
-  // }
 
   getHttp(BuildContext context, String level) async {
     if (level.isEmpty) {
@@ -286,7 +144,6 @@ class DownloadData {
           for (int i = 0; i < responseClasses.data.length; i++) {
             Map responseBody = responseClasses.data[i];
             ResultModel jsonResponse = ResultModel.fromJson(responseBody);
-            log(jsonResponse.toJson().toString());
             for (int i = 0; i < jsonResponse.tips.length; i++) {
               var tipsResponse = jsonResponse.tips[i];
               if (indexes.contains(int.parse(tipsResponse.tipId))) {
@@ -321,18 +178,13 @@ class DownloadData {
 
                 indexes.add(tipsData.tipsID);
                 tipsList.add(tipsData);
-
-                print("TIP Amount ${tipsResponse.audios.length}");
                 for (int i = 0; i < tipsResponse.audios.length; i++) {
-                  print("${tipsResponse.audios[i].link}");
                   audioNames.add(tipsResponse.audios[i].link);
                 }
-                print("TIP value of ${tipsData.tip}");
                 var res = await _tipsDataRepository.getTips(tipsResponse.sId);
                 if (res.isEmpty) {
                   await _tipsDataRepository.insertTips(tipsData);
                 } else {
-                  print("ya existe");
                   await _tipsDataRepository.updateTips(tipsData);
                 }
                 QuestionData questionData = QuestionData(
@@ -346,34 +198,19 @@ class DownloadData {
                       'b': tipsResponse.questions.alternatives.b,
                       'c': tipsResponse.questions.alternatives.c
                     });
-                // print(questionData.alternatives);
                 questionList.add(questionData);
               }
             }
-
-            // for (int i = 0; i < tipsList.length; i++) {
-            //   final result = await _tipsDataRepository
-            //       .getTips(tipsList[i].tipsID.toString());
-            //   if (result.isEmpty) {
-            //     await _tipsDataRepository.insertTips(tipsList[i]);
-            //     //  print("Insert Data");
-            //   }
-            // }
-
 
             for (int i = 0; i < questionList.length; i++) {
               final result = await _questionDataRepository
                   .getQuestion(questionList[i].tipID.toString());
               if (result.isEmpty) {
                 await _questionDataRepository.insertQuestion(questionList[i]);
-       
               }
             }
           }
           Navigator.pop(context);
-          print("Total Tips: ${tipsList.length}");
-          print("Total Questions: ${questionList.length}");
-          print("DESCARGANDO DATOS DE CLASES");
           getClass(responseClasses, context);
         } catch (e) {
           print(e);
@@ -424,74 +261,13 @@ class DownloadData {
         print(result);
       }
       prefs.setBool("downloadedExercisesBd", true);
-      print("Response ${response2.data[0]}");
     } else {
       toast(context,
           "Necesitas estar conectado a internet. Verifica tu conexión", red);
     }
   }
 
-  audioDownload(List<String> audioList, String type) async {
-    var dir = await getApplicationDocumentsDirectory();
-    print("Inside Audio Download");
-    Dio dio = Dio();
-    var prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    Response response2 = await Dio().post(
-        "https://intranet.movitronia.com/api/mobile/audios?token=$token",
-        data: {"type": "$type", "audioList": audioList});
-
-    print("Response Audio List: ${response2.data.length}");
-
-    for (int i = 0; i < response2.data.length; i++) {
-      // print(response2.data[i]);
-
-      try {
-        await dio.download(
-            response2.data[i], '${dir.path}/audios/${audioList[i]}.mp3',
-            onReceiveProgress: (actualbytes, totalbytes) {
-          var percentage = actualbytes / totalbytes * 100;
-          print(actualbytes / totalbytes * 100);
-          print(percentage);
-        });
-      } catch (e) {}
-    }
-  }
-
-  videoDownload(List<String> videoList) async {
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    var dir = await getApplicationDocumentsDirectory();
-    var format = "";
-    if (Platform.isAndroid) {
-      format = ".webm";
-      print("${dir.path}/videos/${videoList[0]}$format");
-    } else if (Platform.isIOS) {
-      format = ".mp4";
-      print("${dir.path}/videos/${videoList[0]}$format");
-    }
-    Response response2 = await dio.post(
-        "https://intranet.movitronia.com/api/mobile/videos?token=$token",
-        data: {"platform": "android", "videoList": videoList});
-
-    print("Response Video List: ${response2.data.length}");
-
-    for (int i = 0; i < response2.data.length; i++) {
-      print(response2.data[i]);
-      //Try Catch
-      try {
-        var dir = await getApplicationDocumentsDirectory();
-        await dio.download(
-            response2.data[i], '${dir.path}/videos/${videoList[i]}$format',
-            onReceiveProgress: (actualbytes, totalbytes) {
-          // var percentage = actualbytes / totalbytes * 100;
-        });
-      } catch (e) {}
-    }
-  }
-
   getClass(Response response, BuildContext context) async {
-    print("EMPIEZA A CREAR CLAAAAASESSS");
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet) {
       List<int> pauses = [];
@@ -563,7 +339,7 @@ class DownloadData {
             }
           }
         } catch (e) {
-          print("Le Error " + e.toString());
+          print("Error " + e.toString());
         }
         ClassLevel classLevel = ClassLevel(
             classID: responseobject['_id'],
@@ -599,7 +375,6 @@ class DownloadData {
   }
 
   Future downloadEvidencesData(BuildContext context) async {
-    log("Downloading evidences data");
     EvidencesRepository evidencesRepository = GetIt.I.get();
     bool hasInternet = await ConnectionStateClass().comprobationInternet();
     if (hasInternet == false) {
@@ -638,7 +413,6 @@ class DownloadData {
         print(e);
       }
     }
-    log("finish evidence data");
   }
 
   Future downloadFiles(String url, String filename, BuildContext context,
@@ -676,8 +450,6 @@ class DownloadData {
       await unarchiveAndSave(
           File("${dir.path}/$route/$filename"), context, route, platform);
     }
-
-    print("finish");
     return null;
   }
 
@@ -710,7 +482,6 @@ class DownloadData {
           : "${dir.path}/$route/${file.name}";
       if (file.isFile) {
         var outFile = File(fileName);
-        print('file: ' + outFile.path);
         outFile = await outFile.create(recursive: true);
         await outFile.writeAsBytes(file.content);
       }
@@ -741,7 +512,6 @@ class DownloadData {
       Response responseObject = await dio.get(
           "$urlServer/api/mobile/user/customClassesByCourse/${course[0].courseId}?token=$token");
 
-      log(responseObject.data.toString());
       if (responseObject.data.toString() == "[]") {
         print("Sin clases creadas");
       } else {
@@ -815,11 +585,8 @@ class DownloadData {
                 tips: tips,
                 isCustom: true);
             for (var i = 0; i < classIds.length; i++) {
-              log(classLevel.toMap().toString());
-              var res = await _classDataRepository.updateClass(classLevel,
+              await _classDataRepository.updateClass(classLevel,
                   responseobject['level'], responseobject['number']);
-              // var res = await _classDataRepository.getClassByNumber(responseobject['number']);
-              log("RES " + res.toString());
             }
           } catch (e) {
             print(e.toString());

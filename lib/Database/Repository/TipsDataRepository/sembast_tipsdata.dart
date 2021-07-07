@@ -9,8 +9,6 @@ class SembastTipsDataRepository extends TipsDataRepository {
 
   @override
   Future<int> insertTips(TipsData gifData) async {
-    print('inside insertExcercise');
-    print(gifData.toMap());
     return await _store.add(_database, gifData.toMap());
   }
 
@@ -21,7 +19,6 @@ class SembastTipsDataRepository extends TipsDataRepository {
 
   @override
   Future deleteTips(int gifDataId) async {
-    print("Deleting $gifDataId");
     await _store.record(gifDataId).delete(_database);
   }
 
@@ -38,16 +35,12 @@ class SembastTipsDataRepository extends TipsDataRepository {
     final finder = Finder(filter: Filter.equals('documentID', id));
 
     final snapshots = await _store.find(_database, finder: finder);
-    //print("Snapshot: " + snapshots.toString());
-    // var records = await _store.records([12, 14]).get(_database);
-    //final snapshots = await _store.find(_database, finder: finder);
     return snapshots
         .map((snapshot) => TipsData.fromMap(snapshot.key, snapshot.value))
         .toList(growable: false);
   }
 
   Future deleteAll() async {
-    print("eliminadas todos los tips");
     await _store.delete(_database);
     return null;
   }

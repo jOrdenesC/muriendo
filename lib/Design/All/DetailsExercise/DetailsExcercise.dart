@@ -58,7 +58,6 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
     });
 
     final result = await _excerciseRepository.getExcerciseName(widget.name);
-    print(result[0].recomendationAudioId);
     await init(widget.name, result[0].recomendationAudioId);
   }
 
@@ -90,7 +89,6 @@ class _DetailsExcerciseState extends State<DetailsExcercise> {
   }
 
   playAudio(String audioName) async {
-    print("Play Audio");
     if (Platform.isIOS) {
       if (audioCache.fixedPlayer != null) {
         audioCache.fixedPlayer.startHeadlessService();

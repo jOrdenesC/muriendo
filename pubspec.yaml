@@ -68,7 +68,7 @@ dependencies:
   #Library for take photo or record video
   image_picker: ^0.6.7+14
   #Library for show toast easy
-  toast: ^0.1.5
+  fluttertoast: ^7.1.5
   #Library for show dots in lists 
   dots_indicator: ^1.2.0
   #Library for show badges when add exccercise or user in CreateClass
@@ -88,7 +88,6 @@ dependencies:
   basic_utils: ^1.2.0
   uuid: ^2.2.2
   video_thumbnail: ^0.2.5+1
-  flushbar: ^1.10.4
   flutter_vlc_player: ^5.0.4
   path: ^1.7.0
   flutter_restart: ^0.0.3
@@ -111,6 +110,7 @@ dev_dependencies:
     sdk: flutter
   mockito: ^4.1.4
   lorem_ipsum: ^0.0.1
+  flushbar: ^1.10.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

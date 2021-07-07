@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
@@ -23,14 +22,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   OrientationHelper orientationHelper;
   final Future _init = Init.initialize();
+
   @override
   void initState() {
-    GetStorage box = GetStorage();
-    if (box.read("init") != null) {
-      log("Value is ${box.read("init")}");
-    } else {
-      log("No Value Has been set");
-    }
+    final box = GetStorage();
+    box.write("evidencesNumber", 0);
     orientationHelper = OrientationHelper(
       routes: AppRoutes.routes,
       defaultOrientation: ScreenOrientation.rotating,

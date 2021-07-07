@@ -24,17 +24,17 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.search_sharp,
-        //       size: 7.0.w,
-        //     ),
-        //     onPressed: () {
-        //       addExercises(title);
-        //     },
-        //   )
-        // ],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search_sharp,
+              size: 7.0.w,
+            ),
+            onPressed: () {
+              addExercises(title);
+            },
+          )
+        ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 9.0.w, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -301,15 +301,10 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
   }
 
   Future getExercisesAll(args) async {
-    print("""
-    ${args["level"]}, ${args["title"]}
-    """);
     exercisesAll.clear();
     ExcerciseDataRepository _excerciseRepository = GetIt.I.get();
     final result = await _excerciseRepository.getExcerciseByLevelAndStage(
         int.parse(args["level"]), args["title"]);
-    // final result = await _excerciseRepository.getAllExcercise();
-    // print(result[0].toMap().toString());
     for (var i = 0; i < result.length; i++) {
       setState(() {
         exercisesAll.add(result[i]);
@@ -320,7 +315,6 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
 
   addExercises(args) async {
     await getExercisesAll(args);
-    print(args);
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -392,59 +386,48 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
                                     width: 100.0.w,
                                     height: 15.0.h,
                                     child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 1.0.w,
-                                          ),
-                                          Container(
-                                            width: 35.0.w,
-                                            height: 10.0.h,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 1.0.w,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             color: Colors.white,
-                                            child: Center(
-                                              child: Image.asset(
-                                                "Assets/thumbnails/${exercisesAll[index].videoName}.jpeg",
-                                                fit: BoxFit.fill,
-                                                width: 100.0.w,
-                                              ),
+                                          ),
+                                          width: 35.0.w,
+                                          height: 10.0.h,
+                                          child: Center(
+                                            child: Image.asset(
+                                              "Assets/thumbnails/${exercisesAll[index].videoName}.jpeg",
+                                              fit: BoxFit.fill,
+                                              width: 100.0.w,
                                             ),
                                           ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  CupertinoSwitch(
-                                                    value: true,
-                                                    onChanged: (val) {},
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                     MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                     " ${index + 1}.- " +
-                                         exercisesAll[index]
-                                             .nameExcercise,
-                                     style:
-                                         TextStyle(color: blue),
-                                     overflow:
-                                         TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CupertinoSwitch(
+                                              value: true,
+                                              onChanged: (val) {},
+                                            ),
+                                            Text(
+                                                " ${index + 1}.- " +
+                                                    exercisesAll[index]
+                                                        .nameExcercise,
+                                                style: TextStyle(color: blue),
+                                                maxLines: 3)
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -458,25 +441,7 @@ class _ExcercisesClassState extends State<ExcercisesClass> {
                               color: cyan,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // buttonRounded(context, text: "AGREGAR",
-                                  //     func: () {
-                                  //   selected.clear();
-                                  //   for (var i = 0; i < grade.length; i++) {
-                                  //     if (grade[i]["status"]) {
-                                  //       selected.add({
-                                  //         "id": grade[i]["id"],
-                                  //         "name": grade[i]["name"]
-                                  //       });
-                                  //     } else {
-                                  //       print("nada");
-                                  //     }
-                                  //     log("log  " + selected.toString());
-                                  //   }
-                                  //   Navigator.pop(context);
-                                  //   refresh();
-                                  // })
-                                ],
+                                children: [],
                               ),
                             ),
                           ),

@@ -24,7 +24,6 @@ class _FinishCreateClassState extends State<FinishCreateClass> {
         args =
             (ModalRoute.of(context).settings.arguments as RouteArguments).args;
       });
-      print(args);
     });
   }
 

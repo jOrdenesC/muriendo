@@ -8,7 +8,6 @@ import 'package:movitronia/Utils/Colors.dart';
 import 'package:orientation_helper/orientation_helper.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Database/Repository/ExcerciseRepository/ExcerciseDataRepository.dart';
-import 'dart:developer' as dev;
 
 class ExcercisesPage extends StatefulWidget {
   @override
@@ -28,7 +27,6 @@ class _ExcercisesPageState extends State<ExcercisesPage>
         name =
             (ModalRoute.of(context).settings.arguments as RouteArguments).args;
       });
-      dev.log(name.toString());
       getThumbnails(name);
     });
     super.initState();

@@ -9,7 +9,6 @@ import 'package:movitronia/Routes/RoutePageControl.dart';
 import 'package:movitronia/Utils/Colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:orientation_helper/orientation_helper.dart';
-import 'dart:developer' as dev;
 
 class Planification extends StatefulWidget {
   @override
@@ -34,7 +33,6 @@ class _PlanificationState extends State<Planification> {
                   buttonRounded(context,
                       circleRadius: Device.get().isTablet ? 3.5.w : 4.5.w,
                       func: () async {
-                    dev.log("IS CUSTOOOM EXERCISEVIDEO : ${args["isCustom"]}");
                     Get.to(
                       ExcerciseVideo(
                           args['data'].toMap()["classID"].toString(),

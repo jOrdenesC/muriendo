@@ -50,7 +50,6 @@ class SembastEvidenceRepository extends EvidencesRepository {
   }
 
   Future deleteAll() async {
-    print("eliminadas todas las evidencias");
     await _store.delete(_database);
     return null;
   }

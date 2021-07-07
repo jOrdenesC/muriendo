@@ -11,7 +11,6 @@ import 'package:movitronia/Utils/ConnectionState.dart';
 import 'package:movitronia/Utils/UrlServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'dart:developer';
 
 class Splash extends StatefulWidget {
   @override
@@ -113,8 +112,9 @@ class _SplashState extends State<Splash> {
             }
             // OtherController().insertData();
             bool logged = prefs.getBool("logged") ?? false;
+            bool termsAccepted = prefs.getBool("termsAccepted") ?? false;
 
-            if (logged) {
+            if (logged && termsAccepted) {
               if (scope == "user") {
                 goToHome(scope, {});
               } else if (scope == "professor") {
@@ -131,7 +131,6 @@ class _SplashState extends State<Splash> {
                     });
                   }
                 }
-                log(resProfessorData.data.toString());
                 if (colleges.length > 1) {
                   goToTeacherSelectCollege();
                 } else {
@@ -216,7 +215,6 @@ class _SplashState extends State<Splash> {
             phase: res[0].phase,
             classObject: res[0].classObject,
             finished: res[0].finished);
-        print("Se actualizó una evidencia");
         await evidencesRepository.updateEvidence(evidencesSend);
       }
     }

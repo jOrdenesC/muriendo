@@ -38,7 +38,6 @@ class SembastCourseRepository extends CourseDataRepository {
   }
 
   Future deleteAll() async {
-    print("eliminadas todos los cursos");
     await _store.delete(_database);
     return null;
   }

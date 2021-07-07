@@ -10,7 +10,6 @@ import 'package:sizer/sizer.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Utils/UrlServer.dart';
-import 'dart:developer';
 import 'package:orientation_helper/orientation_helper.dart';
 import '../../Widgets/Loading.dart';
 import '../../Widgets/Toast.dart';
@@ -52,7 +51,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         args =
             (ModalRoute.of(context).settings.arguments as RouteArguments).args;
       });
-      // log(args.toString());
       selected.clear();
       getDataUsers();
     });
@@ -84,7 +82,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
       }
     }
 
-    // log(courses.length.toString());
 
     for (var i = 0; i < courses.length; i++) {
       for (var j = 0; j < courses[i]["students"].length; j++) {
@@ -98,8 +95,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         });
       }
     }
-    // log(courses.toString());
-    // log(users.toString());
     setState(() {
       loaded = true;
     });
@@ -215,7 +210,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
         };
         classesCourses.add(data);
       }
-      log(classesCourses.toString());
       Response response = await dio.post(
           "$urlServer/api/mobile/customClass?token=$token",
           data: classesCourses);
@@ -243,7 +237,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
     } catch (e) {
       CreateError()
           .createError(dio, e.response.toString(), "AssignCreateClass");
-      log(e.response.toString());
     }
   }
 
@@ -267,8 +260,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
               } else {
                 sendData();
               }
-              // log(args["response"].data["_id"].toString());
-              // log(args["response"].toString());
             }, text: "   ENVIAR")
           ],
         ),
@@ -633,7 +624,6 @@ class _AssignCreatedClassState extends State<AssignCreatedClass> {
                                       } else {
                                         print("nada");
                                       }
-                                      log("log  " + selected.toString());
                                     }
                                     Navigator.pop(context);
                                     refresh();
