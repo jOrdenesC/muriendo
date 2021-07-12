@@ -464,7 +464,7 @@ class _SessionsState extends State<Sessions> {
                   onWillPop: pop,
                   child: AlertDialog(
                     title: Text(
-                      'Hay una nueva versión disponible en la tienda.\n ¿Quieres actualizar?.\n\nPara esta versión será necesario que reinstales la aplicación. Por favor desinstala e instala nuevamente.',
+                      '${response.data["message"]}',
                       style: TextStyle(color: blue),
                       textAlign: TextAlign.center,
                     ),
